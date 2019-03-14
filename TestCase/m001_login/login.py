@@ -8,8 +8,8 @@ from library.core.TestCase import TestCase
 from library.core.common.simcardtype import CardType
 from library.core.utils.applicationcache import current_mobile, current_driver, switch_to_mobile
 from library.core.utils.testcasefilter import tags
-from pages import *
-from pages.login import Agreement
+
+from pages.guide import GuidePage
 
 REQUIRED_MOBILES = {
     'Android-移动': 'M960BDQN229CH',
@@ -23,15 +23,23 @@ REQUIRED_MOBILES = {
 }
 
 
-
 class LoginTest(TestCase):
     """Login 模块"""
 
-    @staticmethod
-    def setUp_test_login_0001():
+    def setUp_test_login_0001(self):
         """"""
+        mb = switch_to_mobile('M960BDQN229CH')
+        mb.connect_mobile()
+        self.gd = GuidePage()
+        self.gd.mobile.reset_app()
+        self.gd.wait_for_page_load()
+        self.gd.swipe_by_percent_on_screen(90, 50, 10, 50, 600)
+        self.gd.swipe_by_percent_on_screen(90, 50, 10, 50, 600)
+        mb.click_text('立即体验')
 
-    @tags('ALL', 'SMOKE', 'CMCC')
-    def test_login_0001(self, login_time=60):
+    @tags('DEMO')
+    def test_login_0001(self):
         """ 本网非首次登录已设置头像-一键登录页面元素检查"""
-
+        import time
+        time.sleep(4)
+        self.gd.mobile.assert_screen_contain_text('本机号码')

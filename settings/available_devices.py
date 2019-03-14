@@ -67,7 +67,7 @@ AVAILABLE_DEVICES_DEV = {
             "udid": "M960BDQN229DK",
             "automationName": "UiAutomator2",
             "newCommandTimeout": 600,
-            "appPackage": "com.chinasofti.rcs",
+            "appPackage": "com.cmic.college",
             "appActivity": "com.cmcc.cmrcs.android.ui.activities.WelcomeActivity",
         },
         'CARDS': [
