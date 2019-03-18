@@ -57,14 +57,14 @@ AVAILABLE_DEVICES = {
 
 # ======================= 本地CI环境手机配置 =======================
 AVAILABLE_DEVICES_DEV = {
-    'M960BDQN229CH': {
-        "MODEL": SupportedModel.MEIZU_PRO_6_PLUS,
-        "SERVER_URL": 'http://192.168.200.130:4723/wd/hub',
+    'M960BDQN229CH1': {
+        "MODEL": SupportedModel.HUAWEI_P20,
+        "SERVER_URL": 'http://127.0.0.1:4723/wd/hub',
         "DEFAULT_CAPABILITY": {
             "platformName": "Android",
-            "platformVersion": "6.0.1",
-            "deviceName": "M960BDQN229DK",
-            "udid": "M960BDQN229DK",
+            "platformVersion": "8.1.0",
+            "deviceName": "CLB7N18904002073",
+            "udid": "CLB7N18904002073",
             "automationName": "UiAutomator2",
             "newCommandTimeout": 600,
             "appPackage": "com.cmic.college",
@@ -73,7 +73,7 @@ AVAILABLE_DEVICES_DEV = {
         'CARDS': [
             {
                 'TYPE': CardType.CHINA_MOBILE,
-                'CARD_NUMBER': '13480860547'
+                'CARD_NUMBER': '15918730974'
             },
         ]
     },
@@ -374,7 +374,7 @@ DEVICES_P20 = {
             "udid": "CLB7N18904002073",
             "automationName": "UiAutomator2",
             "newCommandTimeout": 600,
-            "appPackage": "com.chinasofti.rcs",
+            "appPackage": "com.cmic.college",
             "appActivity": "com.cmcc.cmrcs.android.ui.activities.WelcomeActivity",
         },
         'CARDS': [
