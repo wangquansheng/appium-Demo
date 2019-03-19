@@ -115,8 +115,11 @@ class Preconditions(object):
         one_key.click_sure_login()
         # 等待消息页
         gp = GuidePage()
-        gp.click_the_checkbox()
-        gp.click_the_no_start_experience()
+        try:
+            gp.click_the_checkbox()
+            gp.click_the_no_start_experience()
+        except:
+            pass
         cp = CallPage()
         cp.click_contact_tip()
         return login_number
@@ -148,22 +151,27 @@ class Preconditions(object):
         current_mobile().reset_app()
 
     @staticmethod
-    def make_already_in_call_page(reset_required=False):
+    def make_already_in_call_page():
         """
         前置条件：
         1.已登录客户端
         2.当前在消息页面
         """
-        if not reset_required:
-            call_page = CallPage()
-            if call_page.is_on_this_page():
-                return
-            else:
-                try:
-                    current_mobile().terminate_app('com.cmic.college', timeout=2000)
-                except:
-                    pass
-                current_mobile().launch_app()
+        # 如果当前页面是在通话录页，不做任何操作
+        call_page = CallPage()
+        if call_page.is_on_this_page():
+            return
+        # 如果当前页面已经是一键登录页，进行一键登录页面
+        one_key = OneKeyLoginPage()
+        if one_key.is_on_this_page():
+            Preconditions.login_by_one_key_login()
+        # 如果当前页不是引导页第一页，重新启动app
+        else:
+            try:
+                current_mobile().terminate_app('com.cmic.college', timeout=2000)
+            except:
+                pass
+            current_mobile().launch_app()
             try:
                 call_page.wait_until(
                     condition=lambda d: call_page.is_on_this_page(),
@@ -172,10 +180,9 @@ class Preconditions(object):
                 return
             except TimeoutException:
                 pass
-        Preconditions.reset_and_relaunch_app()
-        Preconditions.make_already_in_one_key_login_page()
-        login_num = Preconditions.login_by_one_key_login()
-        return login_num
+            Preconditions.reset_and_relaunch_app()
+            Preconditions.make_already_in_one_key_login_page()
+            Preconditions.login_by_one_key_login()
 
 
 class LoginTest(TestCase):
@@ -216,8 +223,11 @@ class LoginTest(TestCase):
         one_key.click_sure_login()
         # 等待消息页
         gp = GuidePage()
-        gp.click_the_checkbox()
-        gp.click_the_no_start_experience()
+        try:
+            gp.click_the_checkbox()
+            gp.click_the_no_start_experience()
+        except:
+            pass
         cp = CallPage()
         cp.click_contact_tip()
         cp.wait_for_page_call()
@@ -241,3 +251,15 @@ class LoginTest(TestCase):
         # 2.跳转至服务协议H5页面
         one_key.page_should_contain_text("协议")
 
+    @staticmethod
+    def setUp_test_login_0004():
+        Preconditions.select_mobile('Android-移动')
+        current_mobile().hide_keyboard_if_display()
+        Preconditions.make_already_in_call_page()
+
+    @tags('ALL', 'SMOKE', 'CMCC')
+    def test_login_0004(self):
+        """ 一键登录协议响应"""
+        # 1.点击《密友圈软件许可及服务协议》按钮
+        call_page = CallPage()
+        self.assertEquals(call_page.is_on_this_page(), True)

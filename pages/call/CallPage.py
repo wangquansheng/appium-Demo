@@ -30,7 +30,7 @@ class CallPage(FooterPage):
             timeout=max_wait_time,
         )
 
-    @TestLogger.log('等待页面自动跳转')
+    @TestLogger.log('是否在通话页面')
     def is_on_this_page(self):
         el = self.get_elements(self.__locators['视频'])
         if len(el) > 0:
