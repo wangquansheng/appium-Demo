@@ -165,24 +165,15 @@ class Preconditions(object):
         one_key = OneKeyLoginPage()
         if one_key.is_on_this_page():
             Preconditions.login_by_one_key_login()
+            return
         # 如果当前页不是引导页第一页，重新启动app
-        else:
-            try:
-                current_mobile().terminate_app('com.cmic.college', timeout=2000)
-            except:
-                pass
+        guide_page = GuidePage()
+        if not guide_page.is_on_the_first_guide_page():
             current_mobile().launch_app()
-            try:
-                call_page.wait_until(
-                    condition=lambda d: call_page.is_on_this_page(),
-                    timeout=3
-                )
-                return
-            except TimeoutException:
-                pass
-            Preconditions.reset_and_relaunch_app()
-            Preconditions.make_already_in_one_key_login_page()
-            Preconditions.login_by_one_key_login()
+            guide_page.wait_for_page_load(20)
+            # 跳过引导页
+        Preconditions.make_already_in_one_key_login_page()
+        Preconditions.login_by_one_key_login()
 
 
 class LoginTest(TestCase):
