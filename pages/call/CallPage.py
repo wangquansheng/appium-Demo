@@ -2,9 +2,10 @@ from appium.webdriver.common.mobileby import MobileBy
 
 from library.core.BasePage import BasePage
 from library.core.TestLogger import TestLogger
+from pages.components.Footer import FooterPage
 
 
-class CallPage(BasePage):
+class CallPage(FooterPage):
     """通话页面"""
     ACTIVITY = 'com.cmcc.cmrcs.android.ui.activities.HomeActivity'
 
