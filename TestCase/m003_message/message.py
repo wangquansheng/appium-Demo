@@ -1,7 +1,5 @@
 import re
 import time
-import unittest
-
 from selenium.common.exceptions import TimeoutException
 
 from library.core.TestCase import TestCase
@@ -12,6 +10,8 @@ from pages.call.CallPage import CallPage
 
 from pages.guide import GuidePage
 from pages.login.LoginPage import OneKeyLoginPage
+from pages.message.NewMessage import NewMessagePage
+from pages.message.message import MessagePage
 
 REQUIRED_MOBILES = {
     'Android-移动': 'M960BDQN229CH',
@@ -24,30 +24,6 @@ REQUIRED_MOBILES = {
     'Android-XX-XX': 'others_double',
 }
 
-
-# class LoginTest(TestCase):
-#     """Login 模块"""
-#
-#     def setUp_test_login_0001(self):
-#         """"""
-#         mb = switch_to_mobile('M960BDQN229CH1')
-#         mb.connect_mobile()
-#         self.gd = GuidePage()
-#         self.gd.mobile.reset_app()
-#         self.gd.wait_for_page_load()
-#         self.gd.swipe_by_percent_on_screen(90, 50, 10, 50, 600)
-#         self.gd.swipe_by_percent_on_screen(90, 50, 10, 50, 600)
-#         mb.click_text('立即体验')
-#         mb.click_text('一键开启')
-#         mb.click_text('本机号码一键登录')
-#         mb.click_text('确定')
-#
-#     @tags('DEMO')
-#     def test_login_0001(self):
-#         """ 本网非首次登录已设置头像-一键登录页面元素检查"""
-#         import time
-#         time.sleep(4)
-#         self.gd.mobile.assert_screen_contain_text('本机号码')
 
 class Preconditions(object):
     """
@@ -175,82 +151,72 @@ class Preconditions(object):
         Preconditions.make_already_in_one_key_login_page()
         Preconditions.login_by_one_key_login()
 
-
-class LoginTest(TestCase):
-    """Login 模块"""
-
     @staticmethod
-    def setUp_test_login_0001():
-        Preconditions.select_mobile('Android-移动')
-        current_mobile().hide_keyboard_if_display()
-        Preconditions.app_start_for_the_first_time()
-        Preconditions.make_already_in_one_key_login_page()
-
-    @tags('ALL', 'SMOKE', 'CMCC')
-    def test_login_0001(self):
-        """ 本网正常网络首次登录4G-登录响应"""
-        oklp = OneKeyLoginPage()
-        # 检查一键登录
-        oklp.wait_for_page_load()
-        oklp.wait_for_tell_number_load(timeout=60)
-        # 检查电话号码
-        phone_numbers = current_mobile().get_cards(CardType.CHINA_MOBILE)
-        oklp.assert_phone_number_equals_to(phone_numbers[0])
-
-    @staticmethod
-    def setUp_test_login_0002():
-        Preconditions.select_mobile('Android-移动')
-        current_mobile().hide_keyboard_if_display()
-        Preconditions.app_start_for_the_first_time()
-        Preconditions.make_already_in_one_key_login_page()
-
-    @tags('ALL', 'SMOKE', 'CMCC')
-    def test_login_0002(self):
-        """ 本网正常网络首次登录4G-登录响应"""
-        # 1.点击一键登录
-        one_key = OneKeyLoginPage()
-        one_key.wait_for_tell_number_load(60)
-        one_key.click_one_key_login()
-        one_key.click_sure_login()
-        # 等待消息页
-        gp = GuidePage()
-        try:
-            gp.click_the_checkbox()
-            gp.click_the_no_start_experience()
-        except:
-            pass
-        cp = CallPage()
-        cp.click_contact_tip()
-        cp.wait_for_page_call()
-        self.assertEquals(cp.is_on_this_page(), True)
-
-    @staticmethod
-    def setUp_test_login_0003():
-        Preconditions.select_mobile('Android-移动')
-        current_mobile().hide_keyboard_if_display()
-        Preconditions.app_start_for_the_first_time()
-        Preconditions.make_already_in_one_key_login_page()
-
-    @tags('ALL', 'SMOKE', 'CMCC')
-    def test_login_0003(self):
-        """ 一键登录协议响应"""
-        # 1.点击《密友圈软件许可及服务协议》按钮
-        one_key = OneKeyLoginPage()
-        one_key.wait_for_tell_number_load(60)
-        one_key.click_license_agreement()
-        time.sleep(15)
-        # 2.跳转至服务协议H5页面
-        one_key.page_should_contain_text("协议")
-
-    @staticmethod
-    def setUp_test_login_0004():
-        Preconditions.select_mobile('Android-移动')
-        current_mobile().hide_keyboard_if_display()
+    def make_already_in_message_chart_page():
+        """
+        前置条件：
+        1.已登录客户端
+        2.当前在消息会话页面
+        """
         Preconditions.make_already_in_call_page()
+        call = CallPage()
+        call.open_message_page()
+        mep = MessagePage()
+        mep.wait_for_page_message()
+        mep.click_add()
+        mep.click_add_message()
+        nmp = NewMessagePage()
+        nmp.wait_for_page_new_message()
+        nmp.click_contact_one()
+
+
+class MessageTest(TestCase):
+    """Message 模块"""
+
+    @staticmethod
+    def setUp_test_message_0003():
+        Preconditions.select_mobile('Android-移动')
+        current_mobile().hide_keyboard_if_display()
+        Preconditions.make_already_in_message_chart_page()
 
     @tags('ALL', 'SMOKE', 'CMCC')
-    def test_login_0004(self):
-        """ 一键登录协议响应"""
-        # 1.点击《密友圈软件许可及服务协议》按钮
-        call_page = CallPage()
-        self.assertEquals(call_page.is_on_this_page(), True)
+    def test_message_0003(self):
+        """ 本网正常网络首次登录4G-登录响应"""
+        mep = MessagePage()
+        mep.wait_for_page_chart_message()
+        # 1.长按“录制语音”icon
+        mep.click_record_audio()
+        mep.long_click_record_audio()
+        time.sleep(5)
+
+    @staticmethod
+    def setUp_test_message_0001():
+        Preconditions.select_mobile('Android-移动')
+        current_mobile().hide_keyboard_if_display()
+        Preconditions.make_already_in_message_chart_page()
+
+    @tags('ALL', 'SMOKE', 'CMCC')
+    def test_message_0001(self):
+        """ 本网正常网络首次登录4G-登录响应"""
+        mep = MessagePage()
+        mep.wait_for_page_chart_message()
+        # 1.长按“录制语音”icon,是否有取消按钮
+        mep.click_record_audio()
+        mep.long_click_record_audio()
+        mep.is_exist_cancel_audio()
+
+    @staticmethod
+    def setUp_test_message_0002():
+        Preconditions.select_mobile('Android-移动')
+        current_mobile().hide_keyboard_if_display()
+        Preconditions.make_already_in_message_chart_page()
+
+    @tags('ALL', 'SMOKE', 'CMCC')
+    def test_message_0002(self):
+        """ 本网正常网络首次登录4G-登录响应"""
+        mep = MessagePage()
+        mep.wait_for_page_chart_message()
+        # 1.长按“录制语音”icon,是否有取消按钮
+        mep.click_record_audio()
+        mep.press_and_move_to_el("开始录音", "取消录音")
+
