@@ -10,6 +10,7 @@ from pages.call.CallPage import CallPage
 
 from pages.guide import GuidePage
 from pages.login.LoginPage import OneKeyLoginPage
+from pages.message.MessagePic import MessagePicPage
 from pages.message.NewMessage import NewMessagePage
 from pages.message.message import MessagePage
 
@@ -181,7 +182,7 @@ class MessageTest(TestCase):
 
     @tags('ALL', 'SMOKE', 'CMCC')
     def test_message_0003(self):
-        """ 本网正常网络首次登录4G-登录响应"""
+        """ 发送语音消息"""
         mep = MessagePage()
         mep.wait_for_page_chart_message()
         # 1.长按“录制语音”icon
@@ -213,10 +214,75 @@ class MessageTest(TestCase):
 
     @tags('ALL', 'SMOKE', 'CMCC')
     def test_message_0002(self):
-        """ 本网正常网络首次登录4G-登录响应"""
+        """ 取消录制语音消息"""
         mep = MessagePage()
         mep.wait_for_page_chart_message()
         # 1.长按“录制语音”icon,是否有取消按钮
         mep.click_record_audio()
         mep.press_and_move_to_el("开始录音", "取消录音")
 
+    @staticmethod
+    def setUp_test_message_0004():
+        Preconditions.select_mobile('Android-移动')
+        current_mobile().hide_keyboard_if_display()
+        Preconditions.make_already_in_message_chart_page()
+
+    @tags('ALL', 'SMOKE', 'CMCC')
+    def test_message_0004(self):
+        """ 会话界面使用录音功能发送0秒语音"""
+        mep = MessagePage()
+        mep.wait_for_page_chart_message()
+        # 1.点击“录制语音”icon，检验有时间太短提示
+        mep.click_record_audio()
+        # mep.long_click_record_audio(time=100, wait_time=0.5)
+        mep.click_start_record_audio()
+        if not mep.is_toast_exist("时间太短"):
+            raise AssertionError("没有此时间太短提示框")
+
+    @staticmethod
+    def setUp_test_message_0005():
+        Preconditions.select_mobile('Android-移动')
+        current_mobile().hide_keyboard_if_display()
+        Preconditions.make_already_in_message_chart_page()
+
+    @tags('ALL', 'SMOKE', 'CMCC')
+    def test_message_0005(self):
+        """ 消息会话-发送相册照片页面显示"""
+        mep = MessagePage()
+        mep.wait_for_page_chart_message()
+        # 1.点击点击图片按钮
+        mep.click_pic()
+        mpp = MessagePicPage()
+        mpp.wait_for_page_select_pic()
+        # 2.校验a返回按钮，b照片，视频可勾选状态，c 发送按钮匹配
+        menu = {"返回", "预览", "原图", "发送"}
+        mpp.page_contain_ele(menu)
+        mpp.is_select_pic()
+        flag = mpp.get_pic_send_info()
+        self.assertIsNotNone(re.match(r'发送\(\d+/9\)', flag))
+
+    @staticmethod
+    def setUp_test_message_0006():
+        Preconditions.select_mobile('Android-移动')
+        current_mobile().hide_keyboard_if_display()
+        Preconditions.make_already_in_message_chart_page()
+
+    @tags('ALL', 'SMOKE', 'CMCC')
+    def test_message_0006(self):
+        """ 消息会话-发送相册照片页面显示"""
+        mep = MessagePage()
+        mep.wait_for_page_chart_message()
+        # 1.点击点击图片按钮
+        mep.click_pic()
+        mpp = MessagePicPage()
+        mpp.wait_for_page_select_pic()
+        # 2.a 未勾选时，预览显示置灰；
+        self.assertEquals(mpp.is_click(), False)
+        # b勾选图片，张数显示;
+        mpp.select_pic(2)
+        flag = mpp.get_pic_send_info()
+        self.assertIsNotNone(re.match(r'发送\(2/9\)', flag))
+        mpp.select_pic(2)
+        mpp.select_pic(10)
+        self.assertEquals(mpp.is_toast_exist("最多只能选择9张照片"), True)
+        # c 最多可勾选9张图片

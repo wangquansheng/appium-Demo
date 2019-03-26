@@ -36,3 +36,4 @@ class CallPage(FooterPage):
         if len(el) > 0:
             return True
         return False
+

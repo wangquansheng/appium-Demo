@@ -16,6 +16,10 @@ class MessagePage(FooterPage):
         '免流量,无限畅聊': (MobileBy.ID, 'com.cmic.college:id/tv_empty'),
         '视频': (MobileBy.ID, 'com.cmic.college:id/ivMultipartyCall'),
         '聊天标志': (MobileBy.ID, 'com.cmic.college:id/action_setting'),
+        '选择照片': (MobileBy.ID, 'com.cmic.college:id/ib_pic'),
+        '选择照相': (MobileBy.ID, 'com.cmic.college:id/ib_take_photo'),
+        '选择卡卷': (MobileBy.ID, 'com.cmic.college:id/ib_redpaper'),
+        '选择文件': (MobileBy.ID, 'com.cmic.college:id/ib_file'),
         # 打开“+”
         '新建消息': (MobileBy.XPATH, '//*[contains(@text,"新建消息")]'),
         '发起群聊': (MobileBy.XPATH, '//*[contains(@text,"发起群聊")]'),
@@ -24,7 +28,7 @@ class MessagePage(FooterPage):
         # 聊天设置页面
         '录音': (MobileBy.ID, 'com.cmic.college:id/ib_audio'),
         '开始录音': (MobileBy.ID, 'com.cmic.college:id/record_audio'),
-        '取消录音': (MobileBy.ID, 'com.cmic.college:id/record_audio'),
+        '取消录音': (MobileBy.ID, 'com.cmic.college:id/image_cancel'),
     }
 
     @TestLogger.log('点击+')
@@ -64,9 +68,13 @@ class MessagePage(FooterPage):
     def click_record_audio(self):
         self.click_element(self.__locators['录音'])
 
+    @TestLogger.log('长按开始录音')
+    def long_click_record_audio(self, time=3000, wait_time=1):
+        self.press(self.get_element(self.__locators["开始录音"]), time, wait_time)
+
     @TestLogger.log('点击开始录音')
-    def long_click_record_audio(self):
-        self.press(self.get_element(self.__locators["开始录音"]), 3000)
+    def click_start_record_audio(self):
+        self.click_element(self.__locators["开始录音"])
 
     @TestLogger.log('判断是否又取消录音')
     def is_exist_cancel_audio(self, timeout=8):
@@ -83,8 +91,9 @@ class MessagePage(FooterPage):
     def press_and_move_to_el(self, locator1, locator2):
         """按住并滑动"""
         element1 = self.get_element(self.__locators[locator1])
-        element2 = self.get_element(self.__locators[locator2])
-        # rect = element2.rect
-        # pointX = int(rect["x"])
-        # pointY = int(rect["y"])
-        TouchAction(self.driver).long_press(element1, duration=3000).move_to(element2).wait(1).release().perform()
+        TouchAction(self.driver).long_press(element1).move_to(self.get_element(self.__locators[locator2])).wait(
+            2).release().perform()
+
+    @TestLogger.log('点击选择照片')
+    def click_pic(self):
+        self.click_element(self.__locators['选择照片'])
