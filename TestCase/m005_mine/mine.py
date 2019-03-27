@@ -184,6 +184,7 @@ class Preconditions(object):
         me_page = MinePage()
         me_page.click_personal_photo()
 
+
 class MineTest(TestCase):
     """Mine 模块"""
 
@@ -250,6 +251,7 @@ class MineTest(TestCase):
         meEdit_page = MeEditProfilePage()
         meEdit_page.input_profile_name('昵称', 'select * from')
         meEdit_page.click_save()
+        self.assertTrue(meEdit_page.check_text_exist('保存成功'))
 
     @staticmethod
     def setUp_test_me_0004():
@@ -265,9 +267,8 @@ class MineTest(TestCase):
         me_page.click_personal_photo()
         meEdit_page = MeEditProfilePage()
         meEdit_page.input_profile_name('昵称', r"<>'\"&\n\r")
-        time.sleep(5)
         meEdit_page.click_save()
-        time.sleep(3)
+        self.assertTrue(meEdit_page.check_text_exist('保存成功'))
 
     @staticmethod
     def setUp_test_me_0005():
@@ -284,7 +285,7 @@ class MineTest(TestCase):
         meEdit_page = MeEditProfilePage()
         meEdit_page.input_profile_name('昵称', '4135435')
         meEdit_page.click_save()
-        time.sleep(3)
+        self.assertTrue(meEdit_page.check_text_exist('保存成功'))
 
     @staticmethod
     def setUp_test_me_0006():
@@ -296,9 +297,11 @@ class MineTest(TestCase):
     def test_me_0006(self):
         """点击性别选项选择性别"""
         me_edit_page = MeEditProfilePage()
+        me_edit_page.input_random_name()
         me_edit_page.click_locator_key('性别')
         me_edit_page.click_locator_key('性别_男')
         me_edit_page.click_locator_key('保存')
+        self.assertTrue(me_edit_page.check_text_exist('保存成功'))
 
     @tags('ALL', 'SMOKE', 'CMCC')
     def setUp_test_me_0007(self):
@@ -309,9 +312,11 @@ class MineTest(TestCase):
     def test_me_0007(self):
         """编辑年龄选项选择年龄"""
         me_edit_page = MeEditProfilePage()
+        me_edit_page.input_random_name()
         me_edit_page.click_locator_key('年龄')
         me_edit_page.click_locator_key('年龄_90后')
         me_edit_page.click_locator_key('保存')
+        self.assertTrue(me_edit_page.check_text_exist('保存成功'))
 
     @tags('ALL', 'SMOKE', 'CMCC')
     def setUp_test_me_0008(self):
@@ -339,9 +344,11 @@ class MineTest(TestCase):
     def test_me_0009(self):
         """编辑职业选项选择职业"""
         me_edit_page = MeEditProfilePage()
+        me_edit_page.input_random_name()
         me_edit_page.click_locator_key('职业')
         me_edit_page.click_locator_key('职业_计算机')
         me_edit_page.click_locator_key('保存')
+        self.assertTrue(me_edit_page.check_text_exist('保存成功'))
 
     @tags('ALL', 'SMOKE', 'CMCC')
     def setUp_test_me_0010(self):
@@ -358,5 +365,4 @@ class MineTest(TestCase):
         self.assertTrue(me_page.is_text_exist('我的二维码'))
         self.assertTrue(me_page.is_text_exist('密友圈扫描二维码，添加我为密友'))
         self.assertTrue(me_page.check_qr_code_exist())
-        # self.assertTrue(me_page.check_element_name_photo_exist)
-
+        self.assertTrue(me_page.check_element_name_photo_exist())
