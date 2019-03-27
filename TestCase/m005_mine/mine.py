@@ -358,5 +358,5 @@ class MineTest(TestCase):
         self.assertTrue(me_page.is_text_exist('我的二维码'))
         self.assertTrue(me_page.is_text_exist('密友圈扫描二维码，添加我为密友'))
         self.assertTrue(me_page.check_qr_code_exist())
-        self.assertTrue(me_page.check_element_name_photo_exist)
+        # self.assertTrue(me_page.check_element_name_photo_exist)
 
