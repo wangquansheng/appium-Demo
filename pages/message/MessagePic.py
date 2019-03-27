@@ -14,7 +14,7 @@ class MessagePicPage(BasePage):
         '返回': (MobileBy.XPATH, '//*[@content-desc="转到上一层级"]'),
         '选择图片': (MobileBy.XPATH, '//*[@text="选择图片"]'),
         '所用图片': (MobileBy.XPATH,
-                 "//*[@resource-id='com.cmic.college:id/iv_select']/../android.widget.ImageView[not(contains(@resource-id,'com.cmic.college:id/iv_video_icon'))]"),
+                 "//*[@resource-id='com.cmic.college:id/iv_select']/../android.widget.ImageView[2][not(contains(@resource-id,'com.cmic.college:id/iv_video_icon'))]"),
         '所用视频': (MobileBy.XPATH,
                  "//*[@resource-id='com.cmic.college:id/iv_video_icon']/../android.widget.ImageView[@resource-id='com.cmic.college:id/iv_select']"),
         '勾选': (MobileBy.ID, 'com.cmic.college:id/iv_select'),

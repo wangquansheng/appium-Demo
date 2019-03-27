@@ -174,6 +174,37 @@ class Preconditions(object):
 class MessageTest(TestCase):
     """Message 模块"""
 
+    # @staticmethod
+    # def setUp_test_message_0001():
+    #     Preconditions.select_mobile('Android-移动')
+    #     current_mobile().hide_keyboard_if_display()
+    #     Preconditions.make_already_in_message_chart_page()
+    #
+    # @tags('ALL', 'SMOKE', 'CMCC')
+    # def test_message_0001(self):
+    #     """ 本网正常网络首次登录4G-登录响应"""
+    #     mep = MessagePage()
+    #     mep.wait_for_page_chart_message()
+    #     # 1.长按“录制语音”icon,是否有取消按钮
+    #     mep.click_record_audio()
+    #     mep.long_click_record_audio()
+    #     mep.is_exist_cancel_audio()
+    #
+    # @staticmethod
+    # def setUp_test_message_0002():
+    #     Preconditions.select_mobile('Android-移动')
+    #     current_mobile().hide_keyboard_if_display()
+    #     Preconditions.make_already_in_message_chart_page()
+    #
+    # @tags('ALL', 'SMOKE', 'CMCC')
+    # def test_message_0002(self):
+    #     """ 取消录制语音消息"""
+    #     mep = MessagePage()
+    #     mep.wait_for_page_chart_message()
+    #     # 1.长按“录制语音”icon,是否有取消按钮
+    #     mep.click_record_audio()
+    #     mep.press_and_move_to_el("开始录音", "取消录音")
+
     @staticmethod
     def setUp_test_message_0003():
         Preconditions.select_mobile('Android-移动')
@@ -189,37 +220,6 @@ class MessageTest(TestCase):
         mep.click_record_audio()
         mep.long_click_record_audio()
         time.sleep(5)
-
-    @staticmethod
-    def setUp_test_message_0001():
-        Preconditions.select_mobile('Android-移动')
-        current_mobile().hide_keyboard_if_display()
-        Preconditions.make_already_in_message_chart_page()
-
-    @tags('ALL', 'SMOKE', 'CMCC')
-    def test_message_0001(self):
-        """ 本网正常网络首次登录4G-登录响应"""
-        mep = MessagePage()
-        mep.wait_for_page_chart_message()
-        # 1.长按“录制语音”icon,是否有取消按钮
-        mep.click_record_audio()
-        mep.long_click_record_audio()
-        mep.is_exist_cancel_audio()
-
-    @staticmethod
-    def setUp_test_message_0002():
-        Preconditions.select_mobile('Android-移动')
-        current_mobile().hide_keyboard_if_display()
-        Preconditions.make_already_in_message_chart_page()
-
-    @tags('ALL', 'SMOKE', 'CMCC')
-    def test_message_0002(self):
-        """ 取消录制语音消息"""
-        mep = MessagePage()
-        mep.wait_for_page_chart_message()
-        # 1.长按“录制语音”icon,是否有取消按钮
-        mep.click_record_audio()
-        mep.press_and_move_to_el("开始录音", "取消录音")
 
     @staticmethod
     def setUp_test_message_0004():
@@ -283,6 +283,6 @@ class MessageTest(TestCase):
         flag = mpp.get_pic_send_info()
         self.assertIsNotNone(re.match(r'发送\(2/9\)', flag))
         mpp.select_pic(2)
-        mpp.select_pic(10)
+        mpp.select_pic(13)
         self.assertEquals(mpp.is_toast_exist("最多只能选择9张照片"), True)
         # c 最多可勾选9张图片
