@@ -53,6 +53,13 @@ class MessagePage(FooterPage):
             return True
         return False
 
+    @TestLogger.log('是否在消息页面')
+    def is_on_this_chart_page(self):
+        el = self.get_elements(self.__locators["聊天标志"])
+        if len(el) > 0:
+            return True
+        return False
+
     @TestLogger.log('等待聊天消息页面自动跳转')
     def wait_for_page_chart_message(self, timeout=20):
         try:

@@ -530,3 +530,4 @@ class BasePage(object):
     def page_down(self):
         """向下滑动"""
         self.swipe_by_percent_on_screen(50, 30, 50, 70, 800)
+

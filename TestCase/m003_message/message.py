@@ -159,16 +159,44 @@ class Preconditions(object):
         1.已登录客户端
         2.当前在消息会话页面
         """
-        Preconditions.make_already_in_call_page()
-        call = CallPage()
-        call.open_message_page()
+        """确保应用在消息页面"""
+        # 如果在消息页，不做任何操作
+        call_page = CallPage()
         mep = MessagePage()
-        mep.wait_for_page_message()
+        if mep.is_on_this_chart_page():
+            return
+        if mep.is_on_this_page():
+            mep.click_add()
+            mep.click_add_message()
+            nmp = NewMessagePage()
+            nmp.wait_for_page_new_message()
+            nmp.click_contact_one()
+            return
+        if call_page.is_on_this_page():
+            call_page.open_message_page()
+            mep.click_add()
+            mep.click_add_message()
+            nmp = NewMessagePage()
+            nmp.wait_for_page_new_message()
+            nmp.click_contact_one()
+            return
+        # 进入一键登录页
+        call_page.open_message_page()
         mep.click_add()
         mep.click_add_message()
         nmp = NewMessagePage()
         nmp.wait_for_page_new_message()
         nmp.click_contact_one()
+        # Preconditions.make_already_in_call_page()
+        # call = CallPage()
+        # call.open_message_page()
+        # mep = MessagePage()
+        # mep.wait_for_page_message()
+        # mep.click_add()
+        # mep.click_add_message()
+        # nmp = NewMessagePage()
+        # nmp.wait_for_page_new_message()
+        # nmp.click_contact_one()
 
 
 class MessageTest(TestCase):
@@ -283,6 +311,38 @@ class MessageTest(TestCase):
         flag = mpp.get_pic_send_info()
         self.assertIsNotNone(re.match(r'发送\(2/9\)', flag))
         mpp.select_pic(2)
-        mpp.select_pic(13)
+        mpp.select_pic(14)
         self.assertEquals(mpp.is_toast_exist("最多只能选择9张照片"), True)
         # c 最多可勾选9张图片
+
+    @staticmethod
+    def setUp_test_message_0007():
+        Preconditions.select_mobile('Android-移动')
+        current_mobile().hide_keyboard_if_display()
+        Preconditions.make_already_in_message_chart_page()
+
+    @tags('ALL', 'SMOKE', 'CMCC')
+    def test_message_0007(self):
+        """ 消息会话-发送相册照片-预览照片页面"""
+        mep = MessagePage()
+        mep.wait_for_page_chart_message()
+        # 1.点击点击图片按钮
+        mep.click_pic()
+        mpp = MessagePicPage()
+        mpp.wait_for_page_select_pic()
+        # 2.a 未勾选时，预览显示置灰；
+        self.assertEquals(mpp.is_click(), False)
+        # b勾选图片，张数显示;
+        mpp.select_pic(2)
+        flag = mpp.get_pic_send_info()
+        self.assertIsNotNone(re.match(r'发送\(2/9\)', flag))
+        mpp.select_pic(2)
+        # c 最多可勾选9张图片
+        mpp.select_pic(14)
+        self.assertEquals(mpp.is_toast_exist("最多只能选择9张照片"), True)
+        # 3.点击预览照片
+        mpp.click_pre_view()
+        time.sleep(32)
+
+
+

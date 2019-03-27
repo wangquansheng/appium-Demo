@@ -80,3 +80,12 @@ class MessagePicPage(BasePage):
     @TestLogger.log('获取按钮是否可点击')
     def is_click(self):
         return self._is_enabled(self.__locators["预览"])
+
+    @TestLogger.log('点击预览')
+    def click_pre_view(self):
+        self.click_element(self.__locators["预览"])
+
+    @TestLogger.log('点击返回')
+    def click_back(self):
+        self.click_element(self.__locators["返回"])
+
