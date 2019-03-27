@@ -12,6 +12,8 @@ from pages.call.CallPage import CallPage
 
 from pages.guide import GuidePage
 from pages.login.LoginPage import OneKeyLoginPage
+from pages.mine.MeEditProfile import MeEditProfilePage
+from pages.mine.mine import MinePage
 
 REQUIRED_MOBILES = {
     'Android-移动': 'M960BDQN229CH',
@@ -91,8 +93,11 @@ class Preconditions(object):
         one_key.click_sure_login()
         # 等待消息页
         gp = GuidePage()
-        gp.click_the_checkbox()
-        gp.click_the_no_start_experience()
+        try:
+            gp.click_the_checkbox()
+            gp.click_the_no_start_experience()
+        except:
+            pass
         cp = CallPage()
         cp.click_contact_tip()
         return login_number
@@ -124,22 +129,27 @@ class Preconditions(object):
         current_mobile().reset_app()
 
     @staticmethod
-    def make_already_in_call_page(reset_required=False):
+    def make_already_in_call_page():
         """
         前置条件：
         1.已登录客户端
         2.当前在消息页面
         """
-        if not reset_required:
-            call_page = CallPage()
-            if call_page.is_on_this_page():
-                return
-            else:
-                try:
-                    current_mobile().terminate_app('com.cmic.college', timeout=2000)
-                except:
-                    pass
-                current_mobile().launch_app()
+        # 如果当前页面是在通话录页，不做任何操作
+        call_page = CallPage()
+        if call_page.is_on_this_page():
+            return
+        # 如果当前页面已经是一键登录页，进行一键登录页面
+        one_key = OneKeyLoginPage()
+        if one_key.is_on_this_page():
+            Preconditions.login_by_one_key_login()
+        # 如果当前页不是引导页第一页，重新启动app
+        else:
+            try:
+                current_mobile().terminate_app('com.cmic.college', timeout=2000)
+            except:
+                pass
+            current_mobile().launch_app()
             try:
                 call_page.wait_until(
                     condition=lambda d: call_page.is_on_this_page(),
@@ -148,11 +158,31 @@ class Preconditions(object):
                 return
             except TimeoutException:
                 pass
-        Preconditions.reset_and_relaunch_app()
-        Preconditions.make_already_in_one_key_login_page()
-        login_num = Preconditions.login_by_one_key_login()
-        return login_num
+            Preconditions.reset_and_relaunch_app()
+            Preconditions.make_already_in_one_key_login_page()
+            Preconditions.login_by_one_key_login()
 
+    @staticmethod
+    def make_already_in_me_page():
+        """确保应用在消息页面"""
+        # 如果在消息页，不做任何操作
+        call_page = CallPage()
+        me_page = MinePage()
+        if me_page.is_on_this_page():
+            return
+        if call_page.is_on_this_page():
+            call_page.open_me_page()
+            me_page.is_on_this_page()
+            return
+        # 进入一键登录页
+        Preconditions.make_already_in_call_page()
+        call_page.open_me_page()
+
+    @staticmethod
+    def make_already_in_me_profilePage():
+        Preconditions.make_already_in_me_page()
+        me_page = MinePage()
+        me_page.click_personal_photo()
 
 class MineTest(TestCase):
     """Mine 模块"""
@@ -161,13 +191,172 @@ class MineTest(TestCase):
     def setUp_test_me_0001():
         Preconditions.select_mobile('Android-移动')
         current_mobile().hide_keyboard_if_display()
-        Preconditions.make_already_in_call_page()
+        Preconditions.make_already_in_me_page()
 
     @tags('ALL', 'SMOKE', 'CMCC')
     def test_me_0001(self):
-        """ 本网正常网络首次登录4G-登录响应"""
-        call_page = CallPage()
-        call_page.open_me_page()
+        """资料页面的字段可显示并且可以编辑"""
+        me_page = MinePage()
+        self.assertEqual(me_page.is_on_this_page(), True)
+        me_page.click_personal_photo()
+        meEdit_page = MeEditProfilePage()
+        time.sleep(2)
+        self.assertEqual(meEdit_page.is_text_exist("昵称"), True)
+        self.assertEqual(meEdit_page.is_text_exist("性别"), True)
+        self.assertEqual(meEdit_page.is_text_exist("年龄"), True)
+        self.assertEqual(meEdit_page.is_text_exist("我的标签"), True)
+        self.assertEqual(meEdit_page.is_text_exist("职业"), True)
+        meEdit_page.click_profile_photo()
+        meEdit_page.click_photo_back()
+        time.sleep(2)
+        self.assertEqual(meEdit_page.element_is_clickable("电话"), False)
+        self.assertEqual(meEdit_page.element_is_clickable("昵称"), True)
+        self.assertEqual(meEdit_page.element_is_clickable("性别"), True)
+        self.assertEqual(meEdit_page.element_is_clickable("年龄"), True)
+        self.assertEqual(meEdit_page.element_is_clickable("我的标签"), True)
+        self.assertEqual(meEdit_page.element_is_clickable("职业"), True)
 
+    @staticmethod
+    def setUp_test_me_0002():
+        Preconditions.select_mobile('Android-移动')
+        current_mobile().hide_keyboard_if_display()
+        Preconditions.make_already_in_me_page()
 
+    @tags('ALL', 'SMOKE', 'CMCC')
+    def test_me_0002(self):
+        """编辑资料页面里面点击头像"""
+        me_page = MinePage()
+        self.assertEqual(me_page.is_on_this_page(), True)
+        me_page.click_personal_photo()
+        meEdit_page = MeEditProfilePage()
+        meEdit_page.click_profile_photo()
+        meEdit_page.click_photo_more()
+        time.sleep(2)
+        meEdit_page.element_is_clickable('从手机相册选择')
+        meEdit_page.element_is_clickable('保存到手机')
+
+    @staticmethod
+    def setUp_test_me_0003():
+        Preconditions.select_mobile('Android-移动')
+        current_mobile().hide_keyboard_if_display()
+        Preconditions.make_already_in_me_page()
+
+    @tags('ALL', 'SMOKE', 'CMCC')
+    def test_me_0003(self):
+        """编辑资料页面昵称里面输入sql语句"""
+        me_page = MinePage()
+        self.assertEqual(me_page.is_on_this_page(), True)
+        me_page.click_personal_photo()
+        meEdit_page = MeEditProfilePage()
+        meEdit_page.input_profile_name('昵称', 'select * from')
+        meEdit_page.click_save()
+
+    @staticmethod
+    def setUp_test_me_0004():
+        Preconditions.select_mobile('Android-移动')
+        current_mobile().hide_keyboard_if_display()
+        Preconditions.make_already_in_me_page()
+
+    @tags('ALL', 'SMOKE', 'CMCC')
+    def test_me_0004(self):
+        """编辑资料页面昵称里面输入字符串"""
+        me_page = MinePage()
+        self.assertEqual(me_page.is_on_this_page(), True)
+        me_page.click_personal_photo()
+        meEdit_page = MeEditProfilePage()
+        meEdit_page.input_profile_name('昵称', r"<>'\"&\n\r")
+        time.sleep(5)
+        meEdit_page.click_save()
+        time.sleep(3)
+
+    @staticmethod
+    def setUp_test_me_0005():
+        Preconditions.select_mobile('Android-移动')
+        current_mobile().hide_keyboard_if_display()
+        Preconditions.make_already_in_me_page()
+
+    @tags('ALL', 'SMOKE', 'CMCC')
+    def test_me_0005(self):
+        """编辑资料页面昵称里面输入数字"""
+        me_page = MinePage()
+        self.assertEqual(me_page.is_on_this_page(), True)
+        me_page.click_personal_photo()
+        meEdit_page = MeEditProfilePage()
+        meEdit_page.input_profile_name('昵称', '4135435')
+        meEdit_page.click_save()
+        time.sleep(3)
+
+    @staticmethod
+    def setUp_test_me_0006():
+        Preconditions.select_mobile('Android-移动')
+        current_mobile().hide_keyboard_if_display()
+        Preconditions.make_already_in_me_profilePage()
+
+    @tags('ALL', 'SMOKE', 'CMCC')
+    def test_me_0006(self):
+        """点击性别选项选择性别"""
+        me_edit_page = MeEditProfilePage()
+        me_edit_page.click_locator_key('性别')
+        me_edit_page.click_locator_key('性别_男')
+        me_edit_page.click_locator_key('保存')
+
+    @tags('ALL', 'SMOKE', 'CMCC')
+    def setUp_test_me_0007(self):
+        Preconditions.select_mobile('Android-移动')
+        current_mobile().hide_keyboard_if_display()
+        Preconditions.make_already_in_me_profilePage()
+
+    def test_me_0007(self):
+        """编辑年龄选项选择年龄"""
+        me_edit_page = MeEditProfilePage()
+        me_edit_page.click_locator_key('年龄')
+        me_edit_page.click_locator_key('年龄_90后')
+        me_edit_page.click_locator_key('保存')
+
+    @tags('ALL', 'SMOKE', 'CMCC')
+    def setUp_test_me_0008(self):
+        Preconditions.select_mobile('Android-移动')
+        current_mobile().hide_keyboard_if_display()
+        Preconditions.make_already_in_me_profilePage()
+
+    def test_me_0008(self):
+        """编辑标签选项选择标签"""
+        me_edit_page = MeEditProfilePage()
+        me_edit_page.click_locator_key('我的标签')
+        time.sleep(2)
+        me_edit_page.click_locator_key('添加个性标签')
+        me_edit_page.click_locator_key('标签取消')
+        for i in range(6):
+            me_edit_page.click_tag_index('标签', i)
+        self.assertTrue(me_edit_page.check_text_exist('最多选择5个标签来形容自己'))
+
+    @tags('ALL', 'SMOKE', 'CMCC')
+    def setUp_test_me_0009(self):
+        Preconditions.select_mobile('Android-移动')
+        current_mobile().hide_keyboard_if_display()
+        Preconditions.make_already_in_me_profilePage()
+
+    def test_me_0009(self):
+        """编辑职业选项选择职业"""
+        me_edit_page = MeEditProfilePage()
+        me_edit_page.click_locator_key('职业')
+        me_edit_page.click_locator_key('职业_计算机')
+        me_edit_page.click_locator_key('保存')
+
+    @tags('ALL', 'SMOKE', 'CMCC')
+    def setUp_test_me_0010(self):
+        Preconditions.select_mobile('Android-移动')
+        current_mobile().hide_keyboard_if_display()
+        Preconditions.make_already_in_me_page()
+
+    def test_me_0010(self):
+        """查看我的二维码页面显示"""
+        me_page = MinePage()
+        me_page.click_locator_key('我的二维码')
+        self.assertTrue(me_page.element_is_clickable('二维码_转到上一层级'))
+        self.assertTrue(me_page.element_is_clickable('二维码_更多'))
+        self.assertTrue(me_page.is_text_exist('我的二维码'))
+        self.assertTrue(me_page.is_text_exist('密友圈扫描二维码，添加我为密友'))
+        self.assertTrue(me_page.check_qr_code_exist())
+        self.assertTrue(me_page.check_element_name_photo_exist)
 

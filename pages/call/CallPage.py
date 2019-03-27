@@ -15,6 +15,18 @@ class CallPage(FooterPage):
         'tip3': (MobileBy.ID, 'com.cmic.college:id/tvContact'),
         '视频': (MobileBy.ID, 'com.cmic.college:id/ivMultipartyCall'),
 
+        '呼叫': (MobileBy.ID, 'com.cmic.college:id/tv_sure'),
+        '视频通话_第一个联系人': (MobileBy.XPATH, '/hierarchy/android.widget.FrameLayout/android.widget.LinearLayout/android.widget.FrameLayout/android.widget.LinearLayout/android.widget.FrameLayout/android.widget.LinearLayout/android.widget.FrameLayout/android.widget.LinearLayout/android.widget.LinearLayout/android.widget.RelativeLayout/android.widget.ListView/android.widget.LinearLayout[1]/android.widget.RelativeLayout'),
+        '视频通话_第二个联系人': (MobileBy.XPATH, '/hierarchy/android.widget.FrameLayout/android.widget.LinearLayout/android.widget.FrameLayout/android.widget.LinearLayout/android.widget.FrameLayout/android.widget.LinearLayout/android.widget.FrameLayout/android.widget.LinearLayout/android.widget.LinearLayout/android.widget.RelativeLayout/android.widget.ListView/android.widget.LinearLayout[1]/android.widget.RelativeLayout'),
+
+        '删除_一条通话记录': (MobileBy.XPATH, '/hierarchy/android.widget.FrameLayout/android.widget.FrameLayout/android.widget.FrameLayout/android.widget.LinearLayout/android.support.v7.widget.RecyclerView/android.widget.LinearLayout[1]'),
+        '删除_全部通话记录': (MobileBy.XPATH, '/hierarchy/android.widget.FrameLayout/android.widget.FrameLayout/android.widget.FrameLayout/android.widget.LinearLayout/android.support.v7.widget.RecyclerView/android.widget.LinearLayout[2]'),
+
+        '联系人_详情图标': (MobileBy.XPATH, '/hierarchy/android.widget.FrameLayout/android.widget.LinearLayout/android.widget.FrameLayout/android.widget.LinearLayout/android.widget.FrameLayout/android.widget.RelativeLayout/android.widget.LinearLayout/android.view.ViewGroup/android.support.v4.view.ViewPager/android.widget.FrameLayout/android.view.ViewGroup/android.support.v7.widget.RecyclerView/android.view.ViewGroup[1]/android.widget.ImageView[2]'),
+        '详情_视频按钮':  (MobileBy.ID, 'com.cmic.college:id/tvVideoCall'),
+        '详情_信息按钮':  (MobileBy.ID, 'com.cmic.college:id/tvSendMessage'),
+        '点击返回': (MobileBy.ID, 'com.cmic.college:id/ivBack'),
+        '通话类型标签': (MobileBy.ID, 'com.cmic.college:id/tvCallManner'),
     }
 
     @TestLogger.log('点击通话引导页')
@@ -36,3 +48,17 @@ class CallPage(FooterPage):
         if len(el) > 0:
             return True
         return False
+
+    @TestLogger.log("点击locators对应的元素")
+    def click_locator_key(self, locator):
+        self.click_element(self.__locators[locator])
+
+    @TestLogger.log("当前页面是否包含此文本")
+    def check_text_exist(self, text):
+        """当前页面是否包含此文本"""
+        return self.is_text_present(text)
+
+    @TestLogger.log("点击包含文本的元素")
+    def click_by_text(self, text):
+        """当前页面是否包含此文本"""
+        return self.click_text(text)
