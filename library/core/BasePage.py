@@ -478,9 +478,9 @@ class BasePage(object):
         """隐藏键盘"""
         self.mobile.hide_keyboard(key_name, key, strategy)
 
-    def press(self, el, times=3000):
+    def press(self, el, times=3000, wait_time=1):
         """按压操作"""
-        TouchAction(self.driver).long_press(el, duration=times).wait(1).perform()
+        TouchAction(self.driver).long_press(el, duration=times).wait(wait_time).perform()
 
     @TestLogger.log('获取元素指定坐标颜色')
     def get_coordinate_color_of_element(self, element, x, y, by_percent=False, mode='RGBA') -> tuple:
@@ -519,7 +519,7 @@ class BasePage(object):
     @TestLogger.log("点击返回")
     def click_back(self):
         """点击返回"""
-        self.click_element((MobileBy.XPATH, "//*[contains(@resource-id, 'back')]"))
+        self.click_element((MobileBy.XPATH, "//*[contains(@resource-id, 'back')], 10"))
 
     @TestLogger.log("下一页")
     def page_up(self):

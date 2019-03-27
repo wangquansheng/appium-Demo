@@ -13,27 +13,27 @@ TARGET_APP = dict(
 
 # ======================= 移动CI环境手机配置 =======================
 AVAILABLE_DEVICES = {
-    'M960BDQN229CH--': {
+    'M960BDQN229CH': {
         "MODEL": SupportedModel.HUAWEI_P20,
-        "SERVER_URL": 'http://221.176.34.113:5000/wd/hub',
+        "SERVER_URL": 'http://192.168.200.111:4723/wd/hub',
         "DEFAULT_CAPABILITY": {
             "platformName": "Android",
-            "platformVersion": "6.0",
-            "deviceName": "8DF6R17526001515",
-            "udid": "8DF6R17526001515",
+            "platformVersion": "8.1.0",
+            "deviceName": "DRB5T18721004015",
+            "udid": "DRB5T18721004015",
             "automationName": "UiAutomator2",
             "newCommandTimeout": 600,
-            "appPackage": "com.chinasofti.rcs",
+            "appPackage": "com.cmic.college",
             "appActivity": "com.cmcc.cmrcs.android.ui.activities.WelcomeActivity",
         },
         'CARDS': [
             {
                 'TYPE': CardType.CHINA_MOBILE,
-                'CARD_NUMBER': '14775970982'
+                'CARD_NUMBER': '19876463626'
             },
         ]
     },
-    'M960BDQN229CH': {
+    'M960BDQN229CH--': {
         "MODEL": SupportedModel.MEIZU_PRO_6_PLUS,
         "SERVER_URL": 'http://192.168.200.130:4723/wd/hub',
         "DEFAULT_CAPABILITY": {
