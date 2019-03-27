@@ -99,7 +99,7 @@ class MinePage(FooterPage):
     def check_element_name_photo_exist(self):
         """当前页面元素是否存在"""
         el1 = self.get_elements((MobileBy.ID, 'com.cmic.college:id/twodimensioncode_myprofile_icon'))
-        el2 = self.get_element((MobileBy.ID, 'com.cmic.college:id/twodimension_name_text'))
+        el2 = self.get_elements((MobileBy.ID, 'com.cmic.college:id/twodimension_name_text'))
         if len(el1) > 0 and len(el2)>0:
             return True
         return False
