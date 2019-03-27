@@ -1,13 +1,14 @@
 from appium.webdriver.common.mobileby import MobileBy
 from library.core.BasePage import BasePage
 from library.core.TestLogger import TestLogger
+import uuid
 
 
 class MeEditProfilePage(BasePage):
     """我-》查看个人资料"""
     ACTIVITY = 'com.cmicc.module_aboutme.ui.activity.UserProfileShowActivity'
 
-    __locators = { '': (MobileBy.ID, ''),
+    __locators = {'': (MobileBy.ID, ''),
                   '个人头像': (MobileBy.ID, 'com.cmic.college:id/profile_photo'),
                   '电话': (MobileBy.ID, 'com.cmic.college:id/phone'),
                   '昵称': (MobileBy.ID, 'com.cmic.college:id/name'),
@@ -23,14 +24,22 @@ class MeEditProfilePage(BasePage):
 
                   '头像更多': (MobileBy.ID, 'com.cmic.college:id/action_more'),
                   '头像页面返回': (MobileBy.XPATH, '//android.widget.ImageButton[@content-desc="转到上一层级"]'),
-                  '从手机相册选择': (MobileBy.XPATH, '/hierarchy/android.widget.FrameLayout/android.widget.FrameLayout/android.widget.FrameLayout/android.widget.RelativeLayout/android.widget.ListView/android.widget.LinearLayout[1]'),
-                  '保存到手机': (MobileBy.XPATH, '/hierarchy/android.widget.FrameLayout/android.widget.FrameLayout/android.widget.FrameLayout/android.widget.RelativeLayout/android.widget.ListView/android.widget.LinearLayout[2]'),
+                  '从手机相册选择': (MobileBy.XPATH,
+                              '/hierarchy/android.widget.FrameLayout/android.widget.FrameLayout/android.widget.FrameLayout/android.widget.RelativeLayout/android.widget.ListView/android.widget.LinearLayout[1]'),
+                  '保存到手机': (MobileBy.XPATH,
+                            '/hierarchy/android.widget.FrameLayout/android.widget.FrameLayout/android.widget.FrameLayout/android.widget.RelativeLayout/android.widget.ListView/android.widget.LinearLayout[2]'),
 
-                  '性别_男': (MobileBy.XPATH, '/hierarchy/android.widget.FrameLayout/android.widget.FrameLayout/android.widget.FrameLayout/android.widget.LinearLayout/android.support.v7.widget.RecyclerView/android.widget.LinearLayout[1]'),
-                  '年龄_90后': (MobileBy.XPATH, '/hierarchy/android.widget.FrameLayout/android.widget.FrameLayout/android.widget.FrameLayout/android.widget.RelativeLayout/android.support.v7.widget.RecyclerView/android.widget.LinearLayout[3]/android.widget.TextView'),
-                  '职业_计算机': (MobileBy.XPATH, '/hierarchy/android.widget.FrameLayout/android.widget.LinearLayout/android.widget.FrameLayout/android.widget.LinearLayout/android.widget.FrameLayout/android.view.ViewGroup/android.support.v7.widget.RecyclerView/android.view.ViewGroup[1]'),
-                  '标签': [(MobileBy.XPATH, '/hierarchy/android.widget.FrameLayout/android.widget.LinearLayout/android.widget.FrameLayout/android.widget.LinearLayout/android.widget.FrameLayout/android.view.ViewGroup/android.support.v7.widget.RecyclerView/android.view.ViewGroup[{}]'.format(i)) for _ in range(5) for i in range(2,8)],
-                  '添加个性标签': (MobileBy.XPATH, '/hierarchy/android.widget.FrameLayout/android.widget.LinearLayout/android.widget.FrameLayout/android.widget.LinearLayout/android.widget.FrameLayout/android.view.ViewGroup/android.support.v7.widget.RecyclerView/android.view.ViewGroup[1]'),
+                  '性别_男': (MobileBy.XPATH,
+                           '/hierarchy/android.widget.FrameLayout/android.widget.FrameLayout/android.widget.FrameLayout/android.widget.LinearLayout/android.support.v7.widget.RecyclerView/android.widget.LinearLayout[1]'),
+                  '年龄_90后': (MobileBy.XPATH,
+                             '/hierarchy/android.widget.FrameLayout/android.widget.FrameLayout/android.widget.FrameLayout/android.widget.RelativeLayout/android.support.v7.widget.RecyclerView/android.widget.LinearLayout[3]/android.widget.TextView'),
+                  '职业_计算机': (MobileBy.XPATH,
+                             '/hierarchy/android.widget.FrameLayout/android.widget.LinearLayout/android.widget.FrameLayout/android.widget.LinearLayout/android.widget.FrameLayout/android.view.ViewGroup/android.support.v7.widget.RecyclerView/android.view.ViewGroup[1]'),
+                  '标签': [(MobileBy.XPATH,
+                          '/hierarchy/android.widget.FrameLayout/android.widget.LinearLayout/android.widget.FrameLayout/android.widget.LinearLayout/android.widget.FrameLayout/android.view.ViewGroup/android.support.v7.widget.RecyclerView/android.view.ViewGroup[{}]'.format(
+                              i)) for _ in range(5) for i in range(2, 8)],
+                  '添加个性标签': (MobileBy.XPATH,
+                             '/hierarchy/android.widget.FrameLayout/android.widget.LinearLayout/android.widget.FrameLayout/android.widget.LinearLayout/android.widget.FrameLayout/android.view.ViewGroup/android.support.v7.widget.RecyclerView/android.view.ViewGroup[1]'),
                   '标签取消': (MobileBy.ID, 'com.cmic.college:id/btnCancel'),
                   }
 
@@ -82,3 +91,11 @@ class MeEditProfilePage(BasePage):
     @TestLogger.log("校验text提示内容")
     def check_text_exist(self, text):
         return self.is_toast_exist(text)
+
+    @TestLogger.log("输入随机昵称")
+    def input_random_name(self):
+        """当前页面元素是否存在"""
+        uid = str(uuid.uuid4())
+        suid = ''.join(uid.split('-'))
+        name = suid[:15]
+        self.input_profile_name('昵称', name)
