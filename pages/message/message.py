@@ -104,3 +104,11 @@ class MessagePage(FooterPage):
     @TestLogger.log('点击选择照片')
     def click_pic(self):
         self.click_element(self.__locators['选择照片'])
+
+    @TestLogger.log('点击选择文件')
+    def click_file(self):
+        self.click_element(self.__locators['选择文件'])
+
+    @TestLogger.log('点击发起群聊')
+    def click_group_chart(self):
+        self.click_element(self.__locators['发起群聊'])

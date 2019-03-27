@@ -10,8 +10,12 @@ from pages.call.CallPage import CallPage
 
 from pages.guide import GuidePage
 from pages.login.LoginPage import OneKeyLoginPage
+from pages.message.LocalFiles import LocalFilesPage
 from pages.message.MessagePic import MessagePicPage
+from pages.message.MessagePicPreview import MessagePicPreviewPage
 from pages.message.NewMessage import NewMessagePage
+from pages.message.groupchart.GroupChart import GroupChartPage
+from pages.message.groupchart.GroupChartSetting import GroupChartSettingPage
 from pages.message.message import MessagePage
 
 REQUIRED_MOBILES = {
@@ -153,13 +157,30 @@ class Preconditions(object):
         Preconditions.login_by_one_key_login()
 
     @staticmethod
+    def make_already_in_message_page():
+        """
+        前置条件：
+        1.已登录客户端
+        2.当前在消息页面
+        """
+        """确保应用在消息页面"""
+        # 如果在消息页，不做任何操作
+        call_page = CallPage()
+        mep = MessagePage()
+        if mep.is_on_this_page():
+            return
+        if not call_page.is_on_this_page():
+            current_mobile().launch_app()
+        call_page.open_message_page()
+
+    @staticmethod
     def make_already_in_message_chart_page():
         """
         前置条件：
         1.已登录客户端
         2.当前在消息会话页面
         """
-        """确保应用在消息页面"""
+        """确保应用在消息会话页面"""
         # 如果在消息页，不做任何操作
         call_page = CallPage()
         mep = MessagePage()
@@ -174,19 +195,15 @@ class Preconditions(object):
             return
         if call_page.is_on_this_page():
             call_page.open_message_page()
-            mep.click_add()
-            mep.click_add_message()
-            nmp = NewMessagePage()
-            nmp.wait_for_page_new_message()
-            nmp.click_contact_one()
-            return
-        # 进入一键登录页
-        call_page.open_message_page()
+        if not call_page.is_on_this_page():
+            current_mobile().launch_app()
+            call_page.open_message_page()
         mep.click_add()
         mep.click_add_message()
         nmp = NewMessagePage()
         nmp.wait_for_page_new_message()
         nmp.click_contact_one()
+
         # Preconditions.make_already_in_call_page()
         # call = CallPage()
         # call.open_message_page()
@@ -197,6 +214,28 @@ class Preconditions(object):
         # nmp = NewMessagePage()
         # nmp.wait_for_page_new_message()
         # nmp.click_contact_one()
+
+    @staticmethod
+    def make_already_have_group_chart():
+        """
+        前置条件：
+        1.已登录客户端
+        2.当前在消息会话页面
+        """
+        """确保应用在消息页面"""
+        # 如果在消息页，不做任何操作
+        Preconditions.make_already_in_message_page()
+        mep = MessagePage()
+        mep.click_add()
+        mep.click_group_chart()
+        nmp = NewMessagePage()
+        nmp.wait_for_page_new_message()
+        nmp.click_contact_one(2)
+        nmp.click_text("确定")
+        time.sleep(1)
+        nmp.click_text("确定")
+        gcp = GroupChartPage()
+        gcp.wait_for_page_group_chart()
 
 
 class MessageTest(TestCase):
@@ -239,7 +278,7 @@ class MessageTest(TestCase):
         current_mobile().hide_keyboard_if_display()
         Preconditions.make_already_in_message_chart_page()
 
-    @tags('ALL', 'SMOKE', 'CMCC')
+    @tags('ALL1', 'SMOKE', 'CMCC')
     def test_message_0003(self):
         """ 发送语音消息"""
         mep = MessagePage()
@@ -255,7 +294,7 @@ class MessageTest(TestCase):
         current_mobile().hide_keyboard_if_display()
         Preconditions.make_already_in_message_chart_page()
 
-    @tags('ALL', 'SMOKE', 'CMCC')
+    @tags('ALL1', 'SMOKE', 'CMCC')
     def test_message_0004(self):
         """ 会话界面使用录音功能发送0秒语音"""
         mep = MessagePage()
@@ -273,7 +312,7 @@ class MessageTest(TestCase):
         current_mobile().hide_keyboard_if_display()
         Preconditions.make_already_in_message_chart_page()
 
-    @tags('ALL', 'SMOKE', 'CMCC')
+    @tags('ALL1', 'SMOKE', 'CMCC')
     def test_message_0005(self):
         """ 消息会话-发送相册照片页面显示"""
         mep = MessagePage()
@@ -295,7 +334,7 @@ class MessageTest(TestCase):
         current_mobile().hide_keyboard_if_display()
         Preconditions.make_already_in_message_chart_page()
 
-    @tags('ALL', 'SMOKE', 'CMCC')
+    @tags('ALL1', 'SMOKE', 'CMCC')
     def test_message_0006(self):
         """ 消息会话-发送相册照片页面显示"""
         mep = MessagePage()
@@ -321,7 +360,7 @@ class MessageTest(TestCase):
         current_mobile().hide_keyboard_if_display()
         Preconditions.make_already_in_message_chart_page()
 
-    @tags('ALL', 'SMOKE', 'CMCC')
+    @tags('ALL1', 'SMOKE', 'CMCC')
     def test_message_0007(self):
         """ 消息会话-发送相册照片-预览照片页面"""
         mep = MessagePage()
@@ -342,7 +381,142 @@ class MessageTest(TestCase):
         self.assertEquals(mpp.is_toast_exist("最多只能选择9张照片"), True)
         # 3.点击预览照片
         mpp.click_pre_view()
-        time.sleep(32)
+        mpv = MessagePicPreviewPage()
+        mpv.wait_for_page_preview_pic()
+        time.sleep(5)
+        self.assertEquals(mpv.is_click_send(), True)
+        for i in range(9):
+            mpv.click_select_box()
+            mpv.page_right()
+        self.assertEquals(mpv.is_click_send(), False)
+        # 4.照片左滑
+        mpv.page_right()
+        mpv.wait_for_page_preview_pic()
+        # 5.照片右滑
+        mpv.page_left()
+        mpv.wait_for_page_preview_pic()
 
+    @staticmethod
+    def setUp_test_message_0008():
+        Preconditions.select_mobile('Android-移动')
+        current_mobile().hide_keyboard_if_display()
+        Preconditions.make_already_in_message_chart_page()
 
+    @tags('ALL1', 'SMOKE', 'CMCC')
+    def test_message_0008(self):
+        """ 文件消息-发送文件入口"""
+        mep = MessagePage()
+        mep.wait_for_page_chart_message()
+        # 1.点击点击图片按钮
+        mep.click_file()
+        lfp = LocalFilesPage()
+        lfp.wait_for_page_select_files()
+        menu = {"照片", "音乐", "视频", "本地文件"}
+        lfp.page_contain_ele(menu)
+        lfp.click_select_pic()
+        lfp.wait_for_page_select_send_files()
+        lfp.click_select_pic_file()
+        lfp.click_select_send()
+        time.sleep(2.8)
+        self.assertEquals(mep.is_on_this_chart_page(), True)
 
+    @staticmethod
+    def setUp_test_message_0014():
+        Preconditions.select_mobile('Android-移动')
+        current_mobile().hide_keyboard_if_display()
+        Preconditions.make_already_have_group_chart()
+
+    @tags('ALL1', 'SMOKE', 'CMCC')
+    def test_message_0014(self):
+        """ 群聊设置页新增邀请微信或者QQ 好友进群入口"""
+        # 1.在群聊天设置页面,检查新增邀请微信或者QQ好友进群
+        gcp = GroupChartPage()
+        gcp.wait_for_page_group_chart()
+        gcp.click_setting()
+        gcs = GroupChartSettingPage()
+        gcs.wait_for_page_group_chart_setting()
+        gcs.page_should_contain_text("邀请微信或者QQ好友进群")
+        gcs.click_back()
+
+    def tearDown_test_message_0014(self):
+        gcp = GroupChartPage()
+        gcp.wait_for_page_group_chart()
+        # 进入群聊设置页面点击删除
+        gcp.click_setting()
+        gcp.page_up()
+        gcs = GroupChartSettingPage()
+        gcs.wait_for_page_group_chart_setting()
+        gcs.click_delete_group()
+        # 点击确定，选择一个新群主，再确定
+        gcs.click_delete_group_sure()
+        nmp = NewMessagePage()
+        nmp.wait_for_page_new_message()
+        nmp.click_contact_one(1)
+        gcs.click_delete_group_sure()
+        self.assertEquals(gcs.is_toast_exist("已退出群聊"), True)
+
+    @staticmethod
+    def setUp_test_message_0015():
+        Preconditions.select_mobile('Android-移动')
+        current_mobile().hide_keyboard_if_display()
+        Preconditions.make_already_have_group_chart()
+
+    @tags('ALL1', 'SMOKE', 'CMCC')
+    def test_message_0015(self):
+        """ 点击后弹出群口令的生成弹窗"""
+        # 1.在群聊天设置页面,检查新增邀请微信或者QQ好友进群
+        gcp = GroupChartPage()
+        gcp.wait_for_page_group_chart()
+        gcp.click_setting()
+        gcs = GroupChartSettingPage()
+        gcs.wait_for_page_group_chart_setting()
+        gcs.page_should_contain_text("邀请微信或者QQ好友进群")
+        gcs.click_invite()
+        gcs.wait_for_page_group_chart_setting_share()
+        gcs.page_should_contain_text("分享口令邀请好友进群")
+        gcs.page_should_contain_text("分享口令")
+        gcs.click_not_share()
+        gcs.click_back()
+
+    def tearDown_test_message_0015(self):
+        gcp = GroupChartPage()
+        gcp.wait_for_page_group_chart()
+        # 进入群聊设置页面点击删除
+        gcp.click_setting()
+        gcp.page_up()
+        gcs = GroupChartSettingPage()
+        gcs.wait_for_page_group_chart_setting()
+        gcs.click_delete_group()
+        # 点击确定，选择一个新群主，再确定
+        gcs.click_delete_group_sure()
+        nmp = NewMessagePage()
+        nmp.wait_for_page_new_message()
+        nmp.click_contact_one(1)
+        gcs.click_delete_group_sure()
+        self.assertEquals(gcs.is_toast_exist("已退出群聊"), True)
+
+    @staticmethod
+    def setUp_test_message_0016():
+        Preconditions.select_mobile('Android-移动')
+        current_mobile().hide_keyboard_if_display()
+        Preconditions.make_already_have_group_chart()
+
+    @tags('ALL1', 'SMOKE', 'CMCC')
+    def test_message_0016(self):
+        """ 点击后弹出群口令的生成弹窗"""
+        # 1.在群聊天设置页面,检查群管理入口
+        gcp = GroupChartPage()
+        gcp.wait_for_page_group_chart()
+        gcp.click_setting()
+        gcs = GroupChartSettingPage()
+        gcs.wait_for_page_group_chart_setting()
+        # 2 点击群管理,转让
+        gcs.click_manager_group()
+        gcs.click_transfer_group()
+        # 3选择成员
+        nmp = NewMessagePage()
+        nmp.wait_for_page_new_message()
+        nmp.click_contact_one(1)
+        gcs.click_delete_group_sure()
+        self.assertEquals(nmp.is_toast_exist("已转让"), True)
+        gcs.click_back()

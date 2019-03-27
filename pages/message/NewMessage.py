@@ -18,12 +18,12 @@ class NewMessagePage(FooterPage):
     }
 
     @TestLogger.log('点击通话引导页')
-    def click_contact_one(self):
+    def click_contact_one(self, n=1):
         els = self.get_elements(self.__locators["联系人电话"])
-        if len(els) > 0:
-            els[0].click()
-        else:
+        if n > len(els):
             raise AssertionError("暂无联系人，请添加")
+        for i in range(n):
+            els[i].click()
 
     @TestLogger.log('等待页面自动跳转')
     def wait_for_page_new_message(self, max_wait_time=8):
