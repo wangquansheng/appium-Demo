@@ -21,7 +21,6 @@ class MessagePicPage(BasePage):
         '预览': (MobileBy.ID, 'com.cmic.college:id/tv_preview'),
         '原图': (MobileBy.ID, 'com.cmic.college:id/cb_original_photo'),
         '发送': (MobileBy.ID, 'com.cmic.college:id/button_send'),
-
     }
 
     @TestLogger.log('点击所用视频')

@@ -12,8 +12,10 @@ class GroupChartSettingPage(BasePage):
         '返回': (MobileBy.XPATH, '//*[@content-desc="转到上一层级"]'),
         '聊天设置': (MobileBy.XPATH, '//*[@text="聊天设置"]'),
         '群管理': (MobileBy.XPATH, '//*[@text="群管理"]'),
+        '群二维码': (MobileBy.XPATH, '//*[@text="群二维码"]'),
         '删除并退出': (MobileBy.ID, 'com.cmic.college:id/delete_and_exit'),
         '邀请微信或者QQ好友进群': (MobileBy.ID, 'com.cmic.college:id/rltGroupPassword'),
+        '群成员': (MobileBy.ID, 'com.cmic.college:id/member_count'),
         # 打开群管理入口
         '转让群': (MobileBy.XPATH, '//*[@text="转让群"]'),
         '解散群': (MobileBy.XPATH, '//*[@text="解散群"]'),
@@ -77,3 +79,10 @@ class GroupChartSettingPage(BasePage):
     @TestLogger.log('点击转让群')
     def click_transfer_group(self):
         self.click_element(self.__locators['转让群'])
+
+    @TestLogger.log('点击群成员')
+    def click_group_member(self):
+        self.click_element(self.__locators['群成员'])
+
+    def click_group_code(self):
+        self.click_element(self.__locators['群二维码'])

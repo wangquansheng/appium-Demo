@@ -17,6 +17,7 @@ from pages.message.NewMessage import NewMessagePage
 from pages.message.groupchart.GroupChart import GroupChartPage
 from pages.message.groupchart.GroupChartSetting import GroupChartSettingPage
 from pages.message.message import MessagePage
+from pages.mine.GroupCode import GroupCodePage
 
 REQUIRED_MOBILES = {
     'Android-移动': 'M960BDQN229CH',
@@ -421,6 +422,69 @@ class MessageTest(TestCase):
         self.assertEquals(mep.is_on_this_chart_page(), True)
 
     @staticmethod
+    def setUp_test_message_0011():
+        Preconditions.select_mobile('Android-移动')
+        current_mobile().hide_keyboard_if_display()
+        Preconditions.make_already_have_group_chart()
+
+    @tags('ALL1', 'SMOKE', 'CMCC')
+    def test_message_0011(self):
+        """ 群聊设置页新增邀请微信或者QQ 好友进群入口"""
+        # 0.在群聊天设置页面，进入群管理员页面页面
+        gcp = GroupChartPage()
+        gcp.wait_for_page_group_chart()
+        gcp.click_setting()
+        gcs = GroupChartSettingPage()
+        gcs.wait_for_page_group_chart_setting()
+        gcs.click_group_member()
+        nmp = NewMessagePage()
+        # 1.在群聊管理员页面长按，点击批量删除,该群成员处于选中状态，顶端右侧显示“删除”按钮
+        time.sleep(1.8)
+        nmp.press_long()
+        nmp.click_delete_member()
+        nmp.wait_for_page_delete_member()
+        self.assertEquals(nmp.get_delete_button(), True)
+        self.assertEquals(nmp.page_contain_ele(), True)
+        name = nmp.get_contact_one()
+        nmp.click_contact_one(1)
+        time.sleep(1.5)
+        self.assertEquals(nmp.page_contain_ele(), False)
+        self.assertEquals(nmp.get_delete_button(), False)
+        nmp.click_contact_one(1)
+        # 2.点击删除,等待确定弹框提示
+        nmp.click_delete_button()
+        nmp.wait_for_page_delete_member_again()
+        # 3.点击取消
+        nmp.click_delete_member_cancel()
+        nmp.wait_for_page_delete_member()
+        # 4.重复1-2步骤，选择删除
+        nmp.click_delete_button()
+        nmp.click_delete_member_sure()
+        time.sleep(2)
+        nmp.page_should_not_contain_text(name)
+        nmp.click_back()
+        nmp.click_back()
+        gcp.wait_for_page_group_chart()
+        gcp.page_should_contain_text(name + "被移除群")
+
+    def tearDown_test_message_0011(self):
+        gcp = GroupChartPage()
+        gcp.wait_for_page_group_chart()
+        # 进入群聊设置页面点击删除
+        gcp.click_setting()
+        gcp.page_up()
+        gcs = GroupChartSettingPage()
+        gcs.wait_for_page_group_chart_setting()
+        gcs.click_delete_group()
+        # 点击确定，选择一个新群主，再确定
+        gcs.click_delete_group_sure()
+        nmp = NewMessagePage()
+        nmp.wait_for_page_new_message()
+        nmp.click_contact_one(1)
+        gcs.click_delete_group_sure()
+        self.assertEquals(gcs.is_toast_exist("已退出群聊"), True)
+
+    @staticmethod
     def setUp_test_message_0014():
         Preconditions.select_mobile('Android-移动')
         current_mobile().hide_keyboard_if_display()
@@ -503,7 +567,7 @@ class MessageTest(TestCase):
 
     @tags('ALL1', 'SMOKE', 'CMCC')
     def test_message_0016(self):
-        """ 点击后弹出群口令的生成弹窗"""
+        """ 群管理入口-群主"""
         # 1.在群聊天设置页面,检查群管理入口
         gcp = GroupChartPage()
         gcp.wait_for_page_group_chart()
@@ -520,3 +584,42 @@ class MessageTest(TestCase):
         gcs.click_delete_group_sure()
         self.assertEquals(nmp.is_toast_exist("已转让"), True)
         gcs.click_back()
+
+    @staticmethod
+    def setUp_test_message_0017():
+        Preconditions.select_mobile('Android-移动')
+        current_mobile().hide_keyboard_if_display()
+        Preconditions.make_already_have_group_chart()
+
+    @tags('ALL1', 'SMOKE', 'CMCC')
+    def test_message_0017(self):
+        """ 查看“群二维码”页面显示"""
+        # 1.在群聊天设置页面,检查群管理入口
+        gcp = GroupChartPage()
+        gcp.wait_for_page_group_chart()
+        gcp.click_setting()
+        gcs = GroupChartSettingPage()
+        gcs.wait_for_page_group_chart_setting()
+        # 2 点击群管理,转让
+        gcs.click_group_code()
+        gcp = GroupCodePage()
+        gcp.wait_for_page_group_code()
+        menu = {"返回", "群二维码", "群头像", "群名称", "群二维码内容"}
+        gcp.page_contain_ele(menu)
+        gcp.page_should_contain_text("密友圈扫描二维码，加入群聊")
+        gcp.click_back()
+        gcp.click_back()
+
+    def tearDown_test_message_0017(self):
+        gcp = GroupChartPage()
+        gcp.wait_for_page_group_chart()
+        # 进入群聊设置页面点击群管理
+        gcp.click_setting()
+        gcs = GroupChartSettingPage()
+        gcs.wait_for_page_group_chart_setting()
+        gcs.click_text("群管理")
+        time.sleep(0.8)
+        gcs.click_text("解散群")
+        time.sleep(0.8)
+        gcs.click_text("确定")
+        self.assertEquals(gcs.is_toast_exist("已解散群"), True)

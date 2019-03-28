@@ -91,7 +91,7 @@ class Preconditions(object):
         # 如果当前页不是引导页第一页，重新启动app
         guide_page = GuidePage()
         if not guide_page.is_on_the_first_guide_page():
-            current_mobile().launch_app()
+            current_mobile().reset_app()
             guide_page.wait_for_page_load(20)
 
         # 跳过引导页
@@ -116,9 +116,11 @@ class Preconditions(object):
         # 等待消息页
         gp = GuidePage()
         try:
-            gp.click_the_checkbox()
-            gp.click_the_no_start_experience()
+            gp.click_cancel_update()
+            # gp.click_the_checkbox()
+            # gp.click_the_no_start_experience()
         except:
+            gp.click_text("暂不升级")
             pass
         cp = CallPage()
         cp.click_contact_tip()
@@ -206,7 +208,7 @@ class LoginTest(TestCase):
 
     @tags('ALL', 'SMOKE', 'CMCC')
     def test_login_0002(self):
-        """ 本网正常网络首次登录4G-登录响应"""
+        """ 本网正常网络首次登录4G-登录响应成功"""
         # 1.点击一键登录
         one_key = OneKeyLoginPage()
         one_key.wait_for_tell_number_load(60)
@@ -215,9 +217,11 @@ class LoginTest(TestCase):
         # 等待消息页
         gp = GuidePage()
         try:
-            gp.click_the_checkbox()
-            gp.click_the_no_start_experience()
+            gp.click_cancel_update()
+            # gp.click_the_checkbox()
+            # gp.click_the_no_start_experience()
         except:
+            gp.click_text("暂不升级")
             pass
         cp = CallPage()
         cp.click_contact_tip()
@@ -250,7 +254,7 @@ class LoginTest(TestCase):
 
     @tags('ALL', 'SMOKE', 'CMCC')
     def test_login_0004(self):
-        """ 一键登录协议响应"""
+        """ 确保在通话页面"""
         # 1.点击《密友圈软件许可及服务协议》按钮
         call_page = CallPage()
         self.assertEquals(call_page.is_on_this_page(), True)
