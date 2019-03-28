@@ -14,6 +14,7 @@ from pages.message.LocalFiles import LocalFilesPage
 from pages.message.MessagePic import MessagePicPage
 from pages.message.MessagePicPreview import MessagePicPreviewPage
 from pages.message.NewMessage import NewMessagePage
+from pages.message.Phone import PhonePage
 from pages.message.groupchart.GroupChart import GroupChartPage
 from pages.message.groupchart.GroupChartSetting import GroupChartSettingPage
 from pages.message.message import MessagePage
@@ -98,8 +99,7 @@ class Preconditions(object):
         # 等待消息页
         gp = GuidePage()
         try:
-            gp.click_the_checkbox()
-            gp.click_the_no_start_experience()
+            gp.click_cancel_update()
         except:
             pass
         cp = CallPage()
@@ -242,6 +242,21 @@ class Preconditions(object):
 class MessageTest(TestCase):
     """Message 模块"""
 
+    @classmethod
+    def setUpClass(cls):
+        Preconditions.select_mobile('Android-移动')
+        current_mobile().hide_keyboard_if_display()
+        try:
+            Preconditions.make_already_in_call_page()
+        except:
+            current_mobile().launch_app()
+            try:
+                current_mobile().reset_app()
+                Preconditions.make_already_in_one_key_login_page()
+                Preconditions.login_by_one_key_login()
+            except:
+                pass
+
     # @staticmethod
     # def setUp_test_message_0001():
     #     Preconditions.select_mobile('Android-移动')
@@ -286,8 +301,12 @@ class MessageTest(TestCase):
         mep.wait_for_page_chart_message()
         # 1.长按“录制语音”icon
         mep.click_record_audio()
+        mep.click_start_record_audio()
+        time.sleep(2)
+        if mep.is_text_present("始终允许"):
+            mep.click_text("始终允许")
+        time.sleep(1.2)
         mep.long_click_record_audio()
-        time.sleep(5)
 
     @staticmethod
     def setUp_test_message_0004():
@@ -623,3 +642,55 @@ class MessageTest(TestCase):
         time.sleep(0.8)
         gcs.click_text("确定")
         self.assertEquals(gcs.is_toast_exist("已解散群"), True)
+
+    @staticmethod
+    def setUp_test_message_0018():
+        Preconditions.select_mobile('Android-移动')
+        current_mobile().hide_keyboard_if_display()
+        Preconditions.make_already_in_message_chart_page()
+
+    @tags('ALL1', 'SMOKE', 'CMCC')
+    def test_message_0018(self):
+        """消息会话拍摄1张照片并发送"""
+        # 1.在群聊天设置页面,检查群管理入口
+        mep = MessagePage()
+        mep.wait_for_page_chart_message()
+        mep.click_take_photo()
+        php = PhonePage()
+        php.wait_for_page_phone()
+        php.click_take_phone()
+        time.sleep(1.8)
+        php.click_take_phone_send()
+
+    def tearDown_test_message_0018(self):
+        mep = MessagePage()
+        mep.wait_for_page_chart_message()
+        mep.press_and_do("删除")
+        # 进入群聊设置页面点击群管理
+        mep.page_should_contain_text("免流量")
+
+    @staticmethod
+    def setUp_test_message_0019():
+        Preconditions.select_mobile('Android-移动')
+        current_mobile().hide_keyboard_if_display()
+        Preconditions.make_already_in_message_chart_page()
+
+    @tags('ALL1', 'SMOKE', 'CMCC')
+    def test_message_0019(self):
+        """消息会话录制1段视频并发送"""
+        # 1.在群聊天设置页面,检查群管理入口
+        mep = MessagePage()
+        mep.wait_for_page_chart_message()
+        mep.click_take_photo()
+        php = PhonePage()
+        php.wait_for_page_phone()
+        php.press_long_phone()
+        time.sleep(1.8)
+        php.click_take_phone_send()
+
+    def tearDown_test_message_0019(self):
+        mep = MessagePage()
+        mep.wait_for_page_chart_message()
+        mep.press_and_do("删除")
+        # 进入群聊设置页面点击群管理
+        mep.page_should_contain_text("免流量")

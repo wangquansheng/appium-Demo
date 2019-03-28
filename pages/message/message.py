@@ -20,6 +20,7 @@ class MessagePage(FooterPage):
         '选择照相': (MobileBy.ID, 'com.cmic.college:id/ib_take_photo'),
         '选择卡卷': (MobileBy.ID, 'com.cmic.college:id/ib_redpaper'),
         '选择文件': (MobileBy.ID, 'com.cmic.college:id/ib_file'),
+        '消息照片': (MobileBy.ID, 'com.cmic.college:id/layout_loading'),
         # 打开“+”
         '新建消息': (MobileBy.XPATH, '//*[contains(@text,"新建消息")]'),
         '发起群聊': (MobileBy.XPATH, '//*[contains(@text,"发起群聊")]'),
@@ -61,11 +62,12 @@ class MessagePage(FooterPage):
         return False
 
     @TestLogger.log('等待聊天消息页面自动跳转')
-    def wait_for_page_chart_message(self, timeout=20):
+    def wait_for_page_chart_message(self, timeout=20, ):
         try:
             self.wait_until(
                 condition=lambda d: self._is_element_present(self.__locators["聊天标志"]),
                 timeout=timeout,
+                auto_accept_permission_alert=True,
             )
         except:
             message = "页面在{}s内，没有加载成功".format(str(timeout))
@@ -76,8 +78,9 @@ class MessagePage(FooterPage):
         self.click_element(self.__locators['录音'])
 
     @TestLogger.log('长按开始录音')
-    def long_click_record_audio(self, time=3000, wait_time=1):
-        self.press(self.get_element(self.__locators["开始录音"]), time, wait_time)
+    def long_click_record_audio(self, time=3000, wait_time=4):
+        el = self.get_element(self.__locators["开始录音"])
+        self.press(el, time, wait_time)
 
     @TestLogger.log('点击开始录音')
     def click_start_record_audio(self):
@@ -112,3 +115,12 @@ class MessagePage(FooterPage):
     @TestLogger.log('点击发起群聊')
     def click_group_chart(self):
         self.click_element(self.__locators['发起群聊'])
+
+    @TestLogger.log('点击选择照相')
+    def click_take_photo(self):
+        self.click_element(self.__locators['选择照相'])
+
+    @TestLogger.log('点击选择照相')
+    def press_and_do(self, text):
+        self.press(self.get_element(self.__locators["消息照片"]))
+        self.click_text(text)
