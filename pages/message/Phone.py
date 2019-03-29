@@ -15,6 +15,7 @@ class PhonePage(BasePage):
         '照相': (MobileBy.ID, 'com.cmic.college:id/record'),
         '发送': (MobileBy.ID, 'com.cmic.college:id/send'),
         '撤回': (MobileBy.ID, 'com.cmic.college:id/rerecord'),
+        '视频播放页面': (MobileBy.ID, 'com.cmic.college:id/playSurfaceView'),
     }
 
     @TestLogger.log('点击返回')
@@ -39,8 +40,23 @@ class PhonePage(BasePage):
     @TestLogger.log('点击发送')
     def click_take_phone_send(self):
         self.click_element(self.__locators["发送"])
-        time.sleep(4)
+        time.sleep(5)
 
     @TestLogger.log('点击长按录像')
     def press_long_phone(self):
         self.press(self.get_element(self.__locators["照相"]), wait_time=3)
+
+    @TestLogger.log('等待视频播放页面跳转')
+    def wait_for_page_video(self, timeout=20):
+        try:
+            self.wait_until(
+                condition=lambda d: self._is_element_present(self.__locators["视频播放页面"]),
+                timeout=timeout,
+            )
+        except:
+            message = "页面在{}s内，没有加载成功".format(str(timeout))
+            raise AssertionError(message)
+
+    @TestLogger.log('点击发送')
+    def click_cancel_send(self):
+        self.click_element(self.__locators["撤回"])

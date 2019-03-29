@@ -18,6 +18,8 @@ from pages.message.Phone import PhonePage
 from pages.message.groupchart.GroupChart import GroupChartPage
 from pages.message.groupchart.GroupChartSetting import GroupChartSettingPage
 from pages.message.message import MessagePage
+from pages.message.singlechart.ModIfyTheme import ChartModifyThemePage
+from pages.message.singlechart.SingleChartSetting import SingChartSettingPage
 from pages.mine.GroupCode import GroupCodePage
 
 REQUIRED_MOBILES = {
@@ -691,6 +693,120 @@ class MessageTest(TestCase):
     def tearDown_test_message_0019(self):
         mep = MessagePage()
         mep.wait_for_page_chart_message()
-        mep.press_and_do("删除")
+        mep.press_and_do_video("删除")
         # 进入群聊设置页面点击群管理
         mep.page_should_contain_text("免流量")
+
+    @staticmethod
+    def setUp_test_message_0020():
+        Preconditions.select_mobile('Android-移动')
+        current_mobile().hide_keyboard_if_display()
+        Preconditions.make_already_in_message_chart_page()
+
+    @tags('ALL1', 'SMOKE', 'CMCC')
+    def test_message_0020(self):
+        """消息会话录制1段视频并预览"""
+        # 1.在群聊天设置页面,检查群管理入口
+        mep = MessagePage()
+        mep.wait_for_page_chart_message()
+        mep.click_take_photo()
+        php = PhonePage()
+        php.wait_for_page_phone()
+        php.press_long_phone()
+        time.sleep(1.8)
+        php.wait_for_page_video()
+        php.click_cancel_send()
+        php.click_back()
+
+    def tearDown_test_message_0020(self):
+        mep = MessagePage()
+        mep.wait_for_page_chart_message()
+        # 进入群聊设置页面点击群管理
+        mep.page_should_contain_text("免流量")
+
+    @staticmethod
+    def setUp_test_message_0021():
+        Preconditions.select_mobile('Android-移动')
+        current_mobile().hide_keyboard_if_display()
+        Preconditions.make_already_in_message_chart_page()
+
+    @tags('ALL1', 'SMOKE', 'CMCC')
+    def test_message_0021(self):
+        """聊天设置-聊天背景设置入口"""
+        # 1.在群聊天设置页面,检查更改聊天主题背景入口
+        mep = MessagePage()
+        mep.wait_for_page_chart_message()
+        mep.click_chart_setting()
+        scp = SingChartSettingPage()
+        scp.wait_for_page_single_chart_setting()
+        scp.page_should_contain_text("更改聊天主题背景")
+        # 2.点击“更改聊天主题背景”
+        scp.click_modify_theme()
+        mtp = ChartModifyThemePage()
+        mtp.wait_for_page_single_chart_theme()
+
+    def tearDown_test_message_0021(self):
+        mtp = ChartModifyThemePage()
+        mtp.click_back()
+        mtp.click_back()
+
+    @staticmethod
+    def setUp_test_message_0022():
+        Preconditions.select_mobile('Android-移动')
+        current_mobile().hide_keyboard_if_display()
+        Preconditions.make_already_in_message_chart_page()
+
+    @tags('ALL1', 'SMOKE', 'CMCC')
+    def test_message_0022(self):
+        """聊天设置-聊天背景设置入口"""
+        # 1.在群聊天设置页面,检查更改聊天主题背景入口
+        mep = MessagePage()
+        mep.wait_for_page_chart_message()
+        mep.click_chart_setting()
+        scp = SingChartSettingPage()
+        scp.wait_for_page_single_chart_setting()
+        scp.page_should_contain_text("更改聊天主题背景")
+        # 2.点击“更改聊天主题背景”
+        scp.click_modify_theme()
+        mtp = ChartModifyThemePage()
+        mtp.wait_for_page_single_chart_theme()
+        # 3.校验聊天背景设置页面显示
+        menu1 = {"更改此主题背景", "当前主题背景，尝鲜试试其他风格", "取消", "应用"}
+        mtp.page_contain_text(menu1)
+        menu2 = {"背景图", "更改框1", "更改框2", "展示框", "取消", "应用"}
+        mtp.page_contain_ele(menu2)
+
+    def tearDown_test_message_0022(self):
+        mtp = ChartModifyThemePage()
+        mtp.click_back()
+        mtp.click_back()
+
+    @staticmethod
+    def setUp_test_message_0023():
+        Preconditions.select_mobile('Android-移动')
+        current_mobile().hide_keyboard_if_display()
+        Preconditions.make_already_in_message_chart_page()
+
+    @tags('ALL1', 'SMOKE', 'CMCC')
+    def test_message_0023(self):
+        """聊天设置-聊天背景更改取消"""
+        # 1.在群聊天设置页面,检查更改聊天主题背景入口
+        mep = MessagePage()
+        mep.wait_for_page_chart_message()
+        mep.click_chart_setting()
+        scp = SingChartSettingPage()
+        scp.wait_for_page_single_chart_setting()
+        scp.page_should_contain_text("更改聊天主题背景")
+        # 2.点击“更改聊天主题背景”
+        scp.click_modify_theme()
+        mtp = ChartModifyThemePage()
+        mtp.wait_for_page_single_chart_theme()
+        # 3.校验聊天背景设置页面显示
+        menu1 = {"更改此主题背景", "当前主题背景，尝鲜试试其他风格", "取消", "应用"}
+        mtp.page_contain_text(menu1)
+        menu2 = {"背景图", "更改框1", "更改框2", "展示框", "取消", "应用"}
+        mtp.page_contain_ele(menu2)
+        for i in range(1):
+            mtp.page_right()
+        mtp.click_cancel()
+

@@ -21,6 +21,7 @@ class MessagePage(FooterPage):
         '选择卡卷': (MobileBy.ID, 'com.cmic.college:id/ib_redpaper'),
         '选择文件': (MobileBy.ID, 'com.cmic.college:id/ib_file'),
         '消息照片': (MobileBy.ID, 'com.cmic.college:id/layout_loading'),
+        '消息视频': (MobileBy.ID, 'com.cmic.college:id/textview_video_time'),
         # 打开“+”
         '新建消息': (MobileBy.XPATH, '//*[contains(@text,"新建消息")]'),
         '发起群聊': (MobileBy.XPATH, '//*[contains(@text,"发起群聊")]'),
@@ -120,7 +121,16 @@ class MessagePage(FooterPage):
     def click_take_photo(self):
         self.click_element(self.__locators['选择照相'])
 
-    @TestLogger.log('点击选择照相')
+    @TestLogger.log('长按图片进行删除')
     def press_and_do(self, text):
         self.press(self.get_element(self.__locators["消息照片"]))
         self.click_text(text)
+
+    @TestLogger.log('长按视频进行删除')
+    def press_and_do_video(self, text):
+        self.press(self.get_element(self.__locators["消息视频"]))
+        self.click_text(text)
+
+    @TestLogger.log('点击选择照相')
+    def click_chart_setting(self):
+        self.click_element(self.__locators['聊天标志'])
