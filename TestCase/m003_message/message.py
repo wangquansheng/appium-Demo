@@ -18,6 +18,7 @@ from pages.message.Phone import PhonePage
 from pages.message.groupchart.GroupChart import GroupChartPage
 from pages.message.groupchart.GroupChartSetting import GroupChartSettingPage
 from pages.message.message import MessagePage
+from pages.message.singlechart.ChartProfile import ChartProfilePage
 from pages.message.singlechart.ModIfyTheme import ChartModifyThemePage
 from pages.message.singlechart.SingleChartSetting import SingChartSettingPage
 from pages.mine.GroupCode import GroupCodePage
@@ -301,6 +302,7 @@ class MessageTest(TestCase):
         """ 发送语音消息"""
         mep = MessagePage()
         mep.wait_for_page_chart_message()
+        time.sleep(2)
         # 1.长按“录制语音”icon
         mep.click_record_audio()
         mep.click_start_record_audio()
@@ -669,7 +671,7 @@ class MessageTest(TestCase):
         mep.wait_for_page_chart_message()
         mep.press_and_do("删除")
         # 进入群聊设置页面点击群管理
-        mep.page_should_contain_text("免流量")
+        # mep.page_should_contain_text("免流量")
 
     @staticmethod
     def setUp_test_message_0019():
@@ -695,7 +697,7 @@ class MessageTest(TestCase):
         mep.wait_for_page_chart_message()
         mep.press_and_do_video("删除")
         # 进入群聊设置页面点击群管理
-        mep.page_should_contain_text("免流量")
+        # mep.page_should_contain_text("免流量")
 
     @staticmethod
     def setUp_test_message_0020():
@@ -722,7 +724,7 @@ class MessageTest(TestCase):
         mep = MessagePage()
         mep.wait_for_page_chart_message()
         # 进入群聊设置页面点击群管理
-        mep.page_should_contain_text("免流量")
+        # mep.page_should_contain_text("免流量")
 
     @staticmethod
     def setUp_test_message_0021():
@@ -792,6 +794,7 @@ class MessageTest(TestCase):
         """聊天设置-聊天背景更改取消"""
         # 1.在群聊天设置页面,检查更改聊天主题背景入口
         mep = MessagePage()
+        color1 = mep.get_chart_background_color()
         mep.wait_for_page_chart_message()
         mep.click_chart_setting()
         scp = SingChartSettingPage()
@@ -809,4 +812,229 @@ class MessageTest(TestCase):
         for i in range(1):
             mtp.page_right()
         mtp.click_cancel()
+        mtp.click_back()
+        mep.wait_for_page_chart_message()
+        color2 = mep.get_chart_background_color()
+        self.assertEquals(color1, color2)
 
+    @staticmethod
+    def setUp_test_message_0024():
+        Preconditions.select_mobile('Android-移动')
+        current_mobile().hide_keyboard_if_display()
+        Preconditions.make_already_in_message_chart_page()
+
+    @tags('ALL1', 'SMOKE', 'CMCC')
+    def test_message_0024(self):
+        """聊天设置-聊天背景更改应用"""
+        # 1.在群聊天设置页面,检查更改聊天主题背景入口
+        mep = MessagePage()
+        color1 = mep.get_chart_background_color()
+        mep.wait_for_page_chart_message()
+        mep.click_chart_setting()
+        scp = SingChartSettingPage()
+        scp.wait_for_page_single_chart_setting()
+        scp.page_should_contain_text("更改聊天主题背景")
+        # 2.点击“更改聊天主题背景”
+        scp.click_modify_theme()
+        mtp = ChartModifyThemePage()
+        mtp.wait_for_page_single_chart_theme()
+        # 3.校验聊天背景设置页面显示
+        menu1 = {"更改此主题背景", "当前主题背景，尝鲜试试其他风格", "取消", "应用"}
+        mtp.page_contain_text(menu1)
+        menu2 = {"背景图", "更改框1", "更改框2", "展示框", "取消", "应用"}
+        mtp.page_contain_ele(menu2)
+        for i in range(1):
+            mtp.page_right()
+        mtp.click_sure()
+        mtp.click_back()
+        mep.wait_for_page_chart_message()
+        color2 = mep.get_chart_background_color()
+        self.assertIsNot(color1, color2)
+
+    @staticmethod
+    def setUp_test_message_0025():
+        Preconditions.select_mobile('Android-移动')
+        current_mobile().hide_keyboard_if_display()
+        Preconditions.make_already_in_message_chart_page()
+
+    @tags('ALL1', 'SMOKE', 'CMCC')
+    def test_message_0025(self):
+        """消息-进入联系人profile页页面展示"""
+        # 1.在群聊天设置页面,检查更改聊天主题背景入口
+        mep = MessagePage()
+        mep.wait_for_page_chart_message()
+        mep.click_chart_setting()
+        scp = SingChartSettingPage()
+        scp.wait_for_page_single_chart_setting()
+        # 2点击该联系人图像
+        scp.click_chart_profile()
+        cpp = ChartProfilePage()
+        cpp.wait_for_page_chart_profile()
+        menu = {"联系人头像", "联系人名称", "手机号码", "视频", "消息"}
+        cpp.page_contain_ele(menu)
+        cpp.click_back()
+
+    @staticmethod
+    def setUp_test_message_0026():
+        Preconditions.select_mobile('Android-移动')
+        current_mobile().hide_keyboard_if_display()
+        Preconditions.make_already_in_message_chart_page()
+
+    @tags('ALL1', 'SMOKE', 'CMCC')
+    def test_message_0026(self):
+        """联系人profile页-发送消息"""
+        # 1.在群聊天设置页面,检查更改聊天主题背景入口
+        mep = MessagePage()
+        mep.wait_for_page_chart_message()
+        mep.click_chart_setting()
+        scp = SingChartSettingPage()
+        scp.wait_for_page_single_chart_setting()
+        # 2点击该联系人图像,校验profile文件
+        scp.click_chart_profile()
+        cpp = ChartProfilePage()
+        cpp.wait_for_page_chart_profile()
+        menu = {"联系人头像", "联系人名称", "手机号码", "视频", "消息"}
+        cpp.page_contain_ele(menu)
+        # 3.点击消息入口,成功跳转至消息会话窗口
+        cpp.click_profile_message()
+        mep.wait_for_page_chart_message()
+        time.sleep(25)
+
+    @staticmethod
+    def setUp_test_message_0027():
+        Preconditions.select_mobile('Android-移动')
+        current_mobile().hide_keyboard_if_display()
+        Preconditions.make_already_in_message_chart_page()
+
+    @tags('ALL1', 'SMOKE', 'CMCC')
+    def test_message_0027(self):
+        """点击视频通话入口"""
+        # 1.在群聊天设置页面,检查更改聊天主题背景入口
+        mep = MessagePage()
+        mep.wait_for_page_chart_message()
+        mep.click_chart_setting()
+        scp = SingChartSettingPage()
+        scp.wait_for_page_single_chart_setting()
+        # 2点击该联系人图像
+        scp.click_chart_profile()
+        cpp = ChartProfilePage()
+        cpp.wait_for_page_chart_profile()
+        menu = {"联系人头像", "联系人名称", "手机号码", "视频", "消息"}
+        cpp.page_contain_ele(menu)
+        # 3.点击消息入口,成功跳转至消息会话窗口
+        cpp.click_profile_video()
+        time.sleep(2)
+        cpp.page_should_contain_text("正在等待对方接听")
+
+    @staticmethod
+    def setUp_test_message_0028():
+        Preconditions.select_mobile('Android-移动')
+        current_mobile().hide_keyboard_if_display()
+        Preconditions.make_already_have_group_chart()
+
+    @tags('ALL1', 'SMOKE', 'CMCC')
+    def test_message_0028(self):
+        """群聊消息-群聊设置页面（群主）-解散并退出"""
+        # 0.在群聊天设置页面,检查群管理入口
+        gcp = GroupChartPage()
+        gcp.wait_for_page_group_chart()
+        gcp.click_setting()
+        gcs = GroupChartSettingPage()
+        gcs.wait_for_page_group_chart_setting()
+        name = gcs.get_group_chart_name()
+        # 2.点击群管理-解散群-取消
+        gcs.click_manager_group()
+        time.sleep(1)
+        gcs.click_cancel_group()
+        gcs.wait_for_page_group_chart_cancel()
+        gcs.click_delete_group_cancel()
+        # 3.点击群管理-解散群-确认
+        gcs.click_cancel_group()
+        gcs.wait_for_page_group_chart_cancel()
+        gcs.click_delete_group_sure()
+        self.assertEquals(gcs.is_toast_exist("已解散群"), True)
+        # 4.返回消息列表查看，群是否存在
+        mep = MessagePage()
+        mep.wait_for_page_message()
+        mep.page_should_contain_text(name + " 群已解散")
+
+    @staticmethod
+    def setUp_test_message_0030():
+        Preconditions.select_mobile('Android-移动')
+        current_mobile().hide_keyboard_if_display()
+        Preconditions.make_already_in_message_chart_page()
+
+    @tags('ALL1', 'SMOKE', 'CMCC')
+    def test_message_0030(self):
+        """表情消息-表情选择入口显示"""
+        # 0.在群聊天设置页面,检查群管理入口
+        mep = MessagePage()
+        mep.wait_for_page_chart_message()
+        # 1.查看输入框右侧表情图标显示
+        mep.click_expression()
+        mep.select_expression()
+        # 2.发送表情
+        mep.send_expression()
+
+    @staticmethod
+    def setUp_test_message_0031():
+        Preconditions.select_mobile('Android-移动')
+        current_mobile().hide_keyboard_if_display()
+        Preconditions.make_already_in_message_chart_page()
+
+    @tags('ALL1', 'SMOKE', 'CMCC')
+    def test_message_0031(self):
+        """表情消息-表情选择入口显示"""
+        # 0.在群聊天设置页面,检查群管理入口
+        mep = MessagePage()
+        mep.wait_for_page_chart_message()
+        # 1.查看输入框右侧表情图标显示
+        mep.click_expression()
+        self.assertEquals(current_mobile().is_keyboard_shown(), False)
+        mep.page_should_contain_text("删除")
+        # 2.点击输入框
+        mep.click_input()
+        self.assertEquals(current_mobile().is_keyboard_shown(), True)
+        mep.page_should_not_contain_text("删除")
+
+    @staticmethod
+    def setUp_test_message_0032():
+        Preconditions.select_mobile('Android-移动')
+        current_mobile().hide_keyboard_if_display()
+        Preconditions.make_already_in_message_chart_page()
+
+    @tags('ALL1', 'SMOKE', 'CMCC')
+    def test_message_0032(self):
+        """表情消息-表情选择入口显示"""
+        # 0.在群聊天设置页面,检查群管理入口
+        mep = MessagePage()
+        mep.wait_for_page_chart_message()
+        # 1.查看输入框右侧表情图标显示
+        mep.click_expression()
+        self.assertEquals(current_mobile().is_keyboard_shown(), False)
+        mep.page_should_contain_text("删除")
+        # 2.点击输入框
+        mep.click_input()
+        self.assertEquals(current_mobile().is_keyboard_shown(), True)
+        mep.page_should_not_contain_text("删除")
+
+    @staticmethod
+    def setUp_test_message_0033():
+        Preconditions.select_mobile('Android-移动')
+        current_mobile().hide_keyboard_if_display()
+        Preconditions.make_already_in_message_chart_page()
+
+    @tags('ALL1', 'SMOKE', 'CMCC')
+    def test_message_0033(self):
+        """撤回消息"""
+        # 0.在群聊天设置页面,检查群管理入口
+        mep = MessagePage()
+        mep.wait_for_page_chart_message()
+        # 1.查看输入框右侧表情图标显示
+        mep.click_expression()
+        self.assertEquals(current_mobile().is_keyboard_shown(), False)
+        mep.page_should_contain_text("删除")
+        # 2.点击输入框
+        mep.click_input()
+        self.assertEquals(current_mobile().is_keyboard_shown(), True)
+        mep.page_should_not_contain_text("删除")

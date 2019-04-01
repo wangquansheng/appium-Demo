@@ -246,19 +246,3 @@ class LoginTest(TestCase):
         # 2.跳转至服务协议H5页面
         one_key.page_should_contain_text("协议")
 
-    @staticmethod
-    def setUp_test_login_0004():
-        Preconditions.select_mobile('Android-移动')
-        current_mobile().hide_keyboard_if_display()
-        try:
-            Preconditions.make_already_in_call_page()
-        except:
-            current_mobile().reset_app()
-
-    @tags('ALL', 'SMOKE', 'CMCC')
-    def test_login_0004(self):
-        """ 确保在通话页面"""
-        # 1.点击《密友圈软件许可及服务协议》按钮
-        call_page = CallPage()
-        self.assertEquals(call_page.is_on_this_page(), True)
-        time.sleep(5)

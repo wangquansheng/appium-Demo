@@ -6,7 +6,8 @@ from library.core.TestLogger import TestLogger
 from pages.components.Footer import FooterPage
 
 
-class MessagePage(FooterPage):
+class \
+        MessagePage(FooterPage):
     """消息页面"""
     ACTIVITY = 'com.cmcc.cmrcs.android.ui.activities.HomeActivity'
 
@@ -22,6 +23,11 @@ class MessagePage(FooterPage):
         '选择文件': (MobileBy.ID, 'com.cmic.college:id/ib_file'),
         '消息照片': (MobileBy.ID, 'com.cmic.college:id/layout_loading'),
         '消息视频': (MobileBy.ID, 'com.cmic.college:id/textview_video_time'),
+        '背景颜色': (MobileBy.ID, 'com.cmic.college:id/iv_bkg'),
+        '表情': (MobileBy.ID, 'com.cmic.college:id/ib_expression'),
+        '选择表情': (MobileBy.ID, 'com.cmic.college:id/ib_expression'),
+        '发送': (MobileBy.ID, 'com.cmic.college:id/ib_expression'),
+        '输入框': (MobileBy.ID, 'com.cmic.college:id/et_message'),
         # 打开“+”
         '新建消息': (MobileBy.XPATH, '//*[contains(@text,"新建消息")]'),
         '发起群聊': (MobileBy.XPATH, '//*[contains(@text,"发起群聊")]'),
@@ -134,3 +140,23 @@ class MessagePage(FooterPage):
     @TestLogger.log('点击选择照相')
     def click_chart_setting(self):
         self.click_element(self.__locators['聊天标志'])
+
+    @TestLogger.log('获取聊天界面颜色')
+    def get_chart_background_color(self):
+        return self.get_coordinate_color_of_element(self.get_element(self.__locators["背景颜色"]), 5, 50, by_percent=True)
+
+    @TestLogger.log('点击选择表情')
+    def click_expression(self):
+        self.click_element(self.__locators['表情'])
+
+    @TestLogger.log('选择表情')
+    def select_expression(self):
+        self.click_element(self.__locators['选择表情'])
+
+    @TestLogger.log('选择发送')
+    def send_expression(self):
+        self.click_element(self.__locators['发送'])
+
+    @TestLogger.log('点击输入框')
+    def click_input(self):
+        self.click_element(self.__locators['输入框'])

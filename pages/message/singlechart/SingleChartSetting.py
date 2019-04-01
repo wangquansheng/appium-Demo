@@ -16,6 +16,7 @@ class SingChartSettingPage(BasePage):
         '聊天文件': (MobileBy.ID, 'com.cmic.college:id/tv_chat_file'),
         '投诉': (MobileBy.ID, 'com.cmic.college:id/rl_complain'),
         '取消': (MobileBy.XPATH, '//*[@text="取消"]'),
+        '聊天联系人': (MobileBy.ID, 'com.cmic.college:id/iv_setting_avatar'),
     }
 
     @TestLogger.log('点击返回')
@@ -36,3 +37,7 @@ class SingChartSettingPage(BasePage):
     @TestLogger.log('点击更改聊天主题背景')
     def click_modify_theme(self):
         self.click_element(self.__locators['更改聊天主题背景'])
+
+    @TestLogger.log('点击聊天联系人')
+    def click_chart_profile(self):
+        self.click_element(self.__locators['聊天联系人'])

@@ -60,3 +60,7 @@ class ChartModifyThemePage(BasePage):
     @TestLogger.log('点击取消')
     def click_cancel(self):
         self.click_element(self.__locators['取消'])
+
+    @TestLogger.log('点击确认')
+    def click_sure(self):
+        self.click_element(self.__locators['应用'])
