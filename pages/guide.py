@@ -15,7 +15,15 @@ class GuidePage(BasePage):
         '去体验': (MobileBy.ID, 'com.cmic.college:id/btn_update'),
         '不再提醒': (MobileBy.ID, 'com.cmic.college:id/select_checkbox'),
         '不去体验': (MobileBy.ID, 'com.cmic.college:id/btn_not_update'),
+        # 发现新版本页面
+        '暂不升级': (MobileBy.XPATH, '//*[@text="暂不升级"]'),
+
     }
+
+    @TestLogger.log()
+    def click_cancel_update(self):
+        """点击不再提醒"""
+        self.click_element(self.__locators["暂不升级"], 25)
 
     @TestLogger.log()
     def click_the_checkbox(self):

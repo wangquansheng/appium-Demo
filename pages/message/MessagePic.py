@@ -7,7 +7,7 @@ from library.core.TestLogger import TestLogger
 
 
 class MessagePicPage(BasePage):
-    """消息页面"""
+    """消息-图片 页面"""
     ACTIVITY = 'com.cmcc.cmrcs.android.ui.activities.HomeActivity'
     # "../android.widget.RelativeLayout/android.widget.ImageView[2][not(contains(@resource-id,'com.cmic.college:id/iv_video_icon'))]"
     __locators = {
@@ -21,7 +21,6 @@ class MessagePicPage(BasePage):
         '预览': (MobileBy.ID, 'com.cmic.college:id/tv_preview'),
         '原图': (MobileBy.ID, 'com.cmic.college:id/cb_original_photo'),
         '发送': (MobileBy.ID, 'com.cmic.college:id/button_send'),
-
     }
 
     @TestLogger.log('点击所用视频')
@@ -35,6 +34,7 @@ class MessagePicPage(BasePage):
             raise AssertionError("在所有照片首页没有 %s 张图片，请上传图片." % n)
         for i in range(n):
             pics[i].click()
+            time.sleep(0.5)
 
     @TestLogger.log('是否在消息页面')
     def is_on_this_page(self):
@@ -77,13 +77,17 @@ class MessagePicPage(BasePage):
         el = self.get_element(self.__locators["发送"])
         return el.text
 
-    @TestLogger.log('获取按钮是否可点击')
+    @TestLogger.log('获取预览按钮是否可点击')
     def is_click(self):
         return self._is_enabled(self.__locators["预览"])
 
     @TestLogger.log('点击预览')
     def click_pre_view(self):
         self.click_element(self.__locators["预览"])
+
+    @TestLogger.log('获取发送按钮是否可点击')
+    def is_click_pre_view(self):
+        return self._is_enabled(self.__locators["发送"])
 
     @TestLogger.log('点击返回')
     def click_back(self):
