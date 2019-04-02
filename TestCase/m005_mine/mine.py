@@ -366,3 +366,116 @@ class MineTest(TestCase):
         self.assertTrue(me_page.is_text_exist('密友圈扫描二维码，添加我为密友'))
         self.assertTrue(me_page.check_qr_code_exist())
         self.assertTrue(me_page.check_element_name_photo_exist())
+
+    @tags('ALL', 'SMOKE', 'CMCC')
+    def setUp_test_me_0011(self):
+        Preconditions.select_mobile('Android-移动')
+        current_mobile().hide_keyboard_if_display()
+        Preconditions.make_already_in_me_page()
+
+    def test_me_0011(self):
+        """个人二维码点击更多"""
+        me_page = MinePage()
+        me_page.click_locator_key('我的二维码')
+        me_page.click_locator_key('二维码_更多')
+        time.sleep(2)
+        self.assertEqual(me_page.get_element_text('分享二维码'), '分享我的二维码')
+        self.assertTrue(me_page.element_is_enable('分享二维码'))
+        self.assertEqual(me_page.get_element_text('保存二维码'), '保存二维码图片')
+        self.assertTrue(me_page.element_is_enable('保存二维码'))
+
+    @tags('ALL', 'SMOKE', 'CMCC')
+    def setUp_test_me_0012(self):
+        Preconditions.select_mobile('Android-移动')
+        current_mobile().hide_keyboard_if_display()
+        Preconditions.make_already_in_me_page()
+
+    def test_me_0012(self):
+        """个人二维码点击更多"""
+        me_page = MinePage()
+        me_page.click_locator_key('我的二维码')
+        me_page.click_locator_key('二维码_更多')
+        me_page.click_locator_key('分享二维码')
+        self.assertEqual(me_page.get_element_text('分享_密友圈'), '密友圈')
+        self.assertEqual(me_page.get_element_text('分享_朋友圈'), '朋友圈')
+        self.assertEqual(me_page.get_element_text('分享_微信'), '微信')
+        self.assertEqual(me_page.get_element_text('分享_QQ'), 'QQ')
+        self.assertEqual(me_page.get_element_text('分享_QQ空间'), 'QQ空间')
+
+    @tags('ALL', 'SMOKE', 'CMCC')
+    def setUp_test_me_0013(self):
+        Preconditions.select_mobile('Android-移动')
+        current_mobile().hide_keyboard_if_display()
+        Preconditions.make_already_in_me_page()
+
+    def test_me_0013(self):
+        """验证活动中心页面正常打开"""
+        me_page = MinePage()
+        me_page.click_locator_key('活动中心')
+        self.assertTrue(me_page.check_wait_text_exits('活动中心'))
+        me_page.click_locator_key('我_二级页面_相同返回')
+
+    @tags('ALL', 'SMOKE', 'CMCC')
+    def setUp_test_me_0014(self):
+        Preconditions.select_mobile('Android-移动')
+        current_mobile().hide_keyboard_if_display()
+        Preconditions.make_already_in_me_page()
+
+    def test_me_0014(self):
+        """验证卡券页面正常打开"""
+        me_page = MinePage()
+        me_page.click_locator_key('卡券')
+        self.assertTrue(me_page.check_wait_text_exits('我的卡券'))
+        me_page.click_locator_key('我_二级页面_相同返回')
+
+    @tags('ALL', 'SMOKE', 'CMCC')
+    def setUp_test_me_0015(self):
+        Preconditions.select_mobile('Android-移动')
+        current_mobile().hide_keyboard_if_display()
+        Preconditions.make_already_in_me_page()
+
+    def test_me_0015(self):
+        """验证网上营业厅正常打开"""
+        me_page = MinePage()
+        me_page.click_locator_key('网上营业厅')
+        self.assertTrue(me_page.check_wait_text_exits('网上营业厅'))
+        me_page.click_locator_key('我_二级页面_相同返回')
+
+    @tags('ALL', 'SMOKE', 'CMCC')
+    def setUp_test_me_0016(self):
+        Preconditions.select_mobile('Android-移动')
+        current_mobile().hide_keyboard_if_display()
+        Preconditions.make_already_in_me_page()
+
+    def test_me_0016(self):
+        """验证邀请有礼正常打开"""
+        me_page = MinePage()
+        me_page.click_locator_key('邀请有礼')
+        self.assertTrue(me_page.check_wait_text_exits('邀请有奖'))
+        me_page.click_locator_key('我_二级页面_相同返回')
+
+    @tags('ALL', 'SMOKE', 'CMCC')
+    def setUp_test_me_0017(self):
+        Preconditions.select_mobile('Android-移动')
+        current_mobile().hide_keyboard_if_display()
+        Preconditions.make_already_in_me_page()
+
+    def test_me_0017(self):
+        """验证帮助与反馈正常打开"""
+        me_page = MinePage()
+        me_page.click_locator_key('帮助与反馈')
+        self.assertTrue(me_page.check_wait_text_exits('帮助与反馈'))
+        me_page.click_locator_key('我_二级页面_相同返回')
+
+    @tags('ALL', 'SMOKE', 'CMCC')
+    def setUp_test_me_0018(self):
+        Preconditions.select_mobile('Android-移动')
+        current_mobile().hide_keyboard_if_display()
+        Preconditions.make_already_in_me_page()
+
+    def test_me_0018(self):
+        """验证邀请有礼正常打开"""
+        me_page = MinePage()
+        me_page.click_locator_key('设置')
+        me_page.click_locator_key('退出当前账号')
+        self.assertTrue(me_page.check_wait_text_exits('本机号码一键登录'))
