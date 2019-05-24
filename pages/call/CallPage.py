@@ -53,7 +53,8 @@ class CallPage(FooterPage):
         '搜索_电话': (MobileBy.ID, 'com.cmic.college:id/search_src_text'),
         '搜索_电话显示': (MobileBy.ID, 'com.cmic.college:id/tvPhoneNum'),
         '搜索_电话昵称': (MobileBy.ID, 'com.cmic.college:id/tvName'),
-        '免费时长': (MobileBy.ID, 'com.cmic.college:id/tv_leftDuration')
+        '免费时长': (MobileBy.ID, 'com.cmic.college:id/tv_leftDuration'),
+
     }
 
     @TestLogger.log('点击通话引导页')
