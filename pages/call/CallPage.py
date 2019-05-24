@@ -292,3 +292,4 @@ class CallPage(FooterPage):
     @TestLogger.log("获得元素对应的数量")
     def get_elements_count(self, locator):
         return self.get_elements(self.__locators[locator])
+
