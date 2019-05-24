@@ -2,6 +2,7 @@ from appium.webdriver.common.mobileby import MobileBy
 from library.core.BasePage import BasePage
 from library.core.TestLogger import TestLogger
 from pages.components.Footer import FooterPage
+import time
 
 
 class CallPage(FooterPage):
@@ -9,6 +10,12 @@ class CallPage(FooterPage):
     ACTIVITY = 'com.cmcc.cmrcs.android.ui.activities.HomeActivity'
 
     __locators = {
+        # 权限框
+        '禁止': (MobileBy.ID, 'com.android.packageinstaller:id/permission_deny_button'),
+        '始终允许': (MobileBy.ID, 'com.android.packageinstaller:id/permission_allow_button'),
+        '遮罩1': (MobileBy.ID, 'com.cmic.college:id/tvContact'),
+        '遮罩2': (MobileBy.ID, 'com.cmic.college:id/header'),
+
         'tip1': (MobileBy.ID, 'com.cmic.college:id/ivFreeCall'),
         'tip2': (MobileBy.ID, 'com.cmic.college:id/ivKeyboard'),
         'tip3': (MobileBy.ID, 'com.cmic.college:id/tvContact'),
@@ -63,16 +70,38 @@ class CallPage(FooterPage):
         self.click_element(self.__locators['tip2'])
         self.click_element(self.__locators['tip3'])
 
+    @TestLogger.log()
+    def click_always_allow(self):
+        """权限框-点击始终允许"""
+        while self.is_text_present('始终允许'):
+            self.click_text('始终允许')
+            time.sleep(2)
+
+
+    @TestLogger.log()
+    def remove_mask(self):
+        """去除遮罩"""
+        self.click_element(self.__class__.__locators['遮罩1'])
+        self.click_element(self.__class__.__locators['遮罩2'])
+
+
     @TestLogger.log('等待页面自动跳转')
-    def wait_for_page_call(self, max_wait_time=8):
+    def wait_for_page_call(self, max_wait_time=30):
         self.wait_until(
             condition=lambda d: self.is_text_present("不花钱打电话"),
             timeout=max_wait_time,
         )
 
+    @TestLogger.log('等待页面自动跳转')
+    def wait_for_page_call_load(self, max_wait_time=30):
+        self.wait_until(
+            condition=lambda d: self.is_text_present("始终允许"),
+            timeout=max_wait_time,
+        )
+
     @TestLogger.log('是否在通话页面')
     def is_on_this_page(self):
-        el = self.get_elements(self.__locators['视频'])
+        el = self.get_elements(self.__locators['拨号键盘'])
         if len(el) > 0:
             return True
         return False

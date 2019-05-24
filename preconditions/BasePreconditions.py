@@ -2,6 +2,10 @@ import time
 from pages import *
 from library.core.utils.applicationcache import current_mobile, switch_to_mobile
 import random
+from pages.login.LoginPage import OneKeyLoginPage
+from pages.guide import GuidePage
+from pages.call.CallPage import CallPage
+
 
 REQUIRED_MOBILES = {
     'Android-移动': 'M960BDQN229CH',
@@ -35,25 +39,23 @@ class LoginPreconditions(object):
         one_key = OneKeyLoginPage()
         if one_key.is_on_this_page():
             return
-
-        # 如果当前页不是引导页第一页，重新启动app
-        guide_page = GuidePage()
-        if not guide_page.is_on_the_first_guide_page():
+        else:
+            # 如果当前页不是引导页第一页，重新启动app
+            guide_page = GuidePage()
             # current_mobile().launch_app()
             current_mobile().reset_app()
             guide_page.wait_for_page_load(20)
-
-        # 跳过引导页
-        guide_page.wait_for_page_load(30)
-        guide_page.swipe_to_the_second_banner()
-        guide_page.swipe_to_the_third_banner()
-        current_mobile().hide_keyboard_if_display()
-        guide_page.click_start_the_experience()
-
-        # 点击权限列表页面的确定按钮
-        permission_list = PermissionListPage()
-        permission_list.click_submit_button()
-        one_key.wait_for_page_load(30)
+            # 跳过引导页
+            guide_page.swipe_to_the_second_banner()
+            guide_page.swipe_to_the_third_banner()
+            current_mobile().hide_keyboard_if_display()
+            guide_page.click_start_the_experience()
+            time.sleep(1)
+            # 权限页
+            guide_page.click_one_button_on()
+            time.sleep(2)
+            guide_page.click_always_allow()
+            one_key.wait_for_page_load(30)
 
     @staticmethod
     def login_by_one_key_login():
@@ -66,57 +68,62 @@ class LoginPreconditions(object):
         one_key.wait_for_page_load()
         # one_key.wait_for_tell_number_load(60)
         one_key.click_one_key_login()
-        if one_key.have_read_agreement_detail():
-            one_key.click_read_agreement_detail()
-            # 同意协议
-            agreement = AgreementDetailPage()
-            agreement.click_agree_button()
-        # 等待消息页
-        message_page = MessagePage()
-        message_page.wait_login_success(60)
+        time.sleep(2)
+        if one_key.is_text_present('用户协议和隐私保护'):
+            one_key.click_agree_user_aggrement()
+            time.sleep(1)
+            one_key.click_agree_login_by_number()
+
+        # 等待通话页面加载
+        call_page = CallPage()
+        call_page.wait_for_page_call_load()
+        call_page.click_always_allow()
+        time.sleep(2)
+        call_page.remove_mask()
+
 
     @staticmethod
-    def make_already_in_message_page(reset=False):
-        """确保应用在消息页面"""
+    def make_already_in_call_page(reset=False):
+        """确保应用在通话页面"""
         LoginPreconditions.select_mobile('Android-移动', reset)
         current_mobile().hide_keyboard_if_display()
         time.sleep(1)
         # 如果在消息页，不做任何操作
-        mess = MessagePage()
-        if mess.is_on_this_page():
+        call_page = CallPage()
+        if call_page.is_on_this_page():
             return
         # 进入一键登录页
         LoginPreconditions.make_already_in_one_key_login_page()
         #  从一键登录页面登录
         LoginPreconditions.login_by_one_key_login()
 
-    @staticmethod
-    def enter_private_chat_page(reset=False):
-        """进入单聊会话页面"""
-        # 登录进入消息页面
-        LoginPreconditions.make_already_in_message_page(reset)
-        mess = MessagePage()
-        # 点击‘通讯录’
-        mess.open_contacts_page()
-        contacts = ContactsPage()
-        contacts.wait_for_page_load()
-        names = contacts.get_contacts_name()
-        chat = SingleChatPage()
-        cdp = ContactDetailsPage()
-        # 不存在联系则创建联系人
-        if not names:
-            contacts.click_add()
-            ccp = CreateContactPage()
-            ccp.wait_for_page_load()
-            name = "atest" + str(random.randint(100, 999))
-            number = "147752" + str(time.time())[-5:]
-            ccp.create_contact(name, number)
-        contacts.select_people_by_name(names[0])
-        cdp.wait_for_page_load()
-        # 点击消息进入单聊会话页面
-        cdp.click_message_icon()
-        # 如果弹框用户须知则点击处理
-        flag = chat.is_exist_dialog()
-        if flag:
-            chat.click_i_have_read()
-        chat.wait_for_page_load()
+    # @staticmethod
+    # def enter_private_chat_page(reset=False):
+    #     """进入单聊会话页面"""
+    #     # 登录进入消息页面
+    #     LoginPreconditions.make_already_in_call_page(reset)
+    #     mess = MessagePage()
+    #     # 点击‘通讯录’
+    #     mess.open_contacts_page()
+    #     contacts = ContactsPage()
+    #     contacts.wait_for_page_load()
+    #     names = contacts.get_contacts_name()
+    #     chat = SingleChatPage()
+    #     cdp = ContactDetailsPage()
+    #     # 不存在联系则创建联系人
+    #     if not names:
+    #         contacts.click_add()
+    #         ccp = CreateContactPage()
+    #         ccp.wait_for_page_load()
+    #         name = "atest" + str(random.randint(100, 999))
+    #         number = "147752" + str(time.time())[-5:]
+    #         ccp.create_contact(name, number)
+    #     contacts.select_people_by_name(names[0])
+    #     cdp.wait_for_page_load()
+    #     # 点击消息进入单聊会话页面
+    #     cdp.click_message_icon()
+    #     # 如果弹框用户须知则点击处理
+    #     flag = chat.is_exist_dialog()
+    #     if flag:
+    #         chat.click_i_have_read()
+    #     chat.wait_for_page_load()

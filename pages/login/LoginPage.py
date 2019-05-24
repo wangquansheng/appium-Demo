@@ -17,8 +17,17 @@ class OneKeyLoginPage(BasePage):
         "切换另一号码登录": (MobileBy.ID, "com.chinasofti.rcs:id/change_to_smslogin"),
         "已阅读并同意复选框": (MobileBy.ID, "	com.cmic.college:id/agreement_checkbox"),
         "客户端头像": (MobileBy.ID, "com.cmic.college:id/profile_photo_one_login"),
-        "和飞信软件许可及服务协议": (MobileBy.ID, "com.cmic.college:id/agreement_text"),
+        "软件许可及服务协议": (MobileBy.ID, "com.cmic.college:id/agreement_text"),
         '提示内容': (MobileBy.ID, 'com.chinasofti.rcs:id/tv_content'),
+
+        "用户协议与隐私保护": (MobileBy.ID, "com.cmic.college:id/tvTitle"),
+        "同意": (MobileBy.ID, "com.cmic.college:id/btnConfirm"),
+        "不同意": (MobileBy.ID, "com.cmic.college:id/btnCancel"),
+
+        "使用号码登录": (MobileBy.ID, "com.cmic.college:id/tvTitle"),
+        "确定": (MobileBy.ID, "com.cmic.college:id/btnConfirm"),
+
+
     }
 
     @TestLogger.log()
@@ -39,6 +48,17 @@ class OneKeyLoginPage(BasePage):
     def click_one_key_login(self):
         """点击一键登录"""
         self.click_element(self.__locators["一键登录"])
+
+    @TestLogger.log()
+    def click_agree_user_aggrement(self):
+        """点击同意用户协议"""
+        self.click_element(self.__locators["同意"])
+
+    @TestLogger.log()
+    def click_agree_login_by_number(self):
+        """点击同意号码登录"""
+        self.click_element(self.__locators["确定"])
+
 
     @TestLogger.log()
     def click_sure_login(self):
@@ -139,8 +159,8 @@ class OneKeyLoginPage(BasePage):
 
     @TestLogger.log()
     def click_license_agreement(self):
-        """点击和飞信软件许可及服务协议"""
-        self.click_element(self.__locators["和飞信软件许可及服务协议"])
+        """点击软件许可及服务协议"""
+        self.click_element(self.__locators["软件许可及服务协议"])
 
     @TestLogger.log()
     def wait_one_key_or_sms_login_page_load(self, timeout=20):

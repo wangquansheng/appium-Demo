@@ -6,8 +6,7 @@ from library.core.TestLogger import TestLogger
 from pages.components.Footer import FooterPage
 
 
-class \
-        MessagePage(FooterPage):
+class MessagePage(FooterPage):
     """消息页面"""
     ACTIVITY = 'com.cmcc.cmrcs.android.ui.activities.HomeActivity'
 
@@ -48,11 +47,18 @@ class \
         self.click_element(self.__locators['新建消息'])
 
     @TestLogger.log('等待消息页面自动跳转')
-    def wait_for_page_message(self, max_wait_time=8):
+    def wait_for_page_message(self, max_wait_time=30):
         self.wait_until(
             condition=lambda d: self._is_element_present(self.__locators["+"]),
             timeout=max_wait_time,
         )
+
+    @TestLogger.log()
+    def click_always_allow(self):
+        """权限框-点击始终允许"""
+        while self.is_text_present('始终允许'):
+            self.click_element(self.__class__.__locators['始终允许'])
+
 
     @TestLogger.log('是否在消息页面')
     def is_on_this_page(self):
