@@ -7,6 +7,7 @@ from pages.guide import GuidePage
 from pages.call.CallPage import CallPage
 
 
+
 REQUIRED_MOBILES = {
     'Android-移动': 'M960BDQN229CH',
     # 'Android-移动': 'single_mobile',
@@ -92,10 +93,16 @@ class LoginPreconditions(object):
         call_page = CallPage()
         if call_page.is_on_this_page():
             return
-        # 进入一键登录页
-        LoginPreconditions.make_already_in_one_key_login_page()
-        #  从一键登录页面登录
-        LoginPreconditions.login_by_one_key_login()
+        else:
+            try:
+                current_mobile().launch_app()
+                call_page.wait_for_page_load()
+            except:
+                # 进入一键登录页
+                LoginPreconditions.make_already_in_one_key_login_page()
+                #  从一键登录页面登录
+                LoginPreconditions.login_by_one_key_login()
+
 
     # @staticmethod
     # def enter_private_chat_page(reset=False):

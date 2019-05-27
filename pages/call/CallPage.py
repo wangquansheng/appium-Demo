@@ -16,6 +16,18 @@ class CallPage(FooterPage):
         '遮罩1': (MobileBy.ID, 'com.cmic.college:id/tvContact'),
         '遮罩2': (MobileBy.ID, 'com.cmic.college:id/header'),
 
+        '通话文案': (MobileBy.ID, 'com.cmic.college:id/header'),
+        '来电名称': (MobileBy.ID, 'com.cmic.college:id/tvName'),
+        '来电详情': (MobileBy.ID, 'com.cmic.college:id/ivDetail'),
+        '+': (MobileBy.ID, 'com.cmic.college: id / ivOperation'),
+        '视频通话': (MobileBy.XPATH, '//*[contains(@text,"视频通话")]'),
+        '多方电话': (MobileBy.XPATH, '//*[contains(@text,"多方电话")]'),
+        '空白文案':(MobileBy.XPATH, '//*[contains(@text,"打电话不花钱")]'),
+        '键盘输入框': (MobileBy.ID, 'com.cmic.college:id/etInputNum'),
+        '收起键盘': (MobileBy.ID, 'com.cmic.college:id/ivHide'),
+
+
+
         'tip1': (MobileBy.ID, 'com.cmic.college:id/ivFreeCall'),
         'tip2': (MobileBy.ID, 'com.cmic.college:id/ivKeyboard'),
         'tip3': (MobileBy.ID, 'com.cmic.college:id/tvContact'),
@@ -117,12 +129,12 @@ class CallPage(FooterPage):
 
     @TestLogger.log("点击包含文本的元素")
     def click_by_text(self, text):
-        """当前页面是否包含此文本"""
+        """点击文本"""
         return self.click_text(text)
 
     @TestLogger.log("点击包含文本的元素")
     def input_locator_text(self, locator, text):
-        """当前页面是否包含此文本"""
+        """输入文本"""
         return self.input_text(self.__locators[locator], text)
 
     @TestLogger.log("点击包含文本的第一个元素")
@@ -323,3 +335,35 @@ class CallPage(FooterPage):
     def get_elements_count(self, locator):
         return self.get_elements(self.__locators[locator])
 
+    @TestLogger.log("页面应该包含元素")
+    def page_contain_element(self, locator):
+        self.page_should_contain_element(self.__locators[locator])
+
+    @TestLogger.log("判断页面元素是否存在")
+    def is_element_present(self, locator):
+        return self._is_element_present(self.__locators[locator])
+
+    @TestLogger.log("页面应该包含元素")
+    def click_keyboard(self):
+        self.click_element(self.__locators['拨号键盘'])
+
+    @TestLogger.log("点击键盘输入框")
+    def click_keyboard_input_box(self):
+        self.click_element(self.__locators['键盘输入框'])
+
+    @TestLogger.log("键盘输入框输入文本")
+    def input_text_in_input_box(self,text):
+        self.input_text(self.__locators['键盘输入框'],text)
+
+
+    @TestLogger.log("获取输入框文本")
+    def get_input_box_text(self,):
+        return self.get_element(self.__class__.__locators['键盘输入框']).text
+
+    @TestLogger.log("点击收起键盘")
+    def click_hide_keyboard(self):
+        self.click_element(self.__class__.__locators['收起键盘'])
+
+    @TestLogger.log("点击+")
+    def click_add(self):
+        self.click_element(self.__class__.__locators['+'])

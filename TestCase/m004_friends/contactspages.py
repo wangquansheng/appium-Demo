@@ -9,6 +9,9 @@ from library.core.utils.applicationcache import current_mobile, current_driver, 
 from library.core.utils.testcasefilter import tags
 from pages import *
 from preconditions.BasePreconditions import LoginPreconditions
+from pages.call.CallPage import CallPage
+from pages.components.Footer import FooterPage
+from pages.contacts.contactlocal import ContactsPage
 
 REQUIRED_MOBILES = {
     'Android-移动': 'M960BDQN229CH',
@@ -52,4 +55,40 @@ class Preconditions(LoginPreconditions):
     def background_app():
         """后台运行"""
         current_mobile().press_home_key()
+
+class ContactlocalPage(TestCase):
+    """本地通讯录界面"""
+
+    def default_setUp(self):
+        """确保每个用例开始之前在通讯录界面"""
+
+        Preconditions.connect_mobile('Android-移动')
+        Preconditions.make_already_in_call_page()
+        FooterPage().open_contact_page()
+        contact=ContactsPage()
+        contact.permission_box_processing()
+        contact.remove_mask()
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 

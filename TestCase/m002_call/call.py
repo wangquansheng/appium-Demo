@@ -6,6 +6,8 @@ from pages.guide import GuidePage
 from pages.login.LoginPage import OneKeyLoginPage
 from pages.call.CallPage import CallPage
 from library.core.TestCase import TestCase
+import time
+from pages.call.Selectcontact import Selectcontactpage
 
 REQUIRED_MOBILES = {
     'Android-移动': 'M960BDQN229CH',
@@ -70,6 +72,9 @@ class Preconditions(object):
         guide_page.swipe_to_the_third_banner()
         guide_page.click_start_the_experience()
         guide_page.click_start_the_one_key()
+        time.sleep(2)
+        guide_page.click_always_allow()
+        one_key.wait_for_page_load(30)
 
     @staticmethod
     def login_by_one_key_login():
@@ -79,20 +84,21 @@ class Preconditions(object):
         """
         # 等待号码加载完成后，点击一键登录
         one_key = OneKeyLoginPage()
-        one_key.wait_for_tell_number_load(60)
-        login_number = one_key.get_login_number()
+        one_key.wait_for_page_load()
+        # one_key.wait_for_tell_number_load(60)
         one_key.click_one_key_login()
-        one_key.click_sure_login()
-        # 等待消息页
-        gp = GuidePage()
-        try:
-            gp.click_the_checkbox()
-            gp.click_the_no_start_experience()
-        except:
-            pass
-        cp = CallPage()
-        cp.click_contact_tip()
-        return login_number
+        time.sleep(2)
+        if one_key.is_text_present('用户协议和隐私保护'):
+            one_key.click_agree_user_aggrement()
+            time.sleep(1)
+            one_key.click_agree_login_by_number()
+
+        # 等待通话页面加载
+        call_page = CallPage()
+        call_page.wait_for_page_call_load()
+        call_page.click_always_allow()
+        time.sleep(2)
+        call_page.remove_mask()
 
     @staticmethod
     def app_start_for_the_first_time():
@@ -169,7 +175,7 @@ class CallTest(TestCase):
         Preconditions.make_sure_in_after_login_callpage()
 
     @tags('ALL', 'SMOKE', 'CMCC')
-    def test_call_0001(self):
+    def test_call_0034(self):
         """通话列表页面的显示（单条记录的删除）"""
         call_page = CallPage()
         call_page.make_sure_have_p2p_vedio_record()
@@ -187,7 +193,7 @@ class CallTest(TestCase):
         Preconditions.make_sure_in_after_login_callpage()
 
     @tags('ALL', 'SMOKE', 'CMCC')
-    def test_call_0002(self):
+    def test_call_0035(self):
         """通话列表页面的显示（清空全部通话记录）"""
         call_page = CallPage()
         call_page.make_sure_have_p2p_vedio_record()
@@ -466,3 +472,114 @@ class CallTest(TestCase):
         call_page = CallPage()
         call_page.mobile.turn_on_wifi()
         call_page.mobile.turn_on_mobile_data()
+
+
+class Callpage(TestCase):
+    """Call 模块--全量"""
+
+    def default_setUp(self):
+        """确保每个用例开始之前在通话界面界面"""
+        Preconditions.select_mobile('Android-移动')
+        Preconditions.make_already_in_call_page()
+
+
+    @tags('ALL', 'CMCC','call')
+    def test_call_0001(self):
+        """通话界面显示"""
+        time.sleep(2)
+        call=CallPage()
+        call.page_contain_element('通话文案')
+        call.page_contain_element('拨号键盘')
+        if call.is_element_present('来电名称'):
+            call.page_contain_element('来电名称')
+        else:
+            call.page_should_contain_text('打电话不花钱')
+
+    @tags('ALL', 'CMCC','call')
+    def test_call_0002(self):
+        """通话界面-拨号键盘显示"""
+        time.sleep(2)
+        call=CallPage()
+        call.page_contain_element('拨号键盘')
+        if call.is_element_present('来电名称'):
+            call.page_contain_element('来电名称')
+        else:
+            call.page_should_contain_text('打电话不花钱')
+        #点击键盘
+        call.click_keyboard()
+        time.sleep(2)
+        call.is_keyboard_shown()
+        call.click_keyboard_input_box()
+        text='123'
+        call.input_text_in_input_box(text)
+        number=call.get_input_box_text()
+        self.assertTrue(number)
+
+    @tags('ALL', 'CMCC','call')
+    def test_call_0003(self):
+        """通话界面-拨号盘收起"""
+        time.sleep(2)
+        call=CallPage()
+        call.page_contain_element('拨号键盘')
+        if call.is_element_present('来电名称'):
+            call.page_contain_element('来电名称')
+        else:
+            call.page_should_contain_text('打电话不花钱')
+        #点击键盘
+        call.click_keyboard()
+        time.sleep(2)
+        call.is_keyboard_shown()
+        #再次点击拨号盘
+        call.click_hide_keyboard()
+        time.sleep(2)
+        call.page_contain_element('拨号键盘')
+
+
+    @tags('ALL', 'CMCC','call')
+    def test_call_0004(self):
+        """通话界面-点击视频通话"""
+        call = CallPage()
+        call.click_add()
+        call.page_should_contain_text('视频通话')
+        call.page_should_contain_text('多方电话')
+        time.sleep(1)
+        call.click_text('视频通话')
+        Selectcontactpage().page_should_contain_text('发起视频通话')
+
+
+    @tags('ALL', 'CMCC','call')
+    def test_call_0005(self):
+        """通话界面-打开通话键盘,显示通话记录"""
+        time.sleep(2)
+        call=CallPage()
+        #点击键盘
+        call.click_keyboard()
+        time.sleep(2)
+        call.is_keyboard_shown()
+        if call.is_element_present('来电名称'):
+            call.page_contain_element('来电名称')
+        call.page_left()
+        call.page_contain_element('收起键盘')
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

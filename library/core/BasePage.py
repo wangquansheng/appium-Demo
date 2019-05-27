@@ -531,3 +531,8 @@ class BasePage(object):
         """向下滑动"""
         self.swipe_by_percent_on_screen(50, 30, 50, 70, 800)
 
+    @TestLogger.log("向左滑动一页")
+    def page_left(self):
+        """向右滑动"""
+        self.swipe_by_percent_on_screen(50, 70, 20, 70, 800)
+

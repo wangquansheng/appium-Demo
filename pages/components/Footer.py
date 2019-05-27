@@ -10,7 +10,7 @@ class FooterPage(BasePage):
     __locators = {
         '我': (MobileBy.ID, 'com.cmic.college:id/tvMe'),
         '消息': (MobileBy.ID, 'com.cmic.college:id/tvMessage'),
-        '通话': (MobileBy.ID, 'com.cmic.college:id/tvContact'),
+        '通讯录': (MobileBy.ID, 'com.cmic.college:id/tvContact'),
         '密友': (MobileBy.ID, 'com.chinasofti.rcs:id/tvCircle'),
     }
 
@@ -25,9 +25,9 @@ class FooterPage(BasePage):
         self.click_element(self.__locators['消息'])
 
     @TestLogger.log()
-    def open_call_page(self):
+    def open_contact_page(self):
         """切换到标签页：通话"""
-        self.click_element(self.__locators['通话'])
+        self.click_element(self.__locators['通讯录'])
 
     @TestLogger.log()
     def open_friend_page(self):
