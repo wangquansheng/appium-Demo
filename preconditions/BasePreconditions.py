@@ -55,6 +55,12 @@ class LoginPreconditions(object):
             # 权限页
             guide_page.click_one_button_on()
             time.sleep(2)
+            if guide_page.is_text_present("取消"):
+                guide_page.click_text("取消")
+                time.sleep(2)
+                guide_page.click_text("取消")
+                current_mobile().launch_app()
+            time.sleep(2)
             guide_page.click_always_allow()
             one_key.wait_for_page_load(30)
 
