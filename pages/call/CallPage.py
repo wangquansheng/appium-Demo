@@ -2,6 +2,7 @@ from appium.webdriver.common.mobileby import MobileBy
 from library.core.BasePage import BasePage
 from library.core.TestLogger import TestLogger
 from pages.components.Footer import FooterPage
+import time
 
 
 class CallPage(FooterPage):
@@ -9,6 +10,24 @@ class CallPage(FooterPage):
     ACTIVITY = 'com.cmcc.cmrcs.android.ui.activities.HomeActivity'
 
     __locators = {
+        # 权限框
+        '禁止': (MobileBy.ID, 'com.android.packageinstaller:id/permission_deny_button'),
+        '始终允许': (MobileBy.ID, 'com.android.packageinstaller:id/permission_allow_button'),
+        '遮罩1': (MobileBy.ID, 'com.cmic.college:id/tvContact'),
+        '遮罩2': (MobileBy.ID, 'com.cmic.college:id/header'),
+
+        '通话文案': (MobileBy.ID, 'com.cmic.college:id/header'),
+        '来电名称': (MobileBy.ID, 'com.cmic.college:id/tvName'),
+        '来电详情': (MobileBy.ID, 'com.cmic.college:id/ivDetail'),
+        '+': (MobileBy.ID, 'com.cmic.college: id / ivOperation'),
+        '视频通话': (MobileBy.XPATH, '//*[contains(@text,"视频通话")]'),
+        '多方电话': (MobileBy.XPATH, '//*[contains(@text,"多方电话")]'),
+        '空白文案':(MobileBy.XPATH, '//*[contains(@text,"打电话不花钱")]'),
+        '键盘输入框': (MobileBy.ID, 'com.cmic.college:id/etInputNum'),
+        '收起键盘': (MobileBy.ID, 'com.cmic.college:id/ivHide'),
+
+
+
         'tip1': (MobileBy.ID, 'com.cmic.college:id/ivFreeCall'),
         'tip2': (MobileBy.ID, 'com.cmic.college:id/ivKeyboard'),
         'tip3': (MobileBy.ID, 'com.cmic.college:id/tvContact'),
@@ -63,16 +82,38 @@ class CallPage(FooterPage):
         self.click_element(self.__locators['tip2'])
         self.click_element(self.__locators['tip3'])
 
+    @TestLogger.log()
+    def click_always_allow(self):
+        """权限框-点击始终允许"""
+        while self.is_text_present('始终允许'):
+            self.click_text('始终允许')
+            time.sleep(2)
+
+
+    @TestLogger.log()
+    def remove_mask(self):
+        """去除遮罩"""
+        self.click_element(self.__class__.__locators['遮罩1'])
+        self.click_element(self.__class__.__locators['遮罩2'])
+
+
     @TestLogger.log('等待页面自动跳转')
-    def wait_for_page_call(self, max_wait_time=8):
+    def wait_for_page_call(self, max_wait_time=30):
         self.wait_until(
             condition=lambda d: self.is_text_present("不花钱打电话"),
             timeout=max_wait_time,
         )
 
+    @TestLogger.log('等待页面自动跳转')
+    def wait_for_page_call_load(self, max_wait_time=30):
+        self.wait_until(
+            condition=lambda d: self.is_text_present("始终允许"),
+            timeout=max_wait_time,
+        )
+
     @TestLogger.log('是否在通话页面')
     def is_on_this_page(self):
-        el = self.get_elements(self.__locators['视频'])
+        el = self.get_elements(self.__locators['拨号键盘'])
         if len(el) > 0:
             return True
         return False
@@ -88,12 +129,12 @@ class CallPage(FooterPage):
 
     @TestLogger.log("点击包含文本的元素")
     def click_by_text(self, text):
-        """当前页面是否包含此文本"""
+        """点击文本"""
         return self.click_text(text)
 
     @TestLogger.log("点击包含文本的元素")
     def input_locator_text(self, locator, text):
-        """当前页面是否包含此文本"""
+        """输入文本"""
         return self.input_text(self.__locators[locator], text)
 
     @TestLogger.log("点击包含文本的第一个元素")
@@ -293,3 +334,36 @@ class CallPage(FooterPage):
     @TestLogger.log("获得元素对应的数量")
     def get_elements_count(self, locator):
         return self.get_elements(self.__locators[locator])
+
+    @TestLogger.log("页面应该包含元素")
+    def page_contain_element(self, locator):
+        self.page_should_contain_element(self.__locators[locator])
+
+    @TestLogger.log("判断页面元素是否存在")
+    def is_element_present(self, locator):
+        return self._is_element_present(self.__locators[locator])
+
+    @TestLogger.log("页面应该包含元素")
+    def click_keyboard(self):
+        self.click_element(self.__locators['拨号键盘'])
+
+    @TestLogger.log("点击键盘输入框")
+    def click_keyboard_input_box(self):
+        self.click_element(self.__locators['键盘输入框'])
+
+    @TestLogger.log("键盘输入框输入文本")
+    def input_text_in_input_box(self,text):
+        self.input_text(self.__locators['键盘输入框'],text)
+
+
+    @TestLogger.log("获取输入框文本")
+    def get_input_box_text(self,):
+        return self.get_element(self.__class__.__locators['键盘输入框']).text
+
+    @TestLogger.log("点击收起键盘")
+    def click_hide_keyboard(self):
+        self.click_element(self.__class__.__locators['收起键盘'])
+
+    @TestLogger.log("点击+")
+    def click_add(self):
+        self.click_element(self.__class__.__locators['+'])
