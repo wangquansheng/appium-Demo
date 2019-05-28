@@ -14,6 +14,7 @@ from pages.guide import GuidePage
 from pages.login.LoginPage import OneKeyLoginPage
 from pages.mine.MeEditProfile import MeEditProfilePage
 from pages.mine.mine import MinePage
+from preconditions.BasePreconditions import LoginPreconditions
 
 REQUIRED_MOBILES = {
     'Android-移动': 'M960BDQN229CH',
@@ -27,7 +28,7 @@ REQUIRED_MOBILES = {
 }
 
 
-class Preconditions(object):
+class Preconditions(LoginPreconditions):
     """
     分解前置条件
     """
@@ -43,12 +44,12 @@ class Preconditions(object):
         client = switch_to_mobile(REQUIRED_MOBILES['测试机'])
         client.connect_mobile()
 
-    @staticmethod
-    def select_mobile(category):
-        """选择手机手机"""
-        client = switch_to_mobile(REQUIRED_MOBILES[category])
-        client.connect_mobile()
-        return client
+    # @staticmethod
+    # def select_mobile(category):
+    #     """选择手机手机"""
+    #     client = switch_to_mobile(REQUIRED_MOBILES[category])
+    #     client.connect_mobile()
+    #     return client
 
     @staticmethod
     def select_assisted_mobile2():
@@ -56,51 +57,51 @@ class Preconditions(object):
         switch_to_mobile(REQUIRED_MOBILES['辅助机2'])
         current_mobile().connect_mobile()
 
-    @staticmethod
-    def make_already_in_one_key_login_page():
-        """
-        1、已经进入一键登录页
-        :return:
-        """
-        # 如果当前页面已经是一键登录页，不做任何操作
-        one_key = OneKeyLoginPage()
-        if one_key.is_on_this_page():
-            return
-        # 如果当前页不是引导页第一页，重新启动app
-        guide_page = GuidePage()
-        if not guide_page.is_on_the_first_guide_page():
-            current_mobile().launch_app()
-            guide_page.wait_for_page_load(20)
+    # @staticmethod
+    # def make_already_in_one_key_login_page():
+    #     """
+    #     1、已经进入一键登录页
+    #     :return:
+    #     """
+    #     # 如果当前页面已经是一键登录页，不做任何操作
+    #     one_key = OneKeyLoginPage()
+    #     if one_key.is_on_this_page():
+    #         return
+    #     # 如果当前页不是引导页第一页，重新启动app
+    #     guide_page = GuidePage()
+    #     if not guide_page.is_on_the_first_guide_page():
+    #         current_mobile().launch_app()
+    #         guide_page.wait_for_page_load(20)
+    #
+    #     # 跳过引导页
+    #     guide_page.wait_for_page_load(30)
+    #     guide_page.swipe_to_the_second_banner()
+    #     guide_page.swipe_to_the_third_banner()
+    #     guide_page.click_start_the_experience()
+    #     guide_page.click_start_the_one_key()
 
-        # 跳过引导页
-        guide_page.wait_for_page_load(30)
-        guide_page.swipe_to_the_second_banner()
-        guide_page.swipe_to_the_third_banner()
-        guide_page.click_start_the_experience()
-        guide_page.click_start_the_one_key()
-
-    @staticmethod
-    def login_by_one_key_login():
-        """
-        从一键登录页面登录
-        :return:
-        """
-        # 等待号码加载完成后，点击一键登录
-        one_key = OneKeyLoginPage()
-        one_key.wait_for_tell_number_load(60)
-        login_number = one_key.get_login_number()
-        one_key.click_one_key_login()
-        one_key.click_sure_login()
-        # 等待消息页
-        gp = GuidePage()
-        try:
-            gp.click_the_checkbox()
-            gp.click_the_no_start_experience()
-        except:
-            pass
-        cp = CallPage()
-        cp.click_contact_tip()
-        return login_number
+    # @staticmethod
+    # def login_by_one_key_login():
+    #     """
+    #     从一键登录页面登录
+    #     :return:
+    #     """
+    #     # 等待号码加载完成后，点击一键登录
+    #     one_key = OneKeyLoginPage()
+    #     one_key.wait_for_tell_number_load(60)
+    #     login_number = one_key.get_login_number()
+    #     one_key.click_one_key_login()
+    #     one_key.click_sure_login()
+    #     # 等待消息页
+    #     gp = GuidePage()
+    #     try:
+    #         gp.click_the_checkbox()
+    #         gp.click_the_no_start_experience()
+    #     except:
+    #         pass
+    #     cp = CallPage()
+    #     cp.click_contact_tip()
+    #     return login_number
 
     @staticmethod
     def app_start_for_the_first_time():
@@ -128,39 +129,39 @@ class Preconditions(object):
         current_driver().activate_app(app_package)
         current_mobile().reset_app()
 
-    @staticmethod
-    def make_already_in_call_page():
-        """
-        前置条件：
-        1.已登录客户端
-        2.当前在消息页面
-        """
-        # 如果当前页面是在通话录页，不做任何操作
-        call_page = CallPage()
-        if call_page.is_on_this_page():
-            return
-        # 如果当前页面已经是一键登录页，进行一键登录页面
-        one_key = OneKeyLoginPage()
-        if one_key.is_on_this_page():
-            Preconditions.login_by_one_key_login()
-        # 如果当前页不是引导页第一页，重新启动app
-        else:
-            try:
-                current_mobile().terminate_app('com.cmic.college', timeout=2000)
-            except:
-                pass
-            current_mobile().launch_app()
-            try:
-                call_page.wait_until(
-                    condition=lambda d: call_page.is_on_this_page(),
-                    timeout=3
-                )
-                return
-            except TimeoutException:
-                pass
-            Preconditions.reset_and_relaunch_app()
-            Preconditions.make_already_in_one_key_login_page()
-            Preconditions.login_by_one_key_login()
+    # @staticmethod
+    # def make_already_in_call_page():
+    #     """
+    #     前置条件：
+    #     1.已登录客户端
+    #     2.当前在消息页面
+    #     """
+    #     # 如果当前页面是在通话录页，不做任何操作
+    #     call_page = CallPage()
+    #     if call_page.is_on_this_page():
+    #         return
+    #     # 如果当前页面已经是一键登录页，进行一键登录页面
+    #     one_key = OneKeyLoginPage()
+    #     if one_key.is_on_this_page():
+    #         Preconditions.login_by_one_key_login()
+    #     # 如果当前页不是引导页第一页，重新启动app
+    #     else:
+    #         try:
+    #             current_mobile().terminate_app('com.cmic.college', timeout=2000)
+    #         except:
+    #             pass
+    #         current_mobile().launch_app()
+    #         try:
+    #             call_page.wait_until(
+    #                 condition=lambda d: call_page.is_on_this_page(),
+    #                 timeout=3
+    #             )
+    #             return
+    #         except TimeoutException:
+    #             pass
+    #         Preconditions.reset_and_relaunch_app()
+    #         Preconditions.make_already_in_one_key_login_page()
+    #         Preconditions.login_by_one_key_login()
 
     @staticmethod
     def make_already_in_me_page():
