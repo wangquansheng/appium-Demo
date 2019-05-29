@@ -175,6 +175,7 @@ class CallPage(FooterPage):
 
     @TestLogger.log('拨打并挂断一个点对点视频通话')
     def point2point_vedio_call(self):
+        self.click_locator_key('+')
         self.click_locator_key('视频')
         self.click_locator_key('视频通话_第一个联系人')
         self.click_locator_key('呼叫')

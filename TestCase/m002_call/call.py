@@ -175,7 +175,7 @@ class CallTest(TestCase):
         Preconditions.make_sure_in_after_login_callpage()
 
     @tags('ALL', 'SMOKE', 'CMCC')
-    def test_call_0034(self):
+    def test_call_0001(self):
         """通话列表页面的显示（单条记录的删除）"""
         call_page = CallPage()
         call_page.make_sure_have_p2p_vedio_record()
@@ -193,7 +193,7 @@ class CallTest(TestCase):
         Preconditions.make_sure_in_after_login_callpage()
 
     @tags('ALL', 'SMOKE', 'CMCC')
-    def test_call_0035(self):
+    def test_call_0002(self):
         """通话列表页面的显示（清空全部通话记录）"""
         call_page = CallPage()
         call_page.make_sure_have_p2p_vedio_record()
