@@ -107,7 +107,7 @@ class CallPage(FooterPage):
     @TestLogger.log('等待页面自动跳转')
     def wait_for_page_call_load(self, max_wait_time=30):
         self.wait_until(
-            condition=lambda d: self.is_text_present("始终允许"),
+            condition=lambda d: self.is_text_present("通话"),
             timeout=max_wait_time,
         )
 
