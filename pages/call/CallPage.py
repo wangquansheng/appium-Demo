@@ -304,6 +304,8 @@ class CallPage(FooterPage):
             self.click_locator_key('视频通话_第二个联系人')
         self.click_locator_key('呼叫')
         time.sleep(1)
+        if self.on_this_page_common('流量_继续拨打'):
+            self.click_locator_key('流量_继续拨打')
         if self.on_this_page_common('无密友圈_提示文本'):
             self.click_locator_key('无密友圈_取消')
         time.sleep(1)
@@ -336,7 +338,7 @@ class CallPage(FooterPage):
         self.point2point_vedio_call()
         self.wait_until(
             condition=lambda d: self.is_text_present("视频通话"),
-            timeout=8,
+            timeout=30,
         )
 
     @TestLogger.log('确保页面有多方视频的记录')
