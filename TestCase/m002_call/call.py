@@ -777,40 +777,40 @@ class CallPageTest(TestCase):
             return False
         return True
 
-    @tags('ALL', 'CMCC', 'call')
-    def test_call_00014(self):
-        """超长的字符不显示"""
-        call = CallPage()
-        call.wait_for_page_load()
-        # 判断如果键盘已拉起，则收起键盘
-        if call.is_exist_call_key():
-            call.click_hide_keyboard()
-            time.sleep(1)
-        call.make_sure_have_p2p_voicecall_record()
-        call.click_tag_detail_first_element('飞信电话')
-        time.sleep(1)
-        if not call.on_this_page_call_detail():
-            raise RuntimeError('通话记录---详情：打开失败')
-        # 1. 修改为中文
-        name = '测试超长字符TestTooLong@#$%^&%$^&^$&**&^%'
-        call.click_modify_nickname()
-        call.wait_for_page_modify_nickname()
-        time.sleep(0.5)
-        call.edit_clear()
-        call.input_text_in_nickname(name)
-        call.click_save_nickname()
-        time.sleep(2)
-        if not call.on_this_page_call_detail():
-            return False
-        lenTxt = len(name)
-        lenTxt_utf8 = len(name.encode('utf-8'))
-        size = int((lenTxt_utf8 - lenTxt) / 2 + lenTxt)
-        if size > 30:
-            if name != call.get_nickname():
-                return
-        else:
-            raise RuntimeError('测试备注没有大于最大长度')
-        return True
+    # @tags('ALL', 'CMCC', 'call')
+    # def test_call_00014(self):
+    #     """超长的字符不显示"""
+    #     call = CallPage()
+    #     call.wait_for_page_load()
+    #     # 判断如果键盘已拉起，则收起键盘
+    #     if call.is_exist_call_key():
+    #         call.click_hide_keyboard()
+    #         time.sleep(1)
+    #     call.make_sure_have_p2p_voicecall_record()
+    #     call.click_tag_detail_first_element('飞信电话')
+    #     time.sleep(1)
+    #     if not call.on_this_page_call_detail():
+    #         raise RuntimeError('通话记录---详情：打开失败')
+    #     # 1. 修改为中文
+    #     name = '测试超长字符TestTooLong@#$%^&%$^&^$&**&^%'
+    #     call.click_modify_nickname()
+    #     call.wait_for_page_modify_nickname()
+    #     time.sleep(0.5)
+    #     call.edit_clear()
+    #     call.input_text_in_nickname(name)
+    #     call.click_save_nickname()
+    #     time.sleep(2)
+    #     if not call.on_this_page_call_detail():
+    #         return False
+    #     lenTxt = len(name)
+    #     lenTxt_utf8 = len(name.encode('utf-8'))
+    #     size = int((lenTxt_utf8 - lenTxt) / 2 + lenTxt)
+    #     if size > 30:
+    #         if name != call.get_nickname():
+    #             return
+    #     else:
+    #         raise RuntimeError('测试备注没有大于最大长度')
+    #     return True
 
     @tags('ALL', 'CMCC', 'call')
     def test_call_00016(self):
@@ -1060,29 +1060,29 @@ class CallPageTest(TestCase):
         time.sleep(1)
         # TODO
 
-    @tags('ALL', 'CMCC', 'call')
-    def test_call_00030(self):
-        """
-            验证通话记录详情页-编辑备注名---正确输入并点击保存（中文、英文、特殊符号）---保存成功
-        """
-        call = CallPage()
-        call.wait_for_page_load()
-        # 判断如果键盘已拉起，则收起键盘
-        if call.is_exist_call_key():
-            call.click_hide_keyboard()
-            time.sleep(1)
-        call.make_sure_have_p2p_voicecall_record()
-        call.click_tag_detail_first_element('飞信电话')
-        time.sleep(1)
-        if not call.on_this_page_call_detail():
-            raise RuntimeError('通话记录---详情：打开失败')
-        # 1. 修改为中文
-        name = '修改后的备注'
-        if not self.check_modify_nickname(name):
-            raise RuntimeError('修改备注出错')
-        call.click_locator_key('详情_返回')
-        call.wait_for_page_call_load()
-        self.assertEquals(call.check_text_exist(name), True)
+    # @tags('ALL', 'CMCC', 'call')
+    # def test_call_00030(self):
+    #     """
+    #         验证通话记录详情页-编辑备注名---正确输入并点击保存（中文、英文、特殊符号）---保存成功
+    #     """
+    #     call = CallPage()
+    #     call.wait_for_page_load()
+    #     # 判断如果键盘已拉起，则收起键盘
+    #     if call.is_exist_call_key():
+    #         call.click_hide_keyboard()
+    #         time.sleep(1)
+    #     call.make_sure_have_p2p_voicecall_record()
+    #     call.click_tag_detail_first_element('飞信电话')
+    #     time.sleep(1)
+    #     if not call.on_this_page_call_detail():
+    #         raise RuntimeError('通话记录---详情：打开失败')
+    #     # 1. 修改为中文
+    #     name = '修改后的备注'
+    #     if not self.check_modify_nickname(name):
+    #         raise RuntimeError('修改备注出错')
+    #     call.click_locator_key('详情_返回')
+    #     call.wait_for_page_call_load()
+    #     self.assertEquals(call.check_text_exist(name), True)
 
     @tags('ALL', 'CMCC', 'call')
     def test_call_00031(self):

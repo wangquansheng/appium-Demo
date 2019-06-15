@@ -326,7 +326,8 @@ class CallPage(FooterPage):
         if self.on_this_page_common('挂断_多方通话'):
             self.click_locator_key('挂断_多方通话')
             self.click_locator_key('挂断_多方通话_确定')
-        self.click_locator_key('多方通话_返回')
+        if self.on_this_page_common('多方通话_返回'):
+            self.click_locator_key('多方通话_返回')
 
     @TestLogger.log('确保页面有点对点视频的记录')
     def make_sure_have_p2p_vedio_record(self):
