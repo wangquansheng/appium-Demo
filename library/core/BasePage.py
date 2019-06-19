@@ -432,7 +432,24 @@ class BasePage(object):
         return code_info
 
     def get_network_status(self):
-        """获取网络链接状态"""
+        """获取网络链接状态
+        Connection types are specified here:
+        https://code.google.com/p/selenium/source/browse/spec-draft.md?repo=mobile#120
+        Value (Alias)      | Data | Wifi | Airplane Mode
+        -------------------------------------------------
+        0 (None)           | 0    | 0    | 0
+        1 (Airplane Mode)  | 0    | 0    | 1
+        2 (Wifi only)      | 0    | 1    | 0
+        4 (Data only)      | 1    | 0    | 0
+        6 (All network on) | 1    | 1    | 0
+
+        class ConnectionType(object):
+            NO_CONNECTION = 0
+            AIRPLANE_MODE = 1
+            WIFI_ONLY = 2
+            DATA_ONLY = 4
+            ALL_NETWORK_ON = 6
+        """
         return self.mobile.get_network_status()
 
     def set_network_status(self, status):
@@ -491,21 +508,21 @@ class BasePage(object):
         """按住并滑动"""
         element = self.get_element(locator)
         rect = element.rect
-        pointX = int(rect["x"]) + int(rect["width"])/2
+        pointX = int(rect["x"]) + int(rect["width"]) / 2
         pointY = int(rect["y"]) + int(rect["height"]) * 1
         TouchAction(self.driver).long_press(element, duration=3000).move_to(element, pointX,
-                                                                                    pointY).wait(1).release().perform()
+                                                                            pointY).wait(1).release().perform()
 
     @TestLogger.log("按住并向上滑动")
     def press_and_move_to_up(self, locator):
         """按住并滑动"""
         element = self.get_element(locator)
         rect = element.rect
-        pointX = int(rect["x"]) + int(rect["width"])/2
+        pointX = int(rect["x"]) + int(rect["width"]) / 2
         pointY = -(int(rect["y"]) - 20)
         # pointY=0
         TouchAction(self.driver).long_press(element, duration=3000).move_to(element, pointX,
-                                                                                    pointY).wait(3).release().perform()
+                                                                            pointY).wait(3).release().perform()
 
     def tap_coordinate(self, positions):
         """模拟手指点击（最多五个手指）positions:[(100, 20), (100, 60), (100,100)]"""
@@ -536,3 +553,23 @@ class BasePage(object):
         """向右滑动"""
         self.swipe_by_percent_on_screen(50, 70, 20, 70, 800)
 
+    @TestLogger.log('挂断电话')
+    def hang_up_the_call(self):
+        """挂断电话"""
+        return self.mobile.hang_up_the_call()
+
+    @TestLogger.log('接听电话')
+    def pick_up_the_call(self):
+        """接听电话"""
+        return self.mobile.pick_up_the_call()
+
+    @TestLogger.log('判断是否在通话界面')
+    def is_phone_in_calling_state(self):
+        """判断是否在通话界面"""
+        try:
+            state = self.mobile.is_phone_in_calling_state()
+            if state:
+                return True
+            return False
+        except:
+            return False
