@@ -1,4 +1,5 @@
 import re
+import time
 
 from appium.webdriver.common.mobileby import MobileBy
 
@@ -24,9 +25,8 @@ class OneKeyLoginPage(BasePage):
         "同意": (MobileBy.ID, "com.cmic.college:id/btnConfirm"),
         "不同意": (MobileBy.ID, "com.cmic.college:id/btnCancel"),
 
-        "使用号码登录": (MobileBy.ID, "com.cmic.college:id/tvTitle"),
-        "确定": (MobileBy.ID, "com.cmic.college:id/btnConfirm"),
-
+        # "使用号码登录": (MobileBy.ID, "com.cmic.college:id/tvTitle"),
+        # "确定": (MobileBy.ID, "com.cmic.college:id/btnConfirm"),
 
     }
 
@@ -47,7 +47,8 @@ class OneKeyLoginPage(BasePage):
     @TestLogger.log()
     def click_one_key_login(self):
         """点击一键登录"""
-        self.click_element(self.__locators["一键登录"])
+        # self.click_element(self.__locators["一键登录"])
+        self.click_text('一键登录')
 
     @TestLogger.log()
     def click_agree_user_aggrement(self):
@@ -58,7 +59,6 @@ class OneKeyLoginPage(BasePage):
     def click_agree_login_by_number(self):
         """点击同意号码登录"""
         self.click_element(self.__locators["确定"])
-
 
     @TestLogger.log()
     def click_sure_login(self):
@@ -117,7 +117,7 @@ class OneKeyLoginPage(BasePage):
             self.wait_until(
                 timeout=timeout,
                 auto_accept_permission_alert=auto_accept_alerts,
-                condition=lambda d: self._is_element_present(self.__class__.__locators["一键登录"])
+                condition=lambda d: self.is_text_present('一键登录')
             )
         except:
             message = "页面在{}s内，没有加载成功".format(timeout)

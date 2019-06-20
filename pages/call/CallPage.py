@@ -14,15 +14,16 @@ class CallPage(FooterPage):
         # 权限框
         '禁止': (MobileBy.ID, 'com.android.packageinstaller:id/permission_deny_button'),
         '始终允许': (MobileBy.ID, 'com.android.packageinstaller:id/permission_allow_button'),
-        '遮罩1': (MobileBy.ID, 'com.cmic.college:id/tvContact'),
-        '遮罩2': (MobileBy.ID, 'com.cmic.college:id/header'),
-
+        # '遮罩1': (MobileBy.ID, 'com.cmic.college:id/tvContact'),
+        # '遮罩2': (MobileBy.ID, 'com.cmic.college:id/header'),
+        # 'mask': (MobileBy.XPATH, '//android.widget.FrameLayout[1]/android.widget.RelativeLayout[1]'),
         '通话文案': (MobileBy.ID, 'com.cmic.college:id/header'),
         '来电名称': (MobileBy.ID, 'com.cmic.college:id/tvName'),
         '来电详情': (MobileBy.ID, 'com.cmic.college:id/ivDetail'),
         '+': (MobileBy.ID, 'com.cmic.college:id/ivOperation'),
         # 通话界面
         '通话_通话': (MobileBy.ID, 'com.cmic.college:id/ivClose'),
+        '通话': (MobileBy.ID, 'com.cmic.college:id/tvTitle'),
         '视频通话': (MobileBy.XPATH, '//*[contains(@text,"视频通话")]'),
         '多方电话': (MobileBy.XPATH, '//*[contains(@text,"多方电话")]'),
 
@@ -93,6 +94,23 @@ class CallPage(FooterPage):
         '视频界面_转为语音': (MobileBy.ID, 'com.cmic.college:id/video_iv_change_to_voice'),
         '视频界面_挂断': (MobileBy.ID, 'com.cmic.college:id/video_iv_term'),
         '视频界面_切换摄像头': (MobileBy.ID, 'com.cmic.college:id/video_iv_switch_camera'),
+
+        # 视频通话界面
+        '视频_备注': (MobileBy.ID, 'com.cmic.college:id/video_tv_name'),
+        '视频_头像': (MobileBy.ID, 'com.cmic.college:id/video_ivUser'),
+        '视频_号码': (MobileBy.ID, 'com.cmic.college:id/video_tv_number'),
+        '视频_待接受': (MobileBy.XPATH, '//android.widget.TextView[@text="正在等待对方接听"]'),
+
+        # 语音切换视频通话界面
+        '切视频_备注': (MobileBy.ID, 'com.cmic.college:id/invite_tv_name'),
+        '切视频_头像': (MobileBy.ID, 'com.cmic.college:id/invite_ivUser'),
+        '切视频_号码': (MobileBy.ID, 'com.cmic.college:id/invite_tv_number'),
+        '切视频_挂断': (MobileBy.ID, '//android.widget.RelativeLayout[@resource-id="com.cmic.college:'
+                                'id/view_invite_video_call"]/android.widget.ImageView[1]'),
+        '切视频_待接受': (MobileBy.XPATH, '//android.widget.TextView[@text="正在等待对方接受邀请"]'),
+        '切视频_文本': (MobileBy.XPATH, '//android.widget.Button[@resource-id="com.cmic.college:id/btnConfirm"]'),
+        '切视频_接受': (MobileBy.ID, 'com.cmic.college:id/btnConfirm'),
+        '切视频_取消': (MobileBy.ID, 'com.cmic.college:id/btnCancel'),
 
         # 语音通话界面
         '语音界面_时长': (MobileBy.ID, 'com.cmic.college:id/chrState'),
@@ -186,12 +204,6 @@ class CallPage(FooterPage):
         '流量_继续拨打': (MobileBy.ID, 'com.cmic.college:id/tv_continue'),
         '流量_提示内容': (MobileBy.ID, 'com.cmic.college:id/content'),
 
-        # 视频通话界面
-        '视频_转为语音通话': (MobileBy.ID, 'com.cmic.college:id/video_iv_change_to_voice'),
-        '视频_结束视频通话': (MobileBy.ID, 'com.cmic.college:id/video_iv_term'),
-        '视频_切换摄像头': (MobileBy.ID, 'com.cmic.college:id/video_iv_switch_camera'),
-        '视频_备注': (MobileBy.ID, 'com.cmic.college:id/video_tv_name'),
-
         # 对方还未使用密友圈，喊他一起来免流量视频通话
         '无密友圈_提示文本': (MobileBy.XPATH, '//*[contains(@text,"对方还未使用密友圈")]'),
         '无密友圈_确定': (MobileBy.ID, 'com.cmic.college:id/btnConfirm'),
@@ -204,6 +216,20 @@ class CallPage(FooterPage):
         '悬浮窗_内容': (MobileBy.XPATH, '//*[contains(@text,"您的手机没有授予悬浮窗权限，请开启后再试")]'),
         '暂不开启': (MobileBy.ID, 'android:id/button2'),
         '现在去开启': (MobileBy.ID, 'android:id/button1'),
+
+        # 语音电话接听页面
+        '语音_短信': (MobileBy.ID, 'com.android.incallui:id/mmsbutton'),
+        '语音_提醒': (MobileBy.ID, 'com.android.incallui:id/remindbutton'),
+        '语音_拒绝': (MobileBy.ID, 'com.android.incallui:id/declinebutton'),
+        '语音_接听': (MobileBy.ID, 'com.android.incallui:id/answerbutton'),
+        '语音_电话号码': (MobileBy.ID, 'com.android.incallui:id/phoneNumber'),
+        '语音_归属地': (MobileBy.ID, 'com.android.incallui:id/numberLocation'),
+        '语音_备注': (MobileBy.ID, 'com.android.incallui:id/name'),
+        '语音_照片': (MobileBy.ID, 'com.android.incallui:id/photo'),
+
+        # 版本升级
+        # '立即升级': (MobileBy.ID, 'com.cmic.college:id/btn_update'),
+        '暂不升级': (MobileBy.XPATH, '//*[@text="暂不升级"]'),
 
     }
 
@@ -223,8 +249,14 @@ class CallPage(FooterPage):
     @TestLogger.log()
     def remove_mask(self):
         """去除遮罩"""
-        self.click_element(self.__class__.__locators['遮罩1'])
-        self.click_element(self.__class__.__locators['遮罩2'])
+        # if self.is_element_already_exist('遮罩1'):
+        #     self.click_element(self.__class__.__locators['遮罩1'])
+        # if self.is_element_already_exist('遮罩2'):
+        #     self.click_element(self.__class__.__locators['遮罩2'])
+        self.tap_coordinate([(100, 100), (100, 110), (100, 120)])
+        time.sleep(1)
+        self.tap_coordinate([(100, 100), (100, 110), (100, 120)])
+        print('mask')
 
     @TestLogger.log("页面是否包含广告推送页，并关闭")
     def close_ad_if_exist(self):
@@ -329,7 +361,7 @@ class CallPage(FooterPage):
     @TestLogger.log('拨打并挂断一个点对点语音通话')
     def point2point_voice_call(self):
         self.click_locator_key('拨号键盘')
-        self.input_text(self.__locators['拨叫号码'], '10086')
+        self.input_text(self.__locators['拨叫号码'], '13641490071')
         self.click_locator_key('拨号界面_呼叫')
         import time
         time.sleep(1)
@@ -379,7 +411,7 @@ class CallPage(FooterPage):
         if self.on_this_page_common('挂断_多方通话_确定'):
             self.click_locator_key('挂断_多方通话_确定')
         time.sleep(1)
-        if self.is_element_already_exsit('多方通话_返回'):
+        if self.is_element_already_exist('多方通话_返回'):
             self.click_locator_key('多方通话_返回')
 
     @TestLogger.log('确保页面有点对点视频的记录')
@@ -669,9 +701,14 @@ class CallPage(FooterPage):
         return False
 
     @TestLogger.log('是否有某个标签')
-    def on_this_page_common(self, locator):
+    def on_this_page_common(self, locator, default_timeout=5, auto_accept_permission_alert=True):
         """是否有某个标签"""
         try:
+            self.wait_until(
+                condition=lambda d: self.get_elements(self.__locators[locator]),
+                timeout=default_timeout,
+                auto_accept_permission_alert=auto_accept_permission_alert
+            )
             el = self.get_elements(self.__locators[locator])
             if len(el) > 0:
                 return True
@@ -771,19 +808,49 @@ class CallPage(FooterPage):
         if self.on_this_page_common('无密友圈_提示文本'):
             self.click_locator_key('无密友圈_取消')
 
-    @TestLogger.log('拨打并挂断一个点对点视频通话')
+    @TestLogger.log('拨打一个点对点视频通话')
+    def pick_up_p2p_voice(self, cards):
+        # 判断如果键盘已拉起，则收起键盘
+        if not self.is_exist_call_key():
+            self.click_show_keyboard()
+            time.sleep(1)
+        self.input_text(self.__locators['拨叫号码'], cards)
+        self.click_locator_key('拨号界面_呼叫')
+        time.sleep(1)
+        if self.is_text_present('请注意接听“飞信电话”来电，随后将自动呼叫对方。'):
+            self.set_not_reminders()
+            self.click_locator_key('回呼_我知道了')
+        print('正在呼叫 %s' % cards)
+        if self.is_element_already_exist('悬浮窗_内容'):
+            self.click_text('暂不开启')
+
+    @TestLogger.log('视频通话_接听')
     def pick_up_video_call(self):
         self.click_locator_key('视频通话_接听')
 
     @TestLogger.log('判断元素是否存在')
-    def is_element_already_exsit(self, locator):
+    def is_element_already_exist(self, locator, default_timeout=5, auto_accept_permission_alert=True):
         """判断元素是否存在"""
         try:
-            elements = self.get_elements(self.__locators[locator])
-            if len(elements) > 0:
-                return True
-            else:
-                return False
+            self.wait_until(
+                condition=lambda d: (len(self.get_elements(self.__locators[locator])) > 0),
+                timeout=default_timeout,
+                auto_accept_permission_alert=auto_accept_permission_alert
+            )
+            return True
+        except:
+            return False
+
+    @TestLogger.log('判断元素是否存在')
+    def is_text_present(self, text, default_timeout=5, auto_accept_permission_alert=True):
+        """判断元素是否存在"""
+        try:
+            self.wait_until(
+                condition=lambda d: self.mobile.is_text_present(text),
+                timeout=default_timeout,
+                auto_accept_permission_alert=auto_accept_permission_alert
+            )
+            return True
         except:
             return False
 
@@ -794,3 +861,10 @@ class CallPage(FooterPage):
     @TestLogger.log('获取所有元素')
     def get_some_elements(self, locator):
         return self.mobile.get_elements(self.__locators[locator])
+
+    @TestLogger.log('根据元素模拟三指点击屏幕')
+    def tap_screen_three_point(self, locator):
+        """根据元素模拟三指点击屏幕"""
+        if not self.is_element_already_exist(locator):
+            self.tap_coordinate([(100, 100), (100, 110), (100, 120)])
+            time.sleep(1)

@@ -24,10 +24,12 @@ REQUIRED_MOBILES = {
     'Android-XX-XX': 'others_double',
 }
 
+
 class Preconditions(LoginPreconditions):
     """
     分解前置条件
     """
+
     @staticmethod
     def connect_mobile(category):
         """选择手机手机"""
@@ -65,30 +67,6 @@ class ContactlocalPage(TestCase):
         Preconditions.connect_mobile('Android-移动')
         Preconditions.make_already_in_call_page()
         FooterPage().open_contact_page()
-        contact=ContactsPage()
+        contact = ContactsPage()
         contact.permission_box_processing()
         contact.remove_mask()
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
