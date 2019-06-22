@@ -550,8 +550,13 @@ class BasePage(object):
 
     @TestLogger.log("向左滑动一页")
     def page_left(self):
-        """向右滑动"""
+        """向左滑动"""
         self.swipe_by_percent_on_screen(50, 70, 20, 70, 800)
+
+    @TestLogger.log("向左滑动一页")
+    def page_right(self):
+        """向右滑动"""
+        self.swipe_by_percent_on_screen(20, 70, 50, 70, 800)
 
     @TestLogger.log('挂断电话')
     def hang_up_the_call(self):

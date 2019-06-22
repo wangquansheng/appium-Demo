@@ -6,7 +6,7 @@ from pages.components.Footer import FooterPage
 import time
 
 
-class CallPage(FooterPage):
+class CallPage(BasePage):
     """通话页面"""
     ACTIVITY = 'com.cmcc.cmrcs.android.ui.activities.HomeActivity'
 
@@ -23,6 +23,8 @@ class CallPage(FooterPage):
         '+': (MobileBy.ID, 'com.cmic.college:id/ivOperation'),
         # 通话界面
         '通话_通话': (MobileBy.ID, 'com.cmic.college:id/ivClose'),
+        '通话_设置常用联系人': (MobileBy.ID, 'com.cmic.college:id/ivResidentBubble'),
+        # 左上角‘通话’字样
         '通话': (MobileBy.ID, 'com.cmic.college:id/tvTitle'),
         '视频通话': (MobileBy.XPATH, '//*[contains(@text,"视频通话")]'),
         '多方电话': (MobileBy.XPATH, '//*[contains(@text,"多方电话")]'),
@@ -44,6 +46,7 @@ class CallPage(FooterPage):
         '通话类型标签': (MobileBy.ID, 'com.cmic.college:id/tvCallManner'),
         '联系人_详情图标': (MobileBy.ID, 'com.cmic.college:id/ivDetail'),
         '电话图标': (MobileBy.ID, 'com.cmic.college:id/ivFreeCall'),
+        # 键盘收起时的黄色图标
         '拨号键盘': (MobileBy.ID, 'com.cmic.college:id/ivKeyboard'),
 
         # 发起视频通话页面
@@ -76,8 +79,9 @@ class CallPage(FooterPage):
                                    'college:id/contact_list"]/android.widget.'
                                    'LinearLayout[1]/android.widget.LinearLayout'
                                    '[1]/android.widget.LinearLayout[1]/android.widget.TextView[1]'),
-        '字母_C': (MobileBy.XPATH, '//android.widget.LinearLayout[@resource-id="com.cmic.college:id/contact_in'
-                                 'dex_bar_container"]/android.widget.TextView[3]'),
+        '字母_C': (
+            MobileBy.XPATH, '//android.widget.LinearLayout[@resource-id="com.cmic.college:id/contact_in'
+                            'dex_bar_container"]/android.widget.TextView[3]'),
         '视频通话_搜索': (MobileBy.ID, 'com.cmic.college:id/editText_keyword'),
         '视频通话_接听': (MobileBy.ID, 'com.cmic.college:id/ivVideoAnswer'),
         '视频通话_挂断': (MobileBy.ID, 'com.cmic.college:id/ivCancel'),
@@ -90,16 +94,40 @@ class CallPage(FooterPage):
         '视频界面_时长': (MobileBy.ID, 'com.cmic.college:id/video_chrState'),
         '视频界面_免提': (MobileBy.ID, 'com.cmic.college:id/video_iv_speaker'),
         '视频界面_静音': (MobileBy.ID, 'com.cmic.college:id/video_iv_mute'),
-        '视频界面_画笔': (MobileBy.ID, 'com.cmic.college:id/video_iv_doodle'),
         '视频界面_转为语音': (MobileBy.ID, 'com.cmic.college:id/video_iv_change_to_voice'),
         '视频界面_挂断': (MobileBy.ID, 'com.cmic.college:id/video_iv_term'),
         '视频界面_切换摄像头': (MobileBy.ID, 'com.cmic.college:id/video_iv_switch_camera'),
+        '视频界面_小屏': (MobileBy.XPATH, '// android.widget.FrameLayout[@ resource-id="com.cmic.'
+                                    'college:id/video_main_view"]/android.view.View[2]'),
+        '视频界面_涂鸦': (MobileBy.ID, 'com.cmic.college:id/video_iv_doodle'),
 
         # 视频通话界面
         '视频_备注': (MobileBy.ID, 'com.cmic.college:id/video_tv_name'),
         '视频_头像': (MobileBy.ID, 'com.cmic.college:id/video_ivUser'),
         '视频_号码': (MobileBy.ID, 'com.cmic.college:id/video_tv_number'),
         '视频_待接受': (MobileBy.XPATH, '//android.widget.TextView[@text="正在等待对方接听"]'),
+        # 涂鸦界面
+        '涂鸦_返回': (MobileBy.ID, 'com.cmic.college:id/doodle_exit'),
+        '涂鸦_颜色': (MobileBy.ID, 'com.cmic.college:id/color_dot'),
+        '涂鸦_曲线': (MobileBy.ID, 'com.cmic.college:id/stroke'),
+        '涂鸦_橡皮': (MobileBy.ID, 'com.cmic.college:id/eraser'),
+        '涂鸦_删除': (MobileBy.ID, 'com.cmic.college:id/delete'),
+        '涂鸦_表情': (MobileBy.ID, 'com.cmic.college:id/sticker'),
+        '涂鸦_分享': (MobileBy.ID, 'com.cmic.college:id/onlineShare'),
+        '涂鸦_橙色': (MobileBy.XPATH, '//android.widget.LinearLayout[@resource-id="com.cmic.'
+                                  'college:id/color_view"]/android.widget.LinearLayout[1]/'
+                                  'android.widget.ImageView[2]'),
+        '涂鸦_滑块': (MobileBy.ID, 'com.cmic.college:id/seekbar'),
+        '涂鸦_表情1': (MobileBy.XPATH, '//android.support.v7.widget.RecyclerView/android.widget.TextView[1]'),
+        '涂鸦_表情移动框': (MobileBy.ID, 'com.cmic.college:id/floating_sticker'),
+        '涂鸦_表情删除框': (MobileBy.ID, 'com.cmic.college:id/floating_sticker_delete'),
+
+        '涂鸦_分享到QQ': (MobileBy.XPATH, '//android.widget.TextView[@text="QQ"]'),
+        '涂鸦_分享到微信': (MobileBy.XPATH, '//android.widget.TextView[@text="微信"]'),
+        '涂鸦_分享到朋友圈': (MobileBy.XPATH, '//android.widget.TextView[@text="朋友圈"]'),
+        '涂鸦_分享到QQ空间': (MobileBy.XPATH, '//android.widget.TextView[@text="QQ空间"]'),
+        '涂鸦_取消分享': (MobileBy.ID, 'com.cmic.college:id/btn_share_cancel'),
+        '涂鸦_画布': (MobileBy.ID, 'com.cmic.college:id/button_container'),
 
         # 语音切换视频通话界面
         '切视频_备注': (MobileBy.ID, 'com.cmic.college:id/invite_tv_name'),
@@ -108,7 +136,8 @@ class CallPage(FooterPage):
         '切视频_挂断': (MobileBy.ID, '//android.widget.RelativeLayout[@resource-id="com.cmic.college:'
                                 'id/view_invite_video_call"]/android.widget.ImageView[1]'),
         '切视频_待接受': (MobileBy.XPATH, '//android.widget.TextView[@text="正在等待对方接受邀请"]'),
-        '切视频_文本': (MobileBy.XPATH, '//android.widget.Button[@resource-id="com.cmic.college:id/btnConfirm"]'),
+        '切视频_文本': (
+            MobileBy.XPATH, '//android.widget.Button[@resource-id="com.cmic.college:id/btnConfirm"]'),
         '切视频_接受': (MobileBy.ID, 'com.cmic.college:id/btnConfirm'),
         '切视频_取消': (MobileBy.ID, 'com.cmic.college:id/btnCancel'),
 
@@ -168,13 +197,14 @@ class CallPage(FooterPage):
         '广告_立即参与': (MobileBy.ID, 'com.cmic.college:id/ivEnter'),
 
         # 通话详情页面
-        '详情_返回': (MobileBy.ID, 'com.cmic.college:id/ivBack'),
-        '详情_更多': (MobileBy.ID, 'com.cmic.college:id/iv_more'),
-        '详情_红点': (MobileBy.ID, 'com.cmic.college:id/view_red_dot'),
-        '详情_头像': (MobileBy.ID, 'com.cmic.college:id/ivAvatar'),
-        '详情_名称': (MobileBy.ID, 'com.cmic.college:id/tvName'),
-        '详情_通话': (MobileBy.ID, 'com.cmic.college:id/tvSendMessage'),
-        '详情_视频': (MobileBy.ID, 'com.cmic.college:id/tvVideoCall'),
+        '详情_返回': (MobileBy.ID, 'com.cmic.college:id/left_back_btn'),
+        # '详情_更多': (MobileBy.ID, 'com.cmic.college:id/iv_more'),
+        # '详情_红点': (MobileBy.ID, 'com.cmic.college:id/view_red_dot'),
+        '详情_头像': (MobileBy.ID, 'com.cmic.college:id/profile_photo'),
+        '详情_名称': (MobileBy.ID, 'com.cmic.college:id/profile_name'),
+        '详情_通话': (MobileBy.ID, 'com.cmic.college:id/my_profile_call'),
+        '详情_视频': (MobileBy.ID, 'com.cmic.college:id/my_profile_video'),
+        '详情_添加到桌面': (MobileBy.ID, 'com.cmic.college:id/my_profile_desk'),
         '详情_备注标签': (MobileBy.ID, 'com.cmic.college:id/tv_nickname'),
         '详情_备注内容': (MobileBy.ID, 'com.cmic.college:id/tv_nickset'),
         '详情_>': (MobileBy.ID, 'com.cmic.college:id/iv_arrow_right'),
@@ -185,7 +215,7 @@ class CallPage(FooterPage):
         '详情_通话类型': (MobileBy.ID, 'com.cmic.college:id/tvCallType'),
         '详情_通话时长': (MobileBy.ID, 'com.cmic.college:id/tvCallDuration'),
         '详情_邀请使用': (MobileBy.ID, 'com.cmic.college:id/bt_add_meetyou'),
-        '详情_发起多方视频': (MobileBy.ID, 'com.cmic.college:id/tv_start_call_again'),
+        '详情_发起多方视频': (MobileBy.ID, 'com.cmic.college:id/rlStartMultipartyVideo'),
         # 邀请使用
         '邀请_微信好友': (MobileBy.ID, 'com.cmic.college:id/tv_wechat'),
         '邀请_QQ好友': (MobileBy.ID, 'com.cmic.college:id/tv_qq'),
@@ -196,7 +226,8 @@ class CallPage(FooterPage):
         '备注_返回': (MobileBy.XPATH, '//android.widget.ImageButton[@content-desc="到上一层级"]'),
         '修改备注名': (MobileBy.XPATH, '//android.widget.TextView[@text="修改备注名"]'),
         '备注': (MobileBy.ID, 'com.cmic.college:id/edit_query'),
-        '备注_备注': (MobileBy.XPATH, '//android.widget.EditText[@resource-id="com.cmic.college:id/edit_query"]'),
+        '备注_备注': (
+            MobileBy.XPATH, '//android.widget.EditText[@resource-id="com.cmic.college:id/edit_query"]'),
 
         # 流量优惠提示框
         '流量_不再提醒': (MobileBy.ID, 'com.cmic.college:id/select_checkbox'),
@@ -320,6 +351,10 @@ class CallPage(FooterPage):
         """点击文本"""
         return self.click_text(text)
 
+    @TestLogger.log('查找所有元素')
+    def get_elements_list(self, locator):
+        return self.get_elements(self.__locators[locator])
+
     @TestLogger.log("点击包含文本的元素")
     def input_locator_text(self, locator, text):
         """输入文本"""
@@ -421,7 +456,7 @@ class CallPage(FooterPage):
         self.point2point_vedio_call()
         self.wait_until(
             condition=lambda d: self.is_text_present("视频通话"),
-            timeout=50,
+            timeout=8,
         )
 
     @TestLogger.log('确保页面有多方视频的记录')
@@ -443,6 +478,26 @@ class CallPage(FooterPage):
             condition=lambda d: self.is_text_present("飞信电话"),
             timeout=8,
         )
+
+    @TestLogger.log('确保页面第一条视频通话记录为对方无密友圈')
+    def make_sure_p2p_video_no_college(self):
+        self.click_locator_key('+')
+        self.click_locator_key('视频通话')
+        self.input_text(self.__locators['视频通话_搜索'], '13800138005')
+        self.get_elements(self.__locators['电话号码'])[0].click()
+        self.click_locator_key('呼叫')
+
+
+    @TestLogger.log('确保页面第一条视频通话记录为对方无密友圈')
+    def make_sure_p2p_voice_no_college(self):
+        self.click_show_keyboard()
+        time.sleep(1)
+        self.input_text(self.__locators['键盘输入框'], '13800138005')
+        self.click_locator_key('拨号界面_呼叫')
+        time.sleep(0.5)
+        if self.is_text_present('请注意接听“飞信电话”来电，随后将自动呼叫对方。'):
+            self.click_locator_key('回呼_不再提醒')
+            self.click_locator_key('回呼_我知道了')
 
     @TestLogger.log('检查是否在点对点通话页面')
     def check_p2p_vedio_call_page(self):
@@ -494,35 +549,6 @@ class CallPage(FooterPage):
             self.click_locator_key('多方通话_返回')
         else:
             raise AssertionError("通讯录没有密友")
-
-    @TestLogger.log("检查点对点视频通话详细页")
-    def check_vedio_call_detail_page(self):
-        for locator in [self.__locators['详情_信息按钮'], self.__locators['详情_视频按钮'], self.__locators['详情_返回']]:
-            if not self._is_enabled(locator):
-                return "检查点[%s]未通过" % locator
-        # 头像  名字  通话时间  通话类型
-        locator_list = [("id", 'com.cmic.college:id/ivAvatar'), ("id", 'com.cmic.college:id/tvName'),
-                        ("id", 'com.cmic.college:id/tvCallTime'), ("id", 'com.cmic.college:id/tvCallType')]
-        for locator in locator_list:
-            if not self._is_visible(locator):
-                l = locator[-1]
-                if l == 'com.cmic.college:id/ivAvatar':
-                    locator = '详情_头像'
-                elif l == 'com.cmic.college:id/tvName':
-                    locator = '详情_名字'
-                elif l == 'com.cmic.college:id/tvCallTime':
-                    locator = '详情_通话时间'
-                elif l == 'com.cmic.college:id/tvCallType':
-                    locator = '详情_通话类型'
-                else:
-                    locator = '未知错误'
-                return "检查点[%s]未通过" % locator
-        if '通话记录 (视频通话)' != self.get_text(("id", 'com.cmic.college:id/tvCallRecordsType')):
-            return "检查点[通话记录 (视频通话)]未通过"
-        if len(self.get_elements(("id", 'com.cmic.college:id/tvCallDuration'))) > 0:
-            if not self._is_visible(("id", 'com.cmic.college:id/tvCallDuration')):  # 通话时长
-                return "检查点[通话时长]未通过"
-        return True
 
     @TestLogger.log("检查多方视频详细页")
     def check_multiplayer_vedio_detail_page(self):
@@ -611,7 +637,6 @@ class CallPage(FooterPage):
 
     @TestLogger.log()
     def close_ad(self):
-
         if self._is_element_present('关闭广告'):
             self.click_element('关闭广告')
         return
@@ -673,13 +698,15 @@ class CallPage(FooterPage):
 
     @TestLogger.log('清空文本框内容')
     def edit_clear(self):
-        locator = self.get_element(self.__class__.__locators['备注']).text
-        self.click_element(self.__locators['备注'])
-        #     123代表光标移动到末尾
-        self.driver.keyevent(123)
-        for i in range(0, len(locator)):
-            # 67退格键
-            self.driver.keyevent(67)
+        self.get_element(self.__class__.__locators['备注']).clear()
+        # locator = self.get_element(self.__class__.__locators['备注']).text
+        # self.click_element(self.__locators['备注'])
+        # #     123代表光标移动到末尾
+        # self.driver.keyevent(123)
+        #
+        # for i in range(0, len(locator)):
+        #     # 67退格键
+        #     self.driver.keyevent(67)
 
     @TestLogger.log('是否有流量优惠界面')
     def on_this_page_flow(self):
@@ -805,7 +832,7 @@ class CallPage(FooterPage):
         time.sleep(0.5)
         if self.on_this_page_common('流量_继续拨打'):
             self.click_locator_key('流量_继续拨打')
-        if self.on_this_page_common('无密友圈_提示文本'):
+        if self.is_text_present('对方还未使用密友圈，喊他一起来免流量视频通话。'):
             self.click_locator_key('无密友圈_取消')
 
     @TestLogger.log('拨打一个点对点视频通话')
@@ -863,8 +890,23 @@ class CallPage(FooterPage):
         return self.mobile.get_elements(self.__locators[locator])
 
     @TestLogger.log('根据元素模拟三指点击屏幕')
-    def tap_screen_three_point(self, locator):
+    def tap_screen_three_point(self, locator='视频界面_时长'):
         """根据元素模拟三指点击屏幕"""
         if not self.is_element_already_exist(locator):
             self.tap_coordinate([(100, 100), (100, 110), (100, 120)])
             time.sleep(1)
+
+    @TestLogger.log("按住并向下滑动")
+    def press_move_to_down(self, locator):
+        self.press_and_move_to_down(self.__locators[locator])
+
+    @TestLogger.log("在元素内滑动")
+    def swipe_direction(self, locator, direction):
+        """
+        在元素内滑动
+        :param locator: 定位器
+        :param direction: 方向（left,right,up,down）
+        :param duration: 持续时间ms
+        :return:
+        """
+        self.swipe_by_direction(self.__locators[locator], direction)
