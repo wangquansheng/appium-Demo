@@ -145,7 +145,7 @@ class OneKeyLoginPage(BasePage):
             self.wait_until(
                 timeout=timeout,
                 auto_accept_permission_alert=auto_accept_alerts,
-                condition=lambda d: self._is_element_text_match(self.__locators["电话号码"], r"\d+", regex=True)
+                condition=lambda d: self._is_element_text_match(self.__locators["一键登录"], r"\d+", regex=True)
             )
         except:
             message = "电话号码在{}s内，没有加载成功".format(timeout)

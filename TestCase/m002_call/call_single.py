@@ -102,7 +102,7 @@ class Preconditions(object):
         call_page = CallPage()
         call_page.is_element_already_exist('通话')
         time.sleep(2)
-        call_page.remove_mask()
+        call_page.remove_mask_c(2)
 
         # 等待通话页面加载
         # call_page.wait_for_page_call_load()
@@ -308,7 +308,7 @@ class Preconditions(object):
 #         call_page = CallPage()
 #         call_page.click_locator_key('视频')
 #         first_phoneNumber = call_page.get_element_text('电话号码')
-#         call_page.click_locator_key('多方通话_返回')
+#         call_page.click_locator_key('多方电话_返回')
 #         call_page.click_locator_key('电话图标')
 #         call_page.click_locator_key('电话_搜索栏')
 #         call_page.input_locator_text('搜索_电话', 1)
@@ -503,12 +503,10 @@ class CallPageTest(TestCase):
             call.click_show_keyboard()
         time.sleep(1)
         # 向左滑动
-        # call.swipe_by_percent_on_screen(20, 50, 90, 50, 1000)
         call.page_left()
         # 判断滑动后是否还在此页面
         self.assertEqual(call.is_exist_call_key(), True)
         # 向右滑动
-        # call.swipe_by_percent_on_screen(90, 50, 20, 50, 1000)
         call.page_right()
         # 判断滑动后是否还在此页面
         self.assertEqual(call.is_exist_call_key(), True)
@@ -1016,7 +1014,7 @@ class CallPageTest(TestCase):
         time.sleep(3)
         # 多方视频
         call.make_sure_have_multiplayer_vedio_record()
-        # call.click_locator_key('多方通话_返回')
+        # call.click_locator_key('多方电话_返回')
         call.wait_for_page_load()
         call.press_tag_detail_first_element('多方视频')
         time.sleep(1)
@@ -1110,7 +1108,7 @@ class CallPageTest(TestCase):
         call.click_locator_key('视频通话')
         time.sleep(0.5)
         self.assertEqual(call.is_text_present('发起视频通话'), True)
-        self.assertEqual(call.on_this_page_common('多方通话_返回'), True)
+        self.assertEqual(call.on_this_page_common('多方电话_返回'), True)
         self.assertEqual(call.on_this_page_common('呼叫'), True)
         self.assertEqual(call.on_this_page_common('联系人列表'), True)
         self.assertEqual(call.on_this_page_common('视频通话_字母'), True)
@@ -1230,3 +1228,145 @@ class CallPageTest(TestCase):
         time.sleep(1)
         call.select_contact_more(9)
         self.assertEqual(call.is_toast_exist('最多只能选择8人', timeout=8), True)
+
+    @tags('ALL', 'CMCC', 'call')
+    def test_call_000109(self):
+        """
+            1、正常登录密友圈
+            2、通话界面中有通话记录
+            3、查看通话界面中的通话记录
+            4、通话记录中记录电话的优惠电话、视频的视频通话与多方视频记录
+            5、（无优惠电话，只判断‘飞信电话’‘多方电话’‘多方视频’‘视频通话’）
+        """
+        call = CallPage()
+        call.wait_for_page_load()
+        # 确保有视频通话
+        if not call.is_text_present_c('视频通话'):
+            call.make_sure_p2p_video_no_college()
+            time.sleep(1)
+            if call.is_element_already_exist_c('流量_不再提醒'):
+                call.click_locator_key_c('流量_不再提醒')
+                call.click_locator_key_c('流量_继续拨打')
+            if call.is_element_already_exist_c('无密友圈_提示文本'):
+                call.click_locator_key_c('无密友圈_取消')
+        call.wait_for_page_c('通话', max_wait_time=60)
+        time.sleep(2)
+        self.assertEqual(call.is_text_present_c('[视频通话]'), True)
+        # 确保有飞信电话
+        if not call.is_text_present_c('飞信电话'):
+            call.make_sure_p2p_voice_no_college()
+        call.wait_for_page_c('通话', max_wait_time=60)
+        time.sleep(2)
+        self.assertEqual(call.is_text_present_c('[飞信电话]'), True)
+        # 确保有多方视频通话记录
+        if not call.is_text_present_c('多方视频'):
+            call.make_sure_have_multiplayer_vedio_record()
+        call.wait_for_page_c('通话', max_wait_time=60)
+        time.sleep(2)
+        self.assertEqual(call.is_text_present_c('[多方视频]'), True)
+        # 确保有多方电话
+        if not call.is_text_present_c('多方电话'):
+            call.make_sure_have_multi_voice_record()
+        call.wait_for_page_c('通话', max_wait_time=60)
+        time.sleep(2)
+        self.assertEqual(call.is_text_present_c('[多方电话]'), True)
+
+    @tags('ALL', 'CMCC', 'call')
+    def test_call_000115(self):
+        """
+            1、正常登录密友圈
+            2、使用飞信电话给非联系人/不限时长成员/家庭网成员等关系的陌生号码拨打电话
+            3、查看通话记录
+            4、生成一条呼出的优惠电话记录，记录中昵称位置显示该陌生电话的全号，
+            5、类型显示为：飞信电话，并显示该陌生号码的归属地和运营商
+        """
+        call = CallPage()
+        call.wait_for_page_load()
+        # 清空以前的通话记录
+        call.clear_all_record()
+        time.sleep(0.5)
+        # 保证页面只有一条通话记录
+        call.make_sure_p2p_voice_no_college()
+        # 等待通话页面加载
+        call.wait_for_page_call_load()
+        time.sleep(2)
+        # if call.is_element_already_exist_c('通话类型标签'):
+        self.assertEqual('[飞信电话]' == call.get_element_text_c('通话类型标签'), True)
+        # if call.is_element_already_exist_c('搜索_电话显示'):
+        self.assertEqual('北京 移动' == call.get_element_text_c('通话记录_归属地'), True)
+
+    @tags('ALL', 'CMCC', 'call')
+    def test_call_000156(self):
+        """
+            1、正常登录密友圈
+            2、使用飞信电话给非联系人/不限时长成员/家庭网成员等关系的陌生号码拨打电话
+            3、查看通话记录
+            4、生成一条呼出的优惠电话记录，记录中昵称位置显示该陌生电话的全号，
+            5、类型显示为：飞信电话，并显示该陌生号码的归属地和运营商
+        """
+        call = CallPage()
+        call.wait_for_page_load()
+        call.clear_all_record()
+        time.sleep(0.5)
+        # 呼出一个多方视频通话
+        call.multiplayer_vedio_call()
+        call.wait_for_page_call_load()
+        time.sleep(1)
+        if call.is_element_already_exist_c('多方视频'):
+            call.click_tag_detail_first_element('多方视频')
+            time.sleep(0.5)
+            call.click_locator_key_c('详情_发起多方视频')
+            time.sleep(10)
+            if call.is_element_already_exist_c('挂断_多方通话'):
+                call.click_locator_key_c('挂断_多方通话')
+            if call.is_element_already_exist_c('挂断_多方通话_确定'):
+                call.click_locator_key_c('挂断_多方通话_确定')
+
+    @tags('ALL', 'CMCC', 'call')
+    def test_call_000158(self):
+        """展开拨号盘，不可以左右滑动切换tab，上方内容显示通话模块通话记录内容"""
+        time.sleep(2)
+        call = CallPage()
+        call.wait_for_page_load()
+        if call.is_on_this_page():
+            call.click_show_keyboard()
+        time.sleep(1)
+        # 向左滑动
+        call.page_left()
+        # 判断滑动后是否还在此页面
+        self.assertEqual(call.is_exist_call_key(), True)
+        # 向右滑动
+        call.page_right()
+        # 判断滑动后是否还在此页面
+        self.assertEqual(call.is_exist_call_key(), True)
+
+    @tags('ALL', 'CMCC', 'call')
+    def test_call_000159(self):
+        """
+        点击拨号盘上面的默认通话记录
+        1、正常网络状态下，登录密友圈；
+        2、当前页面在通话页面
+        3、拨号盘已打开
+        4、通话模块存在通话记录
+        5、点击该（除详情记录图标）通话记录任意区域
+        6、点击右侧详情记录图标
+        7、呼叫该记录的通话
+        8、跳转该记录的通话详情页面"
+        :return:
+        """
+        call = CallPage()
+        call.wait_for_page_load()
+        call.clear_all_record()
+        time.sleep(0.5)
+        # 呼出一个点对点视频通话
+        call.make_sure_p2p_video_no_college()
+        if call.is_element_already_exist_c('无密友圈_提示文本'):
+            call.click_locator_key_c('无密友圈_取消')
+            time.sleep(3)
+            if call.is_text_present_c('视频通话'):
+                call.click_text('视频通话')
+                if call.is_element_already_exist_c('无密友圈_提示文本'):
+                    call.click_locator_key_c('无密友圈_取消')
+                    time.sleep(3)
+        call.click_tag_detail_first_element('视频通话')
+        self.assertEqual(call.is_text_present_c('通话记录 (视频通话)'), True)

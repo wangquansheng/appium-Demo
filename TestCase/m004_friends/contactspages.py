@@ -69,4 +69,4 @@ class ContactlocalPage(TestCase):
         FooterPage().open_contact_page()
         contact = ContactsPage()
         contact.permission_box_processing()
-        contact.remove_mask()
+        contact.remove_mask_c(1)

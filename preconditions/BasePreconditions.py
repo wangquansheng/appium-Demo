@@ -84,9 +84,9 @@ class LoginPreconditions(object):
         # 等待通话页面加载
         call_page = CallPage()
         call_page.wait_for_page_call_load()
-        call_page.click_always_allow()
+        call_page.click_always_allow_c()
         time.sleep(2)
-        call_page.remove_mask()
+        call_page.remove_mask_c(2)
 
 
     @staticmethod

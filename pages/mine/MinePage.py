@@ -3,9 +3,10 @@ from appium.webdriver.common.mobileby import MobileBy
 from library.core.BasePage import BasePage
 from library.core.TestLogger import TestLogger
 from pages.components.Footer import FooterPage
+from pages.CommonPage import CommonPage
 
 
-class MinePage(FooterPage):
+class MinePage(CommonPage):
     """通话页面"""
     ACTIVITY = 'com.cmcc.cmrcs.android.ui.activities.HomeActivity'
 
@@ -35,7 +36,14 @@ class MinePage(FooterPage):
         '分享_微信': (MobileBy.ID, 'com.cmic.college:id/tv_wechat'),
         '分享_QQ': (MobileBy.ID, 'com.cmic.college:id/tv_qq'),
         '分享_QQ空间': (MobileBy.ID, 'com.cmic.college:id/tv_qzone'),
+        '剩余时长_标签': (MobileBy.ID, 'com.cmic.college:id/tv_totalDuraton'),
+        '剩余时长_时长': (MobileBy.ID, 'com.cmic.college:id/tv_leftDuration'),
+        '剩余时长_单位': (MobileBy.ID, 'com.cmic.college:id/tv_minute'),
     }
+
+    @TestLogger.log("当前页面是否在我的页面")
+    def get_locators(self, locator):
+        return self.__locators[locator]
 
     @TestLogger.log("当前页面是否在我的页面")
     def is_on_this_page(self):
@@ -50,9 +58,9 @@ class MinePage(FooterPage):
         """点击查看并编辑资料按钮"""
         self.click_element(self.__locators['头像'])
 
-    @TestLogger.log("点击locators对应的元素")
-    def click_locator_key(self, locator):
-        self.click_element(self.__locators[locator])
+    # @TestLogger.log("点击locators对应的元素")
+    # def click_locator_key(self, locator):
+    #     self.click_element(self.__locators[locator])
 
     @TestLogger.log("当前页面是否包含此文本")
     def is_text_exist(self, text):

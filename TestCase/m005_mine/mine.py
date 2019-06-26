@@ -1,20 +1,13 @@
-import re
 import time
 import unittest
-
-from selenium.common.exceptions import TimeoutException
-
+import warnings
 from library.core.TestCase import TestCase
-from library.core.common.simcardtype import CardType
 from library.core.utils.applicationcache import current_mobile, current_driver, switch_to_mobile
 from library.core.utils.testcasefilter import tags
-from pages.call.CallPage import CallPage
-
-from pages.guide import GuidePage
-from pages.login.LoginPage import OneKeyLoginPage
 from pages.mine.MeEditProfile import MeEditProfilePage
-from pages.mine.mine import MinePage
+from pages.mine.MinePage import MinePage
 from preconditions.BasePreconditions import LoginPreconditions
+from pages.components.Footer import FooterPage
 
 REQUIRED_MOBILES = {
     'Android-移动': 'M960BDQN229CH',
@@ -160,17 +153,17 @@ class Preconditions(LoginPreconditions):
     def make_already_in_me_page():
         """确保应用在消息页面"""
         # 如果在消息页，不做任何操作
-        call_page = CallPage()
+        fp = FooterPage()
         me_page = MinePage()
         if me_page.is_on_this_page():
             return
-        if call_page.is_on_this_page():
-            call_page.open_me_page()
+        if not me_page.is_on_this_page():
+            fp.open_me_page()
             me_page.is_on_this_page()
             return
         # 进入一键登录页
         Preconditions.make_already_in_call_page()
-        call_page.open_me_page()
+        fp.open_me_page()
 
     @staticmethod
     def make_already_in_me_profilePage():
@@ -181,6 +174,10 @@ class Preconditions(LoginPreconditions):
 
 class MineTest(TestCase):
     """Mine 模块"""
+
+    @classmethod
+    def setUpClass(cls):
+        warnings.simplefilter('ignore', ResourceWarning)
 
     @staticmethod
     def setUp_test_me_0001():
@@ -484,5 +481,10 @@ class MineTest(TestCase):
         """验证邀请有礼正常打开"""
         me_page = MinePage()
         me_page.click_locator_key('设置')
+        for i in range(3):
+            if me_page.page_should_contain_element('设置'):
+                break
+            else:
+                me_page.page_up()
         me_page.click_locator_key('退出当前账号')
         self.assertTrue(me_page.check_wait_text_exits('本机号码一键登录'))

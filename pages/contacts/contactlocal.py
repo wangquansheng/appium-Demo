@@ -30,8 +30,3 @@ class ContactsPage(FooterPage):
         time.sleep(1)
         if self.is_text_present('开通不限时长电话'):
             self.click_element(self.__class__.__locators['取消'])
-
-    @TestLogger.log()
-    def remove_mask(self):
-        """去除遮罩"""
-        self.click_element(self.__class__.__locators['遮罩1'])

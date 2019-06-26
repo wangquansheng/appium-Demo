@@ -1,6 +1,7 @@
 import re
 import time
 import unittest
+import warnings
 
 from selenium.common.exceptions import TimeoutException
 
@@ -159,6 +160,10 @@ class Preconditions(LoginPreconditions):
 class LoginTest(TestCase):
     """Login 模块"""
 
+    @classmethod
+    def setUpClass(cls):
+        warnings.simplefilter('ignore', ResourceWarning)
+
     @staticmethod
     def setUp_test_login_0001():
         Preconditions.select_mobile('Android-移动')
@@ -172,7 +177,7 @@ class LoginTest(TestCase):
         oklp = OneKeyLoginPage()
         # 检查一键登录
         oklp.wait_for_page_load()
-        oklp.wait_for_tell_number_load(timeout=60)
+        oklp.wait_for_tell_number_load(timeout=10)
         # 检查电话号码
         phone_numbers = current_mobile().get_cards(CardType.CHINA_MOBILE)
         oklp.assert_phone_number_equals_to(phone_numbers[0])
@@ -193,13 +198,13 @@ class LoginTest(TestCase):
         one_key.click_one_key_login()
         one_key.click_agree_user_aggrement()
         one_key.click_agree_login_by_number()
-        #已登录密友圈
+        # 已登录密友圈
         cp = CallPage()
         call_page = CallPage()
         call_page.wait_for_page_call_load()
-        call_page.click_always_allow()
+        call_page.click_always_allow_c()
         time.sleep(2)
-        call_page.remove_mask()
+        call_page.remove_mask_c(2)
         time.sleep(2)
         self.assertEquals(cp.is_on_this_page(), True)
 
@@ -220,4 +225,3 @@ class LoginTest(TestCase):
         time.sleep(15)
         # 2.跳转至服务协议H5页面
         one_key.page_should_contain_text("密友圈")
-
