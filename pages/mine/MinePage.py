@@ -15,6 +15,8 @@ class MinePage(CommonPage):
         '请完善你的资料': (MobileBy.ID, 'com.cmic.college:id/card_name_hint'),
         '头像': (MobileBy.ID, 'com.cmic.college:id/card_head_photo'),
         '我的二维码': (MobileBy.ID, 'com.cmic.college:id/action_qr'),
+        '积分': (MobileBy.ID, 'com.cmic.college:id/rl_integral'),
+        '每日资讯': (MobileBy.ID, 'com.cmic.college:id/rlNews'),
         '看点': (MobileBy.ID, 'com.cmic.college:id/rlNews'),
         '活动中心': (MobileBy.ID, 'com.cmic.college:id/activity_center'),
         '卡券': (MobileBy.ID, 'com.cmic.college:id/web_hall_coupons'),
@@ -27,10 +29,12 @@ class MinePage(CommonPage):
         '二维码_转到上一层级': (MobileBy.XPATH, '//android.widget.ImageButton[@content-desc="转到上一层级"]'),
         '二维码_更多': (MobileBy.ID, 'com.cmic.college:id/action_more'),
         '二维码图片': (MobileBy.ID, 'com.cmic.college:id/my_twodimensionCode'),
-        '分享二维码': (MobileBy.XPATH, '/hierarchy/android.widget.FrameLayout/android.widget.FrameLayout/android.widget.FrameLayout/android.widget.RelativeLayout/android.widget.ListView/android.widget.LinearLayout[1]/android.widget.TextView'),
-        '保存二维码': (MobileBy.XPATH, '/hierarchy/android.widget.FrameLayout/android.widget.FrameLayout/android.widget.FrameLayout/android.widget.RelativeLayout/android.widget.ListView/android.widget.LinearLayout[2]/android.widget.TextView'),
+        '分享二维码': (MobileBy.XPATH,
+                  '/hierarchy/android.widget.FrameLayout/android.widget.FrameLayout/android.widget.FrameLayout/android.widget.RelativeLayout/android.widget.ListView/android.widget.LinearLayout[1]/android.widget.TextView'),
+        '保存二维码': (MobileBy.XPATH,
+                  '/hierarchy/android.widget.FrameLayout/android.widget.FrameLayout/android.widget.FrameLayout/android.widget.RelativeLayout/android.widget.ListView/android.widget.LinearLayout[2]/android.widget.TextView'),
         '我二级页面顶部元素': (MobileBy.ID, 'com.cmic.college:id/tv_title_actionbar'),
-        '我_二级页面_相同返回': (MobileBy.ID, 'com.cmic.college:id/ibt_back_actionbar'),     # 看点，活动中心，卡券，网上营业厅，邀请有礼，帮助与反馈，
+        '我_二级页面_相同返回': (MobileBy.ID, 'com.cmic.college:id/ibt_back_actionbar'),  # 看点，活动中心，卡券，网上营业厅，邀请有礼，帮助与反馈，
         '分享_密友圈': (MobileBy.ID, 'com.cmic.college:id/tv_miyou'),
         '分享_朋友圈': (MobileBy.ID, 'com.cmic.college:id/tv_circle'),
         '分享_微信': (MobileBy.ID, 'com.cmic.college:id/tv_wechat'),
@@ -97,10 +101,10 @@ class MinePage(CommonPage):
         return self.is_text_present(text)
 
     @TestLogger.log('我二级页面顶部元素是否为text文本')
-    def check_wait_text_exits(self, text):
+    def check_wait_text_exits(self, text, timeout=20):
         bol = self.wait_until(
-            condition=lambda d: self.is_text_present(text), timeout=20
-        , auto_accept_permission_alert=False)
+            condition=lambda d: self.is_text_present(text), timeout=timeout
+            , auto_accept_permission_alert=False)
         return bol
 
     @TestLogger.log("判断元素是否存在")
@@ -108,6 +112,6 @@ class MinePage(CommonPage):
         """当前页面元素是否存在"""
         el1 = self.get_elements((MobileBy.ID, 'com.cmic.college:id/twodimensioncode_myprofile_icon'))
         el2 = self.get_elements((MobileBy.ID, 'com.cmic.college:id/twodimension_name_text'))
-        if len(el1) > 0 and len(el2)>0:
+        if len(el1) > 0 and len(el2) > 0:
             return True
         return False

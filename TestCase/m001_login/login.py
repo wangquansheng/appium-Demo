@@ -131,31 +131,6 @@ class Preconditions(LoginPreconditions):
         current_driver().activate_app(app_package)
         current_mobile().reset_app()
 
-    # @staticmethod
-    # def make_already_in_call_page():
-    #     """
-    #     前置条件：
-    #     1.已登录客户端
-    #     2.当前在通话页面
-    #     """
-    #     # 如果当前页面是在通话录页，不做任何操作
-    #     call_page = CallPage()
-    #     if call_page.is_on_this_page():
-    #         return
-    #     # 如果当前页面已经是一键登录页，进行一键登录页面
-    #     one_key = OneKeyLoginPage()
-    #     if one_key.is_on_this_page():
-    #         Preconditions.login_by_one_key_login()
-    #         return
-    #     # 如果当前页不是引导页第一页，重新启动app
-    #     guide_page = GuidePage()
-    #     if not guide_page.is_on_the_first_guide_page():
-    #         current_mobile().launch_app()
-    #         guide_page.wait_for_page_load(20)
-    #         # 跳过引导页
-    #     Preconditions.make_already_in_one_key_login_page()
-    #     Preconditions.login_by_one_key_login()
-
 
 class LoginTest(TestCase):
     """Login 模块"""
@@ -168,60 +143,103 @@ class LoginTest(TestCase):
     def setUp_test_login_0001():
         Preconditions.select_mobile('Android-移动')
         current_mobile().hide_keyboard_if_display()
-        # Preconditions.app_start_for_the_first_time()
-        Preconditions.make_already_in_one_key_login_page()
-
-    @tags('ALL', 'SMOKE', 'CMCC')
-    def test_login_0001(self):
-        """ 本网正常网络首次登录4G-登录响应"""
-        oklp = OneKeyLoginPage()
-        # 检查一键登录
-        oklp.wait_for_page_load()
-        oklp.wait_for_tell_number_load(timeout=10)
-        # 检查电话号码
-        phone_numbers = current_mobile().get_cards(CardType.CHINA_MOBILE)
-        oklp.assert_phone_number_equals_to(phone_numbers[0])
-
-    @staticmethod
-    def setUp_test_login_0002():
-        Preconditions.select_mobile('Android-移动')
-        current_mobile().hide_keyboard_if_display()
         Preconditions.app_start_for_the_first_time()
         Preconditions.make_already_in_one_key_login_page()
 
     @tags('ALL', 'SMOKE', 'CMCC')
-    def test_login_0002(self):
-        """ 本网正常网络首次登录4G-登录响应成功"""
-        # 1.点击一键登录
-        one_key = OneKeyLoginPage()
-        one_key.wait_for_tell_number_load(60)
-        one_key.click_one_key_login()
-        one_key.click_agree_user_aggrement()
-        one_key.click_agree_login_by_number()
-        # 已登录密友圈
-        cp = CallPage()
-        call_page = CallPage()
-        call_page.wait_for_page_call_load()
-        call_page.click_always_allow_c()
+    def test_login_0001(self):
+        """
+            取消首次登录时登录按钮的置灰显示	"1、正常网络
+            2、当前在一键登录页面
+            3、用户首次登录"	"1、查看页面显示
+            2、点击本机号码一键登录按钮
+            3、点击不同意
+            4、同2步骤，点击同意
+            5、点击确定按钮"	"1、文案“登录即代表阅读并同意《软件许可服务协议》和《隐私和信息保护政策》”显示在底部，无勾选框，登录按钮高亮显示
+            2、弹出“用户协议和隐私保护，
+            欢迎使用密友圈，我们非常重视保护您的个人协议并严格遵守相关法律法规。
+            我们会根据国家相关法律法规不定时更新我们的软件许可协议和隐私协议，您可通过《软件许可服务协议》和《隐私和信息保护政策》查看详细条款，请您在使用密友圈前务必仔细阅读。
+            点击下方“同意”按钮，方可开始使用密友圈，与此同时我们将竭力保护您的隐私安全
+            ”同意与不同意按钮
+            3、弹窗消失，停留当前页面
+            4、弹出“使用号码XXXX登录，登录后，在密友圈app内的视频通话、语音通话和聊天将使用该号码发起”确定按钮
+            5、成功进入密友圈"
+            :return:
+        """
+        login = OneKeyLoginPage()
+        # 检查一键登录
+        cards = login.get_cards_c(CardType.CHINA_MOBILE)
+        login.wait_for_page_load()
+        login.wait_for_tell_number_load(timeout=10)
+        login.click_text('一键登录')
+        time.sleep(1)
+        if login.is_text_present_c('用户协议和隐私保护'):
+            login.click_locator_key_c('不同意')
+            time.sleep(0.5)
+        self.assertEqual(login.is_text_present_c('使用{}一键登录'.format((cards[0]))), True)
+        login.click_text('一键登录')
+        time.sleep(1)
+        if login.is_text_present_c('用户协议和隐私保护'):
+            login.click_locator_key_c('同意')
+        call = CallPage()
+        call.is_text_present_c('通话', default_timeout=20)
         time.sleep(2)
-        call_page.remove_mask_c(2)
-        time.sleep(2)
-        self.assertEquals(cp.is_on_this_page(), True)
+        call.click_always_allow_c()
+        time.sleep(3)
+        call.remove_mask_c(2)
+        self.assertEqual(call.is_on_this_page(), True)
+
+    # @staticmethod
+    # def setUp_test_login_0002():
+    #     Preconditions.select_mobile('Android-移动')
+    #     current_mobile().hide_keyboard_if_display()
+    #     Preconditions.app_start_for_the_first_time()
+    #     Preconditions.make_already_in_one_key_login_page()
+    #
+    # @tags('ALL', 'SMOKE', 'CMCC')
+    # def test_login_0002(self):
+    #     """ 本网正常网络首次登录4G-登录响应成功"""
+    #     # 1.点击一键登录
+    #     one_key = OneKeyLoginPage()
+    #     one_key.wait_for_tell_number_load(60)
+    #     one_key.click_one_key_login()
+    #     one_key.click_agree_user_aggrement()
+    #     one_key.click_agree_login_by_number()
+    #     # 已登录密友圈
+    #     cp = CallPage()
+    #     call_page = CallPage()
+    #     call_page.wait_for_page_call_load()
+    #     call_page.click_always_allow_c()
+    #     time.sleep(2)
+    #     call_page.remove_mask_c(2)
+    #     time.sleep(2)
+    #     self.assertEquals(cp.is_on_this_page(), True)
 
     @staticmethod
     def setUp_test_login_0003():
         Preconditions.select_mobile('Android-移动')
         current_mobile().hide_keyboard_if_display()
-        Preconditions.app_start_for_the_first_time()
+        # Preconditions.app_start_for_the_first_time()
         Preconditions.make_already_in_one_key_login_page()
 
     @tags('ALL', 'SMOKE', 'CMCC')
     def test_login_0003(self):
-        """ 一键登录协议响应"""
-        # 1.点击《密友圈软件许可及服务协议》按钮
-        one_key = OneKeyLoginPage()
-        one_key.wait_for_tell_number_load(60)
-        one_key.click_license_agreement()
-        time.sleep(15)
-        # 2.跳转至服务协议H5页面
-        one_key.page_should_contain_text("密友圈")
+        """ 非首次登陆	"1、正常网络
+            2、当前在一键登录页面
+            3、用户非首次登录"	"1、点击一键登陆
+            2、点击确认使用XX号码登录"	成功登陆密友，进入通话页面
+        """
+
+        login = OneKeyLoginPage()
+        if login.is_text_present_c('一键登录'):
+            login.wait_for_tell_number_load(20)
+            login.click_text('一键登录')
+            if login.is_text_present_c('用户协议和隐私保护'):
+                login.click_locator_key_c('同意')
+        call = CallPage()
+        call.is_text_present_c('通话', default_timeout=20)
+        time.sleep(2)
+        call.click_always_allow_c()
+        time.sleep(3)
+        call.remove_mask_c(2)
+        self.assertEqual(login.is_text_present_c("通话"), True)

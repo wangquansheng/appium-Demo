@@ -1,5 +1,6 @@
 import threading
 
+from appium.webdriver.common.mobileby import MobileBy
 from selenium.common.exceptions import TimeoutException
 
 from library.core.TestLogger import TestLogger
@@ -400,7 +401,7 @@ class CallPageTest(TestCase):
     @TestLogger.log('执行SetUp')
     def default_setUp(self):
         """确保每个用例开始之前在通话界面界面"""
-        warnings.simplefilter('ignore', ResourceWarning)
+        warnings.simplefilter('ignore')
         Preconditions.select_mobile('Android-移动')
         Preconditions.make_already_in_call_page()
 
@@ -1103,7 +1104,7 @@ class CallPageTest(TestCase):
         if call.is_exist_call_key():
             call.click_hide_keyboard()
             time.sleep(1)
-        call.click_locator_key('+')
+        call.click_locator_key('加号')
         time.sleep(0.5)
         call.click_locator_key('视频通话')
         time.sleep(0.5)
@@ -1127,7 +1128,7 @@ class CallPageTest(TestCase):
         if call.is_exist_call_key():
             call.click_hide_keyboard()
             time.sleep(1)
-        call.click_locator_key('+')
+        call.click_locator_key('加号')
         time.sleep(0.5)
         call.click_locator_key('视频通话')
         time.sleep(1)
@@ -1151,7 +1152,7 @@ class CallPageTest(TestCase):
         if call.is_exist_call_key():
             call.click_hide_keyboard()
             time.sleep(1)
-        call.click_locator_key('+')
+        call.click_locator_key('加号')
         time.sleep(0.5)
         call.click_locator_key('视频通话')
         time.sleep(1)
@@ -1174,7 +1175,7 @@ class CallPageTest(TestCase):
         if call.is_exist_call_key():
             call.click_hide_keyboard()
             time.sleep(1)
-        call.click_locator_key('+')
+        call.click_locator_key('加号')
         time.sleep(0.5)
         call.click_locator_key('视频通话')
         time.sleep(1)
@@ -1197,7 +1198,7 @@ class CallPageTest(TestCase):
         if call.is_exist_call_key():
             call.click_hide_keyboard()
             time.sleep(1)
-        call.click_locator_key('+')
+        call.click_locator_key('加号')
         time.sleep(0.5)
         call.click_locator_key('视频通话')
         time.sleep(1)
@@ -1220,13 +1221,15 @@ class CallPageTest(TestCase):
         if call.is_exist_call_key():
             call.click_hide_keyboard()
             time.sleep(1)
-        call.click_locator_key('+')
+        call.click_locator_key('加号')
         time.sleep(0.5)
         call.click_locator_key('视频通话')
         time.sleep(1)
         call.wait_page_load_common('发起视频通话')
         time.sleep(1)
-        call.select_contact_more(9)
+        if not call.select_contact_more(9, '最多只能选择8人'):
+            raise RuntimeError('最多只能选择8人')
+
         self.assertEqual(call.is_toast_exist('最多只能选择8人', timeout=8), True)
 
     @tags('ALL', 'CMCC', 'call')
@@ -1370,3 +1373,492 @@ class CallPageTest(TestCase):
                     time.sleep(3)
         call.click_tag_detail_first_element('视频通话')
         self.assertEqual(call.is_text_present_c('通话记录 (视频通话)'), True)
+
+    @tags('ALL', 'CMCC', 'call')
+    def test_call_000160(self):
+        """
+        1、（未输入内容）上下滑动拨号盘以外的区域
+        2、正常网络状态下，登录密友圈；
+        3、当前页面在通话页面
+        4、拨号盘已打开
+        5、未输入内容
+        6、在拨号盘以外的区域，进行上下滑动
+        7、拨号盘收起；显示通话页面
+        """
+        call = CallPage()
+        call.wait_for_page_load()
+        # 判断如果键盘已收起，则展开键盘
+        if not call.is_exist_call_key():
+            call.click_show_keyboard()
+            time.sleep(1)
+        # 上下滑动键盘区以外的区域
+        call.swipe_direction_c('通话记录_记录区', 'down')
+        time.sleep(0.5)
+        self.assertEqual(call.is_exist_call_key(), False)
+
+    @tags('ALL', 'CMCC', 'call')
+    def test_call_000161(self):
+        """
+        （输入匹配的内容）上下滑动拨号盘以外的区域
+        1、正常网络状态下，登录密友圈；
+        2、当前页面在通话页面
+        3、拨号盘已打开
+        4、输入的内容匹配到了号码
+        在拨号盘以外的区域，进行上下滑动	保持拨号盘半收起状态；拨号盘搜索逻辑按号码，
+        首字母，全拼模糊匹配，搜索的数据源包括：搜索的数据源包括：（本地通讯录+联系人+家庭网+未知电话）
+        """
+        call = CallPage()
+        call.wait_for_page_load()
+        # 判断如果键盘已收起，则展开键盘
+        if not call.is_exist_call_key():
+            call.click_show_keyboard()
+            time.sleep(1)
+        # 按号码搜索
+        call.input_text_c('键盘输入框', '138')
+        time.sleep(1)
+        call.swipe_direction_c('通话记录_记录区', 'up')
+        time.sleep(0.5)
+        self.assertEqual(call.is_element_already_exist_c('拨号界面_呼叫') and
+                         call.is_element_already_exist_c('收起键盘'), True)
+        self.assertEqual(call.get_elements_count_c('通话记录_号码') > 0, True)
+        call.edit_clear_c('键盘输入框')
+        # 按姓名搜索
+        call.input_text_c('键盘输入框', '32')
+        time.sleep(0.5)
+        call.swipe_direction_c('通话记录_记录区', 'up')
+        time.sleep(0.5)
+        self.assertEqual(call.is_element_already_exist_c('拨号界面_呼叫') and
+                         call.is_element_already_exist_c('收起键盘'), True)
+        self.assertEqual(call.get_elements_count_c('通话记录_号码') > 0, True)
+        call.edit_clear_c('键盘输入框')
+        # 按首字母搜索
+        call.input_text_c('键盘输入框', '4')
+        time.sleep(0.5)
+        call.swipe_direction_c('通话记录_记录区', 'up')
+        time.sleep(0.5)
+        self.assertEqual(call.is_element_already_exist_c('拨号界面_呼叫') and
+                         call.is_element_already_exist_c('收起键盘'), True)
+        self.assertEqual(call.get_elements_count_c('通话记录_号码') > 0, True)
+
+    @tags('ALL', 'CMCC', 'call')
+    def test_call_000162(self):
+        """
+        展示拨号盘半收起状态和展开拨号盘
+        1、正常网络状态下，登录密友圈；
+        2、当前页面在通话页面
+        3、拨号盘半收起
+        4、输入的内容匹配到了号码"	"1、显示拨号盘半收起
+        2、点击拨号盘按钮
+        3、清空输入框内容"	"1、输入框存在输入内容，底部从左往右依次为展开拨号盘按钮、呼叫按钮、清除按钮
+        2、拨号盘全部展开
+        3、拨号盘全盘展开"
+        """
+        call = CallPage()
+        call.wait_for_page_load()
+        # 判断如果键盘已收起，则展开键盘
+        if not call.is_exist_call_key():
+            call.click_show_keyboard()
+            time.sleep(1)
+        call.input_text_c('键盘输入框', 138)
+        time.sleep(1)
+        call.swipe_direction_c('通话记录_记录区', 'up')
+        time.sleep(0.5)
+        self.assertEqual(call.is_element_already_exist_c('拨号界面_呼叫') and
+                         call.is_element_already_exist_c('收起键盘'), True)
+        self.assertEqual(call.get_elements_count_c('通话记录_号码') > 0, True)
+        self.assertEqual(call.is_element_already_exist_c('收起键盘'), True)
+        self.assertEqual(call.is_element_already_exist_c('拨号界面_呼叫'), True)
+        self.assertEqual(call.is_element_already_exist_c('拨号界面_删除'), True)
+        call.edit_clear_c('键盘输入框')
+        time.sleep(1)
+        self.assertEqual(call.is_text_present_c('直接拨号或拼音搜索')
+                         and call.is_text_present_c('1'), True)
+
+    @tags('ALL', 'CMCC', 'call')
+    def test_call_000163(self):
+        """
+       （输入的内容无匹配）上下滑动拨号盘以外的区域
+       1、正常网络状态下，登录密友圈；
+        2、当前页面在通话页面
+        3、拨号盘已打开
+        4、输入的内容无匹配"
+        在拨号盘以外的区域，进行上下滑动	保持拨号盘半收起状态；显示“无该联系人”的空白页面
+        """
+        call = CallPage()
+        call.wait_for_page_load()
+        # 判断如果键盘已收起，则展开键盘
+        if not call.is_exist_call_key():
+            call.click_show_keyboard()
+            time.sleep(1)
+        call.input_text_c('键盘输入框', '12345666')
+        time.sleep(1)
+        call.swipe_direction_c('通话记录_记录区', 'up')
+        time.sleep(0.5)
+        call.swipe_direction_c('通话记录_记录区', 'down')
+        self.assertEqual(call.is_element_already_exist_c('拨号界面_呼叫') and
+                         call.is_element_already_exist_c('收起键盘'), True)
+        self.assertEqual(call.is_text_present_c('无该联系人'), True)
+
+    @tags('ALL', 'CMCC', 'call')
+    def test_call_000164(self):
+        """
+       （拨号键盘半收起状态时，在拨号盘以外的区域，进行上下滑动
+        1、正常网络状态下，登录密友圈；
+        2、当前页面在通话页面
+        3、拨号盘半收起"
+        在拨号盘以外的区域，进行上下滑动	拨号盘任保持半收起状态；
+        """
+        call = CallPage()
+        call.wait_for_page_load()
+        # 判断如果键盘已收起，则展开键盘
+        if not call.is_exist_call_key():
+            call.click_show_keyboard()
+            time.sleep(1)
+        call.input_text_c('键盘输入框', '12345666')
+        time.sleep(1)
+        call.swipe_direction_c('通话记录_记录区', 'up')
+        time.sleep(0.5)
+        call.swipe_direction_c('通话记录_记录区', 'down')
+        self.assertEqual(call.is_element_already_exist_c('拨号界面_呼叫') and
+                         call.is_element_already_exist_c('收起键盘'), True)
+        self.assertEqual(call.is_text_present_c('无该联系人'), True)
+
+    # @tags('ALL', 'CMCC', 'call')
+    # def test_call_000165(self):
+    #     """
+    #    （拨号键盘半收起状态时，在拨号盘以外的区域，进行上下滑动
+    #     1、正常网络状态下，登录密友圈；
+    #     2、当前页面在通话页面
+    #     3、拨号盘半收起"
+    #     在拨号盘以外的区域，进行上下滑动	拨号盘任保持半收起状态；
+    #     """
+    #     call = CallPage()
+    #     call.wait_for_page_load()
+    #     # 判断如果键盘已收起，则展开键盘
+    #     if not call.is_exist_call_key():
+    #         call.click_show_keyboard()
+    #         time.sleep(1)
+    #     call.input_text_c('键盘输入框', '123')
+    #     time.sleep(1)
+    #     call.swipe_direction_c('通话记录_记录区', 'up')
+    #     time.sleep(0.5)
+    #     call.swipe_direction_c('通话记录_记录区', 'down')
+    #     self.assertEqual(call.is_element_already_exist_c('拨号界面_呼叫') and
+    #                      call.is_element_already_exist_c('收起键盘'), True)
+    #     self.assertEqual(call.is_text_present_c('无该联系人'), True)
+
+    @tags('ALL', 'CMCC', 'call')
+    def test_call_000167(self):
+        """
+       （点击的数字显示在输入框中
+        1、正常网络状态下，登录密友圈；
+        2、当前页面在通话页面
+        3、拨号盘已打开
+        任意点击“0/9号码和#与*”
+        输入框显示“0/9号码和#与*”
+        """
+        call = CallPage()
+        call.wait_for_page_load()
+        # 判断如果键盘已收起，则展开键盘
+        if not call.is_exist_call_key():
+            call.click_show_keyboard()
+            time.sleep(1)
+        call.click_locator_key_c('拨号界面_1')
+        call.click_locator_key_c('拨号界面_3')
+        call.click_locator_key_c('拨号界面_井')
+        call.click_locator_key_c('拨号界面_星')
+        self.assertEqual('13#*' == call.get_element_text_c('键盘输入框'), True)
+
+    @tags('ALL', 'CMCC', 'call')
+    def test_call_000168(self):
+        """
+        1、正常网络状态下，登录密友圈；
+        2、当前页面在通话页面
+        3、拨号盘已打开
+        4、输入框默认显示“直接拨号或开始搜索”
+        点击拨打	弹出“请输入正确号码”icon提示
+        """
+        call = CallPage()
+        call.wait_for_page_load()
+        # 判断如果键盘已收起，则展开键盘
+        if not call.is_exist_call_key():
+            call.click_show_keyboard()
+            time.sleep(1)
+        call.click_locator_key_c('拨号界面_呼叫')
+        call.is_toast_exist('请输入正确号码')
+
+    @tags('ALL', 'CMCC', 'call')
+    def test_call_000169(self):
+        """
+        1、正常网络状态下，登录密友圈；
+        2、当前页面在通话页面
+        3、拨号盘已打开
+        4、输入框默认显示“直接拨号或开始搜索”
+        点击拨打	弹出“请输入正确号码”icon提示
+        """
+        call = CallPage()
+        call.wait_for_page_load()
+        # 判断如果键盘已收起，则展开键盘
+        if not call.is_exist_call_key():
+            call.click_show_keyboard()
+            time.sleep(1)
+        # 按首字母搜索
+        call.input_text_c('键盘输入框', '4')
+        time.sleep(0.5)
+        call.swipe_direction_c('通话记录_记录区', 'up')
+        time.sleep(0.5)
+        self.assertEqual(call.get_elements_count_c('通话记录_号码') > 0, True)
+
+    @tags('ALL', 'CMCC', 'call')
+    def test_call_000169(self):
+        """
+        1、正常网络状态下，登录密友圈；
+        2、当前页面在通话页面
+        3、拨号盘已打开
+        4、输入框默认显示“直接拨号或开始搜索”
+        点击拨打	弹出“请输入正确号码”icon提示
+        """
+        call = CallPage()
+        call.wait_for_page_load()
+        # 判断如果键盘已收起，则展开键盘
+        if not call.is_exist_call_key():
+            call.click_show_keyboard()
+            time.sleep(1)
+        # 按首字母搜索
+        call.input_text_c('键盘输入框', '4')
+        time.sleep(0.5)
+        call.swipe_direction_c('通话记录_记录区', 'up')
+        time.sleep(0.5)
+        self.assertEqual(call.get_elements_count_c('通话记录_号码') > 0, True)
+
+    @tags('ALL', 'CMCC', 'call')
+    def test_call_000169(self):
+        """
+        1、正常网络状态下，登录密友圈；
+        2、当前页面在通话页面
+        3、拨号盘已打开
+        4、输入框默认显示“直接拨号或开始搜索”
+        点击拨打	弹出“请输入正确号码”icon提示
+        """
+        call = CallPage()
+        call.wait_for_page_load()
+        # 判断如果键盘已收起，则展开键盘
+        if not call.is_exist_call_key():
+            call.click_show_keyboard()
+            time.sleep(1)
+        # 按首字母搜索
+        call.input_text_c('键盘输入框', '4')
+        time.sleep(0.5)
+        call.swipe_direction_c('通话记录_记录区', 'up')
+        time.sleep(0.5)
+        self.assertEqual(call.get_elements_count_c('通话记录_号码') > 0, True)
+
+    @tags('ALL', 'CMCC', 'call')
+    def test_call_000170(self):
+        """
+        长按0数字键
+        1、正常网络状态下，登录密友圈；
+        2、当前页面在通话页面
+        3、拨号盘已打开"
+        长按0数字键
+        输入框显示“+”符号
+        """
+        call = CallPage()
+        call.wait_for_page_load()
+        # 判断如果键盘已收起，则展开键盘
+        if not call.is_exist_call_key():
+            call.click_show_keyboard()
+            time.sleep(1)
+        # 按首字母搜索
+        call.press_element_c('拨号界面_0', times=1000)
+        self.assertEqual('+' == call.get_element_text_c('键盘输入框'), True)
+
+    @tags('ALL', 'CMCC', 'call')
+    def test_call_000172(self):
+        """
+            1、正常网络状态下，登录密友圈；
+            2、当前页面在通话页面
+            3、拨号盘已打开
+            4、输入框显示123456
+            5、点击清除键一下
+            6、输入框显示12345
+            7、长按清除键
+            8、清除全部输入内容，输入框显示默认字体“直接拨号或拼音搜索”"
+        """
+        call = CallPage()
+        call.wait_for_page_load()
+        # 判断如果键盘已收起，则展开键盘
+        if not call.is_exist_call_key():
+            call.click_show_keyboard()
+            time.sleep(1)
+        # 按首字母搜索
+        call.input_text_c('键盘输入框', '123456')
+        call.click_locator_key_c('拨号界面_删除')
+        self.assertEqual('12345' == call.get_element_text_c('键盘输入框'), True)
+        call.press_element_c('拨号界面_删除', times=1000)
+        self.assertEqual('直接拨号或拼音搜索' == call.get_element_text_c('键盘输入框'), True)
+
+    @tags('ALL', 'CMCC', 'call')
+    def test_call_000178(self):
+        """
+            输入框的字符限制	"1、正常网络状态下，登录密友圈；
+            2、当前页面在通话页面
+            3、拨号盘已打开"	输入1234567891234567	输入框只显示123456789123456（15位字符）超过字符不显示
+        """
+        call = CallPage()
+        call.wait_for_page_load()
+        # 判断如果键盘已收起，则展开键盘
+        if not call.is_exist_call_key():
+            call.click_show_keyboard()
+            time.sleep(1)
+        # 按首字母搜索
+        call.input_text_c('键盘输入框', '1234567891234567')
+        time.sleep(1)
+        self.assertEqual('123456789123456' == call.get_element_text_c('键盘输入框'), True)
+
+    @tags('ALL', 'CMCC', 'call')
+    def test_call_000180(self):
+        """
+            点击搜索出来的本地通讯录或未知号码或通话记录成员	"1、正常网络状态下，登录密友圈；
+            2、当前页面在通话页面
+            3、拨号盘已打开"	1、点击结果栏任意区域	直接呼叫
+        """
+        call = CallPage()
+        call.wait_for_page_load()
+        # 判断如果键盘已收起，则展开键盘
+        if not call.is_exist_call_key():
+            call.click_show_keyboard()
+            time.sleep(1)
+        # 搜索
+        call.input_text_c('键盘输入框', '13800138001')
+        time.sleep(1)
+        call.get_elements_list_c('通话记录_号码')[0].click()
+        times = 2 * 60
+        while times > 0:
+            if (call.is_text_present_c('飞信电话', default_timeout=0.5)
+                    and call.is_text_present_c('12560', default_timeout=0.5)):
+                break
+            times -= 1
+        self.assertEqual(call.is_text_present_c('飞信电话', default_timeout=0.5)
+                         and call.is_text_present_c('12560', default_timeout=0.5), True)
+        try:
+            call.hang_up_the_call()
+        except Exception:
+            pass
+
+    @tags('ALL', 'CMCC', 'call')
+    def test_call_000181(self):
+        """
+            点击搜索出来的联系人或家庭网号码	"1、正常网络状态下，登录密友圈；
+            2、当前页面在通话页面
+            3、拨号盘已打开"	"1、点击（除详情记录图标）该号码栏任意区域
+            2、点击右侧详情记录图标"	"1、直接呼叫
+            2、跳转至联系人或家庭网详情页面"
+        """
+        call = CallPage()
+        call.wait_for_page_load()
+        call.clear_all_record()
+        # 判断如果键盘已收起，则展开键盘
+        if not call.is_exist_call_key():
+            call.click_show_keyboard()
+            time.sleep(1)
+        # 搜索
+        call.input_text_c('键盘输入框', '13800138001')
+        time.sleep(1)
+        call.get_elements_list_c('通话记录_号码')[0].click()
+        times = 2 * 60
+        while times > 0:
+            if (call.is_text_present_c('飞信电话', default_timeout=0.5)
+                    and call.is_text_present_c('12560', default_timeout=0.5)):
+                break
+            times -= 1
+        self.assertEqual(call.is_text_present_c('飞信电话', default_timeout=0.5)
+                         and call.is_text_present_c('12560', default_timeout=0.5), True)
+        try:
+            call.hang_up_the_call()
+        except Exception:
+            pass
+        call.wait_for_page_call_load()
+        call.click_tag_detail_first_element('飞信电话')
+        count = 30
+        while count > 0:
+            if call.on_this_page_call_detail():
+                break
+            count -= 1
+        self.assertEqual(call.on_this_page_call_detail(), True)
+
+    @tags('ALL', 'CMCC', 'call')
+    def test_call_000220(self):
+        """
+            未勾选联系人时的“呼叫”按钮	"1、正常网络状态下，登录密友圈；
+            2、当前页面在多方电话页面"	不勾选联系人点击“呼叫”	未勾选联系人时“呼叫”按钮置灰，不可点
+        """
+        call = CallPage()
+        call.wait_for_page_load()
+        # 判断如果键盘已拉起，则收起键盘
+        if call.is_exist_call_key():
+            call.click_hide_keyboard()
+            time.sleep(1)
+        call.click_locator_key('加号')
+        time.sleep(0.5)
+        call.click_locator_key('多方电话')
+        time.sleep(1)
+        call.is_text_present_c('多方电话')
+        time.sleep(1)
+        self.assertEqual('false' == call.get_one_element_c('呼叫').enable, True)
+        call.select_contact_n(1)
+        self.assertEqual('true' == call.get_one_element_c('呼叫').enable, True)
+
+    @tags('ALL', 'CMCC', 'call')
+    def test_call_000221(self):
+        """
+            未勾选联系人时的“呼叫”按钮	"1、正常网络状态下，登录密友圈；
+            2、当前页面在多方电话页面"	不勾选联系人点击“呼叫”	未勾选联系人时“呼叫”按钮置灰，不可点
+        """
+        call = CallPage()
+        call.wait_for_page_load()
+        # 判断如果键盘已拉起，则收起键盘
+        if call.is_exist_call_key():
+            call.click_hide_keyboard()
+            time.sleep(1)
+        call.click_locator_key('加号')
+        time.sleep(0.5)
+        call.click_locator_key('多方电话')
+        time.sleep(1)
+        call.is_text_present_c('多方电话')
+        time.sleep(1)
+        self.assertEqual(self.check_result_000221(9), True)
+
+    @TestLogger.log('选择第n个联系人')
+    def check_result_000221(self, number):
+        """选择第n个联系人"""
+        call = CallPage()
+        try:
+            lists = []
+            locator = (MobileBy.ID, 'com.cmic.college:id/contact_number')
+            count = 0
+            selected = 0
+            els = call.get_elements(locator)
+            while True:
+                if count > len(els) - 1:
+                    count = 0
+                    call.page_up()
+                    time.sleep(1)
+                    els = call.get_elements(locator)
+                    continue
+                el = els[count]
+                count += 1
+                if el.text in lists:
+                    continue
+                el.click()
+                if call.is_text_present_c('最多邀请8人参与多方电话', default_timeout=0.5):
+                    return True
+                elif int(selected) <= number - 1:
+                    selected = int(call.get_element_text_c('呼叫').split('/')[0].split('(')[-1])
+                    lists.append(el.text)
+                    continue
+                else:
+                    return False
+        except Exception:
+            print(traceback.print_exc())
+            return False

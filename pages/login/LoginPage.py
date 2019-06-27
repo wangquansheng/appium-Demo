@@ -5,9 +5,11 @@ from appium.webdriver.common.mobileby import MobileBy
 
 from library.core.BasePage import BasePage
 from library.core.TestLogger import TestLogger
+from library.core.common.simcardtype import CardType
+from pages.CommonPage import CommonPage
 
 
-class OneKeyLoginPage(BasePage):
+class OneKeyLoginPage(CommonPage):
     """一键登录页"""
 
     ACTIVITY = 'com.cmcc.cmrcs.android.ui.activities.OneKeyLoginActivity'
@@ -29,6 +31,10 @@ class OneKeyLoginPage(BasePage):
         # "确定": (MobileBy.ID, "com.cmic.college:id/btnConfirm"),
 
     }
+
+    @TestLogger.log("getLocators")
+    def get_locators(self, locator):
+        return self.__locators[locator]
 
     @TestLogger.log()
     def is_on_this_page(self):
@@ -142,10 +148,11 @@ class OneKeyLoginPage(BasePage):
     def wait_for_tell_number_load(self, timeout=60, auto_accept_alerts=True):
         """等待一键登录页面的‘将以本机号码登录’变成 手机号码 """
         try:
+            cards = self.get_cards_c(CardType.CHINA_MOBILE)
             self.wait_until(
                 timeout=timeout,
                 auto_accept_permission_alert=auto_accept_alerts,
-                condition=lambda d: self._is_element_text_match(self.__locators["一键登录"], r"\d+", regex=True)
+                condition=lambda d: self.is_text_present_c('使用{}一键登录'.format((cards[0])))
             )
         except:
             message = "电话号码在{}s内，没有加载成功".format(timeout)

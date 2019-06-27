@@ -3,8 +3,10 @@ from library.core.BasePage import BasePage
 from library.core.TestLogger import TestLogger
 import uuid
 
+from pages.CommonPage import CommonPage
 
-class MeEditProfilePage(BasePage):
+
+class MeEditProfilePage(CommonPage):
     """我-》查看个人资料"""
     ACTIVITY = 'com.cmicc.module_aboutme.ui.activity.UserProfileShowActivity'
 
@@ -42,6 +44,10 @@ class MeEditProfilePage(BasePage):
                              '/hierarchy/android.widget.FrameLayout/android.widget.LinearLayout/android.widget.FrameLayout/android.widget.LinearLayout/android.widget.FrameLayout/android.view.ViewGroup/android.support.v7.widget.RecyclerView/android.view.ViewGroup[1]'),
                   '标签取消': (MobileBy.ID, 'com.cmic.college:id/btnCancel'),
                   }
+
+    @TestLogger.log("当前页面是否在我的页面")
+    def get_locators(self, locator):
+        return self.__locators[locator]
 
     @TestLogger.log('判断该元素是否能点击')
     def element_is_clickable(self, text):
@@ -98,4 +104,4 @@ class MeEditProfilePage(BasePage):
         uid = str(uuid.uuid4())
         suid = ''.join(uid.split('-'))
         name = suid[:15]
-        self.input_profile_name('昵称', name)
+        self.input_text_c('昵称', name)

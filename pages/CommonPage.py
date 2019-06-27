@@ -21,7 +21,7 @@ class CommonPage(BasePage):
             time.sleep(1)
 
     @TestLogger.log('去除遮罩')
-    def remove_mask_c(self, num):
+    def remove_mask_c(self, num=2):
         """
         去除遮罩
         :param num:遮罩层数
@@ -34,8 +34,8 @@ class CommonPage(BasePage):
     @TestLogger.log("您的手机没有授予悬浮窗权限，请开启后再试")
     def close_suspension_c(self):
         """您的手机没有授予悬浮窗权限，请开启后再试"""
-        while self.is_text_present('您的手机没有授予悬浮窗权限，请开启后再试') and self.is_text_present(
-                '暂不开启') and self.is_text_present('现在去开启'):
+        while self.is_text_present('悬浮窗权限') and self.is_text_present(
+                '暂不开启'):
             self.click_text('暂不开启')
 
     @TestLogger.log('等待页面加载完毕')
@@ -100,6 +100,10 @@ class CommonPage(BasePage):
     @TestLogger.log("获得元素对应的数量")
     def get_elements_count_c(self, locator):
         return len(self.get_elements(self.__class__.get_locators(self, locator)))
+
+    @TestLogger.log("获得元素对应的数量")
+    def get_elements_list_c(self, locator):
+        return self.get_elements(self.__class__.get_locators(self, locator))
 
     @TestLogger.log("点击键盘输入框")
     def click_keyboard_input_box(self, locator):
@@ -228,7 +232,18 @@ class CommonPage(BasePage):
         """
         self.swipe_by_direction(self.__class__.get_locators(self, locator), direction)
 
-    # @TestLogger.log('点按手机Home键')
-    # def press_home_key_c(self):
-    #     """模拟手机HOME键"""
-    #     self.mobiledriver.press_home_key()
+    @TestLogger.log('长按元素')
+    def press_element_c(self, locator, times=3000, wait_time=1):
+        """长按元素"""
+        el = self.get_element(self.__class__.get_locators(self, locator))
+        self.press(el, times, wait_time)
+
+    @TestLogger.log('按住并向上滑动')
+    def press_and_move_to_up_c(self, locator):
+        """按住并向上滑动"""
+        self.press_and_move_to_down(self.__class__.get_locators(self, locator))
+
+    @TestLogger.log('按住并向下滑动')
+    def press_and_move_to_down_c(self, locator):
+        """按住并向下滑动"""
+        self.press_and_move_to_down(self.__class__.get_locators(self, locator))

@@ -1,4 +1,5 @@
 import threading
+import unittest
 
 from selenium.common.exceptions import TimeoutException
 
@@ -454,6 +455,36 @@ class CallPageTest(TestCase):
                           datetime.datetime.now().time().strftime("%H-%M-%S-%f"))
                     time.sleep(1)
                     call.pick_up_video_call()
+                    return True
+                else:
+                    count -= 1
+                    # 1s检测一次，20s没有接听，则失败
+                    print(count, '切换手机，接听电话 --->', datetime.datetime.now().date().strftime('%Y-%m-%d'),
+                          datetime.datetime.now().time().strftime("%H-%M-%S-%f"))
+                    time.sleep(0.5)
+                    continue
+            else:
+                return False
+        except Exception as e:
+            traceback.print_exc()
+            print(e, datetime.datetime.now().date().strftime('%Y-%m-%d'),
+                  datetime.datetime.now().time().strftime("%H-%M-%S-%f"))
+            return False
+
+    @TestLogger.log('切换手机，接听多人视频电话')
+    def to_pick_multi_video(self):
+        call = CallPage()
+        # 切换被叫手机
+        Preconditions.select_mobile('Android-移动-N')
+        count = 20
+        try:
+            while count > 0:
+                # 如果在视频通话界面，接听视频
+                if call.is_text_present('邀请你进行多方视频通话', default_timeout=0.5):
+                    print('接听视频-->', datetime.datetime.now().date().strftime('%Y-%m-%d'),
+                          datetime.datetime.now().time().strftime("%H-%M-%S-%f"))
+                    time.sleep(1)
+                    call.click_locator_key_c('多方视频_接听')
                     return True
                 else:
                     count -= 1
@@ -2977,3 +3008,357 @@ class CallPageTest(TestCase):
     #     time.sleep(1)
     #     self.assertEqual(call.is_text_present_c('飞信电话') \
     #                      and call.is_text_present_c('12560'), True)
+
+    @tags('ALL', 'CMCC_double', 'call')
+    def test_call_000185(self):
+        """
+            选择1人发起视频通话
+            1、网络正常，已登录密友圈；
+            2、当前在多方视频-联系人选择器页面；"	选择1名成员，点击“呼叫”按钮	发起单对单视频通话，逻辑与现网保持一致一致
+        """
+        call = CallPage()
+        call.wait_for_page_load()
+        # 初始化被叫手机
+        Preconditions.initialize_class('Android-移动-N')
+        # 获取手机号码
+        cards = call.get_cards_c(CardType.CHINA_MOBILE)
+        # 切换主叫手机
+        Preconditions.select_mobile('Android-移动')
+        # 拨打视频电话
+        call.pick_up_p2p_video(cards)
+        # 等待结果
+        self.assertEqual(call.is_text_present_c('正在等待对方接听', default_timeout=30), True)
+        call.click_locator_key_c('视频界面_挂断')
+
+    @tags('ALL', 'CMCC_double', 'call')
+    def test_call_000187(self):
+        """
+            1、网络正常，已登录密友圈，权限已开启；
+            2、当前在多方视频-联系人选择器页面；
+            1、选择2名以上联系人，点击“呼叫”按钮；
+            进入视频通话窗口，所有成员以小格子画面显示，
+            被叫方显示对方设置头像/默认头像，
+            头像上浮层显示呼叫中标识“转圈”，
+            窗口下方有“免提、静音、关闭摄像头、转换摄像头、挂断”按钮；
+        """
+        call = CallPage()
+        call.wait_for_page_load()
+        # 初始化被叫手机
+        Preconditions.initialize_class('Android-移动-N')
+        # 获取手机号码
+        cards = call.get_cards_c(CardType.CHINA_MOBILE)
+        # 切换主叫手机
+        Preconditions.select_mobile('Android-移动')
+        # 判断如果键盘已拉起，则收起键盘
+        if call.is_exist_call_key():
+            call.click_hide_keyboard()
+            time.sleep(1)
+        # 拨打多人视频 指定一个号码
+        call.pick_up_multi_video(cards)
+        count = 60
+        while count > 0:
+            ret = self.check_result_000187(call)
+            if ret:
+                break
+            time.sleep(0.5)
+            count -= 1
+            print("ret : %s ---> count : %s" % (ret, count))
+        else:
+            raise RuntimeError('---->False')
+        time.sleep(1)
+        if call.is_element_already_exist_c('挂断_多方通话'):
+            call.is_element_already_exist_c('挂断_多方通话')
+            if call.is_element_already_exist_c('挂断_多方通话_确定'):
+                call.is_element_already_exist_c('挂断_多方通话_确定')
+
+    @TestLogger.log('校验结果')
+    def check_result_000187(self, call):
+        """校验结果"""
+        return call.is_element_already_exist_c('多方视频_头像', default_timeout=0.5) \
+               and call.is_element_already_exist_c('多方视频_呼叫中', default_timeout=0.5) \
+               and call.is_element_already_exist_c('多方视频_转换摄像头', default_timeout=0.5) \
+               and call.is_element_already_exist_c('多方视频_关闭摄像头', default_timeout=0.5) \
+               and call.is_element_already_exist_c('多方视频_免提', default_timeout=0.5) \
+               and call.is_element_already_exist_c('多方视频_静音', default_timeout=0.5) \
+               and call.is_element_already_exist_c('多方视频_挂断', default_timeout=0.5)
+
+    @unittest.skip('浮窗抓取不到')
+    @tags('ALL', 'CMCC_double', 'call')
+    def test_call_000198(self):
+        """
+            收起和展开视频通话
+            1、网络正常，已登录密友圈，权限已开启；
+            2、多方视频已接通；
+            1、A点击左上角的【收起】按钮；
+            2、查看B的视频窗口；
+            3、A单击通话浮层；
+            1、视频窗口缩小以浮层的方式悬浮在页面的右上角，可按住移动浮层位置；
+            窗口收起后，默认停留在发起视频通话页面，切换到任一页面，浮层位置保持不变；
+            2、收起视频通话不影响其他视频成员端的视频窗口展示；
+            3、A用户返回视频通话窗口；
+        """
+        call = CallPage()
+        call.wait_for_page_load()
+        # 初始化被叫手机
+        Preconditions.initialize_class('Android-移动-N')
+        # 获取手机号码
+        cards = call.get_cards_c(CardType.CHINA_MOBILE)
+        # 切换主叫手机
+        Preconditions.select_mobile('Android-移动')
+        # 拨打多人视频 指定一个号码
+        call.pick_up_multi_video(cards)
+        # 等待结果
+        self.assertEqual(self.to_pick_phone_video(), True)
+        self.assertEqual(self.check_result_000198(), True)
+
+    @TestLogger.log('验证结果')
+    def check_result_000198(self):
+        """
+            收起和展开视频通话
+            1、网络正常，已登录密友圈，权限已开启；
+            2、多方视频已接通；
+            1、A点击左上角的【收起】按钮；
+            2、查看B的视频窗口；
+            3、A单击通话浮层；
+            1、视频窗口缩小以浮层的方式悬浮在页面的右上角，可按住移动浮层位置；
+            窗口收起后，默认停留在发起视频通话页面，切换到任一页面，浮层位置保持不变；
+            2、收起视频通话不影响其他视频成员端的视频窗口展示；
+            3、A用户返回视频通话窗口；
+        """
+        call = CallPage()
+        try:
+            call.click_locator_key_c('多方视频_免提')
+            # 切换主叫手机
+            Preconditions.select_mobile('Android-移动')
+            call.click_locator_key_c('多方视频_免提')
+            call.click_locator_key_c('多方视频_收起')
+            # 切换被叫手机
+            Preconditions.select_mobile('Android-移动-N')
+            self.assertEqual(call.is_element_already_exist_c('多方视频_收起'), True)
+            # 切换主叫手机
+            Preconditions.select_mobile('Android-移动')
+            call.press_and_move_to_down_c('')
+            return True
+        except Exception:
+            traceback.print_exc()
+            return False
+        finally:
+            call.tap_screen_three_point_element_c('视频界面_时长')
+            call.click_locator_key_c('视频界面_挂断')
+
+    @tags('ALL', 'CMCC_double', 'call')
+    def test_call_000205(self):
+        """
+            视频通话接通页面（免提功能）	"1、网络正常，已登录客户端
+            2、麦克风和相机权限已开启
+            3、当前在视频通话页面（默认免提打开）"	"1、点击“免提”按钮，被叫方发出声响；
+            2、再次点击“免提”按钮，被叫方发出声响；"	"视频通话接通时默认免提功能开启，免提按钮高亮显示，被叫方的声音通过扩音处播放；
+            1、点击已高亮的免提按钮，关闭免提功能，按钮由亮变暗，声音从手机顶部耳机位播放；
+            2、再次点击已变暗的免提按钮，打开免提功能，按钮高亮显示，声音通过扩音处播放
+        """
+        call = CallPage()
+        call.wait_for_page_load()
+        # 初始化被叫手机
+        Preconditions.initialize_class('Android-移动-N')
+        # 获取手机号码
+        cards = call.get_cards_c(CardType.CHINA_MOBILE)
+        # 切换主叫手机
+        Preconditions.select_mobile('Android-移动')
+        # 拨打视频电话
+        call.pick_up_multi_video(cards)
+        # 等待返回结果
+        self.assertEqual(self.to_pick_multi_video(), True)
+        self.assertEqual(self.check_video_call_000205(), True)
+
+    @TestLogger.log('验证结果')
+    def check_video_call_000205(self):
+        """
+             视频通话接通页面（免提功能）	"1、网络正常，已登录客户端
+            2、麦克风和相机权限已开启
+            3、当前在视频通话页面（默认免提打开）"	"1、点击“免提”按钮，被叫方发出声响；
+            2、再次点击“免提”按钮，被叫方发出声响；"	"视频通话接通时默认免提功能开启，免提按钮高亮显示，被叫方的声音通过扩音处播放；
+            1、点击已高亮的免提按钮，关闭免提功能，按钮由亮变暗，声音从手机顶部耳机位播放；
+            2、再次点击已变暗的免提按钮，打开免提功能，按钮高亮显示，声音通过扩音处播放
+        """
+        call = CallPage()
+        try:
+            self.assertEqual('true' == call.get_select_value_c('多方视频_免提'), True)
+            call.click_locator_key_c('多方视频_免提')
+            time.sleep(1)
+            self.assertEqual('false' == call.get_select_value_c('多方视频_免提'), True)
+            call.click_locator_key_c('多方视频_免提')
+            time.sleep(0.5)
+            self.assertEqual('true' == call.get_select_value_c('多方视频_免提'), True)
+            return True
+        except Exception:
+            traceback.print_exc()
+            return False
+        finally:
+            if call.is_element_already_exist_c('多方视频_挂断'):
+                call.click_locator_key_c('多方视频_挂断')
+                if call.is_text_present_c('是否关闭此次多方视频'):
+                    call.click_locator_key_c('确定')
+
+    @tags('ALL', 'CMCC_double', 'call')
+    def test_call_000206(self):
+        """
+              视频通话接通页面（静音功能）	"1、网络正常，已登录客户端
+            2、麦克风和相机权限已开启
+            3、当前在视频通话页面（默认静音关闭）"	"1、点击“静音”按钮，我方发出声响；
+            2、再次点击“静音”按钮，我方发出声响；"	"视频通话接通时默认静音功能关闭，其他成员可听到我方的声音；
+            1、点击已静音按钮，开启静音功能，静音按钮高亮显示，我方声音其他成员无法听到；
+            2、再次点击已高亮的静音按钮，关闭静音功能，其他成员可再次听到我方的声音；"
+        """
+        call = CallPage()
+        call.wait_for_page_load()
+        # 初始化被叫手机
+        Preconditions.initialize_class('Android-移动-N')
+        # 获取手机号码
+        cards = call.get_cards_c(CardType.CHINA_MOBILE)
+        # 切换主叫手机
+        Preconditions.select_mobile('Android-移动')
+        # 拨打视频电话
+        call.pick_up_multi_video(cards)
+        # 等待返回结果
+        self.assertEqual(self.to_pick_multi_video(), True)
+        self.assertEqual(self.check_video_call_000206(), True)
+
+    @TestLogger.log('验证结果')
+    def check_video_call_000206(self):
+        """
+             视频通话接通页面（静音功能）	"1、网络正常，已登录客户端
+            2、麦克风和相机权限已开启
+            3、当前在视频通话页面（默认静音关闭）"	"1、点击“静音”按钮，我方发出声响；
+            2、再次点击“静音”按钮，我方发出声响；"	"视频通话接通时默认静音功能关闭，其他成员可听到我方的声音；
+            1、点击已静音按钮，开启静音功能，静音按钮高亮显示，我方声音其他成员无法听到；
+            2、再次点击已高亮的静音按钮，关闭静音功能，其他成员可再次听到我方的声音；"
+        """
+        call = CallPage()
+        try:
+            self.assertEqual('false' == call.get_select_value_c('多方视频_静音'), True)
+            call.click_locator_key_c('多方视频_静音')
+            time.sleep(1)
+            self.assertEqual('true' == call.get_select_value_c('多方视频_静音'), True)
+            call.click_locator_key_c('多方视频_静音')
+            time.sleep(0.5)
+            self.assertEqual('false' == call.get_select_value_c('多方视频_静音'), True)
+            return True
+        except Exception:
+            traceback.print_exc()
+            return False
+        finally:
+            if call.is_element_already_exist_c('多方视频_挂断'):
+                call.click_locator_key_c('多方视频_挂断')
+                if call.is_text_present_c('是否关闭此次多方视频'):
+                    call.click_locator_key_c('确定')
+
+    @tags('ALL', 'CMCC_double', 'call')
+    def test_call_000207(self):
+        """
+             视频通话接通页面（摄像头开关功能）	"1、网络正常，已登录客户端
+            2、麦克风和相机权限已开启
+            3、当前在视频通话页面"	"1、点击“关闭摄像头”按钮；
+            2、再次点击“打开摄像头”按钮；"	"相机权限开启后，视频通话接通时摄像头按钮高亮显示，下方文字为“关闭摄像头”，其他成员看到我的画面；
+            1、点击“关闭摄像头”，按钮由亮变暗，下方文字变为“打开摄像头”，我方及被叫方均看到我的镜头画面消失，显示为我的头像；
+            2、再次点击“打开摄像头”，打开摄像头，所有成员均看到我的镜头画面；"
+        """
+        call = CallPage()
+        call.wait_for_page_load()
+        # 初始化被叫手机
+        Preconditions.initialize_class('Android-移动-N')
+        # 获取手机号码
+        cards = call.get_cards_c(CardType.CHINA_MOBILE)
+        # 切换主叫手机
+        Preconditions.select_mobile('Android-移动')
+        # 拨打视频电话
+        call.pick_up_multi_video(cards)
+        # 等待返回结果
+        self.assertEqual(self.to_pick_multi_video(), True)
+        self.assertEqual(self.check_video_call_000207(), True)
+
+    @TestLogger.log('验证结果')
+    def check_video_call_000207(self):
+        """
+            视频通话接通页面（摄像头开关功能）	"1、网络正常，已登录客户端
+            2、麦克风和相机权限已开启
+            3、当前在视频通话页面"	"1、点击“关闭摄像头”按钮；
+            2、再次点击“打开摄像头”按钮；"	"相机权限开启后，视频通话接通时摄像头按钮高亮显示，下方文字为“关闭摄像头”，其他成员看到我的画面；
+            1、点击“关闭摄像头”，按钮由亮变暗，下方文字变为“打开摄像头”，我方及被叫方均看到我的镜头画面消失，显示为我的头像；
+            2、再次点击“打开摄像头”，打开摄像头，所有成员均看到我的镜头画面；"
+        """
+        call = CallPage()
+        try:
+            self.assertEqual('false' == call.get_select_value_c('多方视频_关闭摄像头'), True)
+            self.assertEqual('关闭摄像头' == call.get_element_text_c('多方视频_关闭摄像头_文本'), True)
+            call.click_locator_key_c('多方视频_关闭摄像头')
+            time.sleep(1)
+            self.assertEqual('true' == call.get_select_value_c('多方视频_关闭摄像头'), True)
+            self.assertEqual('打开摄像头' == call.get_element_text_c('多方视频_关闭摄像头_文本'), True)
+            call.click_locator_key_c('多方视频_关闭摄像头')
+            time.sleep(0.5)
+            self.assertEqual('false' == call.get_select_value_c('多方视频_关闭摄像头'), True)
+            self.assertEqual('关闭摄像头' == call.get_element_text_c('多方视频_关闭摄像头_文本'), True)
+            return True
+        except Exception:
+            traceback.print_exc()
+            return False
+        finally:
+            if call.is_element_already_exist_c('多方视频_挂断'):
+                call.click_locator_key_c('多方视频_挂断')
+                if call.is_text_present_c('是否关闭此次多方视频'):
+                    call.click_locator_key_c('确定')
+
+    @tags('ALL', 'CMCC_double', 'call')
+    def test_call_000208(self):
+        """
+            视频通话接通页面（摄像头转换功能）	"1、网络正常，已登录客户端
+            2、麦克风和相机权限已开启
+            3、当前在视频通话页面（摄像头已开启）"	"1、点击“切换摄像头”按钮；
+            2、再次点击“切换摄像头”按钮；"	"视频通话时，摄像头开启中才有“切换摄像头”的功能可用，默认使用前置摄像头画面；
+            1、点击“切换摄像头”，操作者画面切换到后置摄像头画面；
+            2、再次点击“切换摄像头”，操作者画面再次切换到前置摄像头画面；"
+        """
+        call = CallPage()
+        call.wait_for_page_load()
+        # 初始化被叫手机
+        Preconditions.initialize_class('Android-移动-N')
+        # 获取手机号码
+        cards = call.get_cards_c(CardType.CHINA_MOBILE)
+        # 切换主叫手机
+        Preconditions.select_mobile('Android-移动')
+        # 拨打视频电话
+        call.pick_up_multi_video(cards)
+        # 等待返回结果
+        self.assertEqual(self.to_pick_multi_video(), True)
+        self.assertEqual(self.check_video_call_000208(), True)
+
+    @TestLogger.log('验证结果')
+    def check_video_call_000208(self):
+        """
+           视频通话接通页面（摄像头转换功能）	"1、网络正常，已登录客户端
+            2、麦克风和相机权限已开启
+            3、当前在视频通话页面（摄像头已开启）"	"1、点击“切换摄像头”按钮；
+            2、再次点击“切换摄像头”按钮；"	"视频通话时，摄像头开启中才有“切换摄像头”的功能可用，默认使用前置摄像头画面；
+            1、点击“切换摄像头”，操作者画面切换到后置摄像头画面；
+            2、再次点击“切换摄像头”，操作者画面再次切换到前置摄像头画面；"
+        """
+        call = CallPage()
+        try:
+            self.assertEqual('false' == call.get_select_value_c('多方视频_转换摄像头'), True)
+            time.sleep(0.5)
+            call.click_locator_key_c('多方视频_转换摄像头')
+            time.sleep(1)
+            self.assertEqual('false' == call.get_select_value_c('多方视频_转换摄像头'), True)
+            call.click_locator_key_c('多方视频_关闭摄像头')
+            time.sleep(1)
+            call.click_locator_key_c('多方视频_转换摄像头')
+            self.assertEqual(call.is_toast_exist('请打开摄像头后尝试'), True)
+            return True
+        except Exception:
+            traceback.print_exc()
+            return False
+        finally:
+            if call.is_element_already_exist_c('多方视频_挂断'):
+                call.click_locator_key_c('多方视频_挂断')
+                if call.is_text_present_c('是否关闭此次多方视频'):
+                    call.click_locator_key_c('确定')

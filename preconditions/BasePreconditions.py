@@ -45,21 +45,21 @@ class LoginPreconditions(object):
             guide_page = GuidePage()
             # current_mobile().launch_app()
             current_mobile().reset_app()
-            guide_page.wait_for_page_load(20)
-            # 跳过引导页
-            guide_page.swipe_to_the_second_banner()
-            guide_page.swipe_to_the_third_banner()
-            current_mobile().hide_keyboard_if_display()
-            guide_page.click_start_the_experience()
-            time.sleep(1)
-            # 权限页
-            guide_page.click_one_button_on()
-            time.sleep(2)
-            if guide_page.is_text_present("取消"):
-                guide_page.click_text("取消")
-                time.sleep(2)
-                guide_page.click_text("取消")
-                current_mobile().launch_app()
+            # guide_page.wait_for_page_load(20)
+            # # 跳过引导页
+            # guide_page.swipe_to_the_second_banner()
+            # guide_page.swipe_to_the_third_banner()
+            # current_mobile().hide_keyboard_if_display()
+            # guide_page.click_start_the_experience()
+            # time.sleep(1)
+            # # 权限页
+            # guide_page.click_one_button_on()
+            # time.sleep(2)
+            # if guide_page.is_text_present("取消"):
+            #     guide_page.click_text("取消")
+            #     time.sleep(2)
+            #     guide_page.click_text("取消")
+            #     current_mobile().launch_app()
             time.sleep(2)
             guide_page.click_always_allow()
             one_key.wait_for_page_load(30)

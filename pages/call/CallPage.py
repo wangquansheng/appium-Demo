@@ -21,7 +21,7 @@ class CallPage(CommonPage):
         '通话文案': (MobileBy.ID, 'com.cmic.college:id/header'),
         '来电名称': (MobileBy.ID, 'com.cmic.college:id/tvName'),
         '来电详情': (MobileBy.ID, 'com.cmic.college:id/ivDetail'),
-        '+': (MobileBy.ID, 'com.cmic.college:id/ivOperation'),
+        '加号': (MobileBy.ID, 'com.cmic.college:id/ivOperation'),
         # 通话界面
         '通话_通话': (MobileBy.ID, 'com.cmic.college:id/ivClose'),
         '通话_设置常用联系人': (MobileBy.ID, 'com.cmic.college:id/ivResidentBubble'),
@@ -103,6 +103,20 @@ class CallPage(CommonPage):
                                     'college:id/video_main_view"]/android.view.View[2]'),
         '视频界面_涂鸦': (MobileBy.ID, 'com.cmic.college:id/video_iv_doodle'),
         '多方视频_显示': (MobileBy.ID, 'com.cmic.college:id/ll_calling_view'),
+        #  多方视频呼叫界面
+        '多方视频_头像': (MobileBy.ID, 'com.cmic.college:id/iv_shadow'),
+        '多方视频_呼叫中': (MobileBy.ID, 'com.cmic.college:id/iv_connecting_loading'),
+        '多方视频_转换摄像头': (MobileBy.ID, 'com.cmic.college:id/iv_item_small_switch_camera'),
+        '多方视频_关闭摄像头': (MobileBy.ID, 'com.cmic.college:id/iv_open_self_camera'),
+        '多方视频_关闭摄像头_文本': (MobileBy.ID, 'com.cmic.college:id/tv_open'),
+        '多方视频_免提': (MobileBy.ID, 'com.cmic.college:id/mutil_video_call_speaker_btn'),
+        '多方视频_静音': (MobileBy.ID, 'com.cmic.college:id/mutil_video_call_mute'),
+        '多方视频_挂断': (MobileBy.ID, 'com.cmic.college:id/end_video_call_btn'),
+        '多方视频_收起': (MobileBy.ID, 'com.cmic.college:id/iv_hide'),
+        '多方视频_添加': (MobileBy.ID, 'com.cmic.college:id/multi_video_add_person'),
+        '多方视频_接听': (MobileBy.ID, 'com.cmic.college:id/ivAnswer'),
+        '确定': (MobileBy.ID, 'com.cmic.college:id/btnConfirm'),
+        '取消': (MobileBy.ID, 'com.cmic.college:id/btnCancel'),
 
         # 视频通话界面
         '视频_备注': (MobileBy.ID, 'com.cmic.college:id/video_tv_name'),
@@ -167,6 +181,9 @@ class CallPage(CommonPage):
         '通话记录_确定': (MobileBy.ID, 'com.cmic.college:id/btnConfirm'),
         '通话记录_取消': (MobileBy.ID, 'com.cmic.college:id/btnCancel'),
         '通话记录_归属地': (MobileBy.ID, 'com.cmic.college:id/tvPhone'),
+        '通话记录_号码': (MobileBy.ID, 'com.cmic.college:id/tvPhone'),
+        '通话记录_记录区': (MobileBy.ID, 'com.cmic.college:id/rvCallRecords'),
+        '通话记录_键盘区': (MobileBy.ID, 'com.cmic.college:id/t9Keyboard'),
 
         # 单人视频详情页
         '详情_视频按钮': (MobileBy.ID, 'com.cmic.college:id/tvVideoCall'),
@@ -184,7 +201,13 @@ class CallPage(CommonPage):
         # 拨号界面
         '拨叫号码': (MobileBy.ID, 'com.cmic.college:id/etInputNum'),
         '拨号界面_呼叫': (MobileBy.ID, 'com.cmic.college:id/ivVoiceCall'),
+        '拨号界面_0': (MobileBy.ID, 'com.cmic.college:id/rlt0'),
+        '拨号界面_1': (MobileBy.ID, 'com.cmic.college:id/rlt1'),
+        '拨号界面_3': (MobileBy.ID, 'com.cmic.college:id/rlt3'),
+        '拨号界面_井': (MobileBy.ID, 'com.cmic.college:id/ivSharp'),
+        '拨号界面_星': (MobileBy.ID, 'com.cmic.college:id/ivStar'),
         '拨号界面_挂断': (MobileBy.ID, 'com.android.incallui:id/endButton'),
+        '拨号界面_删除': (MobileBy.ID, 'com.cmic.college:id/ivDelete'),
         '拨号_返回': (MobileBy.XPATH,
                   '/hierarchy/android.widget.FrameLayout/android.widget.LinearLayout/android.widget.FrameLayout/android.widget.LinearLayout/android.widget.FrameLayout/android.widget.RelativeLayout/android.view.ViewGroup/android.widget.ImageButton'),
         # 福利电话
@@ -248,9 +271,9 @@ class CallPage(CommonPage):
         '回呼_我知道了': (MobileBy.ID, 'com.cmic.college:id/bt_open'),
 
         # 悬浮窗授权提示
-        '悬浮窗_内容': (MobileBy.XPATH, '//*[contains(@text,"您的手机没有授予悬浮窗权限，请开启后再试")]'),
-        '暂不开启': (MobileBy.ID, 'android:id/button2'),
-        '现在去开启': (MobileBy.ID, 'android:id/button1'),
+        '悬浮窗_内容': (MobileBy.XPATH, '//*[contains(@text,"悬浮窗权限")]'),
+        '暂不开启': (MobileBy.ID, 'com.cmic.college:id/btnCancel'),
+        '去开启': (MobileBy.ID, 'com.cmic.college:id/btnConfirm'),
 
         # 语音电话接听页面
         '语音_短信': (MobileBy.ID, 'com.android.incallui:id/mmsbutton'),
@@ -267,7 +290,7 @@ class CallPage(CommonPage):
 
     }
 
-    @TestLogger.log("当前页面是否在我的页面")
+    @TestLogger.log("getLocators")
     def get_locators(self, locator):
         return self.__locators[locator]
 
@@ -286,8 +309,8 @@ class CallPage(CommonPage):
     @TestLogger.log("您的手机没有授予悬浮窗权限，请开启后再试")
     def close_suspension_if_exist(self):
         """您的手机没有授予悬浮窗权限，请开启后再试"""
-        while self.is_text_present('您的手机没有授予悬浮窗权限，请开启后再试') and self.is_text_present(
-                '暂不开启') and self.is_text_present('现在去开启'):
+        while self.is_text_present('悬浮窗权限') and self.is_text_present(
+                '暂不开启'):
             self.click_text('暂不开启')
 
     @TestLogger.log('等待页面自动跳转')
@@ -389,7 +412,7 @@ class CallPage(CommonPage):
 
     @TestLogger.log('拨打并挂断一个点对点视频通话')
     def point2point_vedio_call(self):
-        self.click_locator_key('+')
+        self.click_locator_key('加号')
         self.click_locator_key('视频通话')
         self.click_locator_key('视频通话_第一个联系人')
         time.sleep(0.5)
@@ -408,7 +431,7 @@ class CallPage(CommonPage):
     @TestLogger.log('拨打并挂断一个多方视频通话')
     def multiplayer_vedio_call(self):
         time.sleep(0.5)
-        self.click_locator_key('+')
+        self.click_locator_key('加号')
         time.sleep(0.5)
         self.click_locator_key('视频通话')
         time.sleep(0.5)
@@ -431,7 +454,7 @@ class CallPage(CommonPage):
     @TestLogger.log('拨打并挂断一个多方视频通话')
     def multiplayer_voice_call(self):
         time.sleep(0.5)
-        self.click_locator_key('+')
+        self.click_locator_key('加号')
         time.sleep(0.5)
         self.click_locator_key('多方电话x')
         time.sleep(0.5)
@@ -491,7 +514,7 @@ class CallPage(CommonPage):
 
     @TestLogger.log('确保页面第一条视频通话记录为对方无密友圈')
     def make_sure_p2p_video_no_college(self):
-        self.click_locator_key('+')
+        self.click_locator_key('加号')
         time.sleep(1)
         self.click_locator_key('视频通话x')
         self.input_text(self.__locators['视频通话_搜索'], '13800138005')
@@ -532,6 +555,7 @@ class CallPage(CommonPage):
     @TestLogger.log('清除全部通话记录')
     def clear_all_record(self):
         """清除全部通话记录"""
+        time.sleep(1)
         if self.is_element_already_exist_c('联系人_详情图标'):
             if self.is_text_present_c('多方视频'):
                 self.press_tag_detail_first_element('多方视频')
@@ -547,7 +571,6 @@ class CallPage(CommonPage):
                 time.sleep(0.5)
                 self.click_locator_key_c('通话记录_确定')
                 time.sleep(0.5)
-
 
     @TestLogger.log("清除全部通话记录")
     def click_tag_text_delete_all_record(self, text):
@@ -790,8 +813,8 @@ class CallPage(CommonPage):
     @TestLogger.log('选择n个联系人')
     def select_contact_n(self, number):
         """选择n个联系人"""
+        lists = list()
         try:
-            lists = []
             locator = (MobileBy.ID, 'com.cmic.college:id/contact_number')
             count = 0
             els = self.get_elements(locator)
@@ -812,9 +835,10 @@ class CallPage(CommonPage):
                 if number > int(selected):
                     continue
                 else:
-                    return False
-        except Exception as e:
-            print(e)
+                    break
+            return lists
+        except Exception:
+            traceback.print_exc()
             return False
 
     @TestLogger.log('获取指定运营商类型的手机卡（不传类型返回全部配置的手机卡）')
@@ -823,7 +847,7 @@ class CallPage(CommonPage):
         return current_mobile().get_cards(card_type)
 
     @TestLogger.log('选择第n个联系人')
-    def select_contact_more(self, number):
+    def select_contact_more(self, number, text):
         """选择第n个联系人"""
         try:
             lists = []
@@ -844,7 +868,7 @@ class CallPage(CommonPage):
                 el.click()
                 lists.append(el.text)
                 selected = self.get_element_text('呼叫').split('/')[0].split('(')[-1]
-                if self.is_toast_exist('最多只能选择8人', timeout=1):
+                if self.is_toast_exist(text, timeout=1):
                     return True
                 elif int(selected) <= number - 1:
                     continue
@@ -857,7 +881,7 @@ class CallPage(CommonPage):
     @TestLogger.log('拨打一个点对点视频通话')
     def pick_up_p2p_video(self, cards):
         time.sleep(0.5)
-        self.click_locator_key('+')
+        self.click_locator_key('加号')
         time.sleep(0.5)
         self.click_locator_key('视频通话')
         # self.click_locator_key('视频通话_搜索')
@@ -870,10 +894,35 @@ class CallPage(CommonPage):
         if self.is_text_present('对方还未使用密友圈，喊他一起来免流量视频通话。'):
             self.click_locator_key('无密友圈_取消')
 
+    @TestLogger.log('拨打多人视频通话')
+    def pick_up_multi_video(self, cards):
+        time.sleep(1)
+        self.click_locator_key_c('加号')
+        time.sleep(0.5)
+        self.click_locator_key_c('视频通话')
+        time.sleep(1)
+        self.wait_page_load_common('发起视频通话')
+        time.sleep(1)
+        phone_list = self.select_contact_n(4)
+        self.input_text_c('视频通话_搜索', cards)
+        time.sleep(0.5)
+        el = self.get_elements_list_c('电话号码')[0]
+        if el.text not in phone_list:
+            el.click()
+        time.sleep(0.5)
+        self.click_locator_key_c('呼叫')
+        time.sleep(1)
+        if self.is_element_already_exist_c('悬浮窗_内容'):
+            self.click_locator_key_c('去开启')
+            time.sleep(1)
+            if self.is_text_present_c('在其他应用上层显示'):
+                self.click_text('在其他应用上层显示')
+                self.driver.back()
+
     @TestLogger.log('拨打一个点对点视频通话')
     def pick_up_multi_voice(self, cards):
         time.sleep(1)
-        self.click_locator_key('+')
+        self.click_locator_key('加号')
         time.sleep(0.5)
         self.click_locator_key('多方电话')
         # self.click_locator_key('视频通话_搜索')
@@ -884,7 +933,6 @@ class CallPage(CommonPage):
         if self.is_element_already_exist_c('回呼_提示文本'):
             self.click_locator_key('回呼_不再提醒')
             self.click_locator_key('回呼_我知道了')
-
 
     @TestLogger.log('拨打一个点对点视频通话')
     def pick_up_p2p_voice(self, cards):
