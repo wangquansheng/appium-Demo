@@ -1,10 +1,7 @@
-import threading
-
 from appium.webdriver.common.mobileby import MobileBy
 from selenium.common.exceptions import TimeoutException
 
 from library.core.TestLogger import TestLogger
-from library.core.common.simcardtype import CardType
 from library.core.utils.applicationcache import current_mobile, current_driver, switch_to_mobile
 from library.core.utils.testcasefilter import tags
 from pages.guide import GuidePage
@@ -12,13 +9,12 @@ from pages.login.LoginPage import OneKeyLoginPage
 from pages.call.CallPage import CallPage
 from library.core.TestCase import TestCase
 import time
-import datetime
 import warnings
 import traceback
 
 REQUIRED_MOBILES = {
-    'Android-移动-N': 'M960BDQN229CH',
-    'Android-移动': 'M960BDQN229CH_NOVA',
+    'Android-移动': 'M960BDQN229CH',
+    'Android-移动-N': 'M960BDQN229CH_NOVA',
     'IOS-移动': '',
     'Android-电信': 'single_telecom',
     'Android-联通': 'single_union',
@@ -598,6 +594,13 @@ class CallPageTest(TestCase):
         if call.is_exist_call_key():
             call.click_hide_keyboard()
             time.sleep(1)
+        call.make_sure_p2p_voice_no_college()
+        call.is_text_present_c('飞信电话', default_timeout=15)
+        try:
+            call.hang_up_the_call()
+        except Exception:
+            pass
+        self.assertEqual(call.is_text_present_c('飞信电话', default_timeout=15), True)
         call.click_tag_detail_first_element('飞信电话')
         time.sleep(1)
         self.assertEqual(call.on_this_page_call_detail(), True)
@@ -617,7 +620,13 @@ class CallPageTest(TestCase):
         if call.is_exist_call_key():
             call.click_hide_keyboard()
             time.sleep(1)
-        call.make_sure_have_p2p_voicecall_record()
+        call.make_sure_p2p_voice_no_college()
+        call.is_text_present_c('飞信电话', default_timeout=15)
+        try:
+            call.hang_up_the_call()
+        except Exception:
+            pass
+        self.assertEqual(call.is_text_present_c('飞信电话', default_timeout=15), True)
         call.click_tag_detail_first_element('飞信电话')
         time.sleep(1)
         self.assertEqual(call.on_this_page_call_detail(), True)
@@ -649,6 +658,8 @@ class CallPageTest(TestCase):
         # 1. 修改为中文
         name = 'select now()'
         self.assertEqual(self.check_modify_nickname(name), True)
+        name = '大佬1'
+        self.check_modify_nickname(name)
 
     @tags('ALL', 'CMCC', 'call')
     def test_call_00017(self):
@@ -668,42 +679,8 @@ class CallPageTest(TestCase):
         # 1. 修改为中文
         name = '<a href="www.baidu.com"/>a<a/>'
         self.assertEqual(self.check_modify_nickname(name), True)
-
-    @tags('ALL', 'CMCC', 'call')
-    def test_call_00019(self):
-        """
-            1、联网正常已登录
-            2、对方离线
-            3、当前页通话记录详情
-            1、点击视频通话---1、进入拨打视频通话界面，并弹出提示窗，“对方未接听，请稍候再尝试”
-        """
-        call = CallPage()
-        call.wait_for_page_load()
-        # 判断如果键盘已拉起，则收起键盘
-        if call.is_exist_call_key():
-            call.click_hide_keyboard()
-            time.sleep(1)
-        call.make_sure_have_p2p_vedio_record()
-        call.click_tag_detail_first_element('视频通话')
-        time.sleep(1)
-        self.assertEqual(call.on_this_page_call_detail(), True)
-        # 1. 点击视频通话按钮
-        call.click_locator_key('详情_视频')
-        time.sleep(1)
-        if call.on_this_page_flow():
-            call.set_not_reminders()
-            time.sleep(1)
-            call.click_locator_key('流量_继续拨打')
-        time.sleep(25)
-        count = 20
-        while count > 0:
-            exist = call.is_toast_exist("对方未接听，请稍候再尝试", timeout=0.5)
-            if exist:
-                break
-            time.sleep(0.5)
-            count -= 1
-        else:
-            raise RuntimeError('测试出错')
+        name = '大佬1'
+        self.check_modify_nickname(name)
 
     @tags('ALL', 'CMCC', 'call')
     def test_call_00023(self):
@@ -848,7 +825,13 @@ class CallPageTest(TestCase):
         if call.is_exist_call_key():
             call.click_hide_keyboard()
             time.sleep(1)
-        call.make_sure_have_p2p_voicecall_record()
+        call.make_sure_p2p_voice_no_college()
+        call.is_text_present_c('飞信电话', default_timeout=15)
+        try:
+            call.hang_up_the_call()
+        except Exception:
+            pass
+        self.assertEqual(call.is_text_present_c('飞信电话', default_timeout=15), True)
         call.click_tag_detail_first_element('飞信电话')
         time.sleep(1)
         self.assertEqual(call.on_this_page_call_detail(), True)
@@ -863,6 +846,8 @@ class CallPageTest(TestCase):
         time.sleep(2)
         comment = call.get_element_text('视频_备注')
         self.assertEqual(name == comment, True)
+        # name = '大佬1'
+        # self.check_modify_nickname(name)
 
     @tags('ALL', 'CMCC', 'call')
     def test_call_00032(self):
@@ -880,8 +865,12 @@ class CallPageTest(TestCase):
             call.click_hide_keyboard()
             time.sleep(1)
         call.make_sure_p2p_voice_no_college()
-        time.sleep(15)
-        call.wait_for_page_call_load()
+        call.is_text_present_c('飞信电话', default_timeout=15)
+        try:
+            call.hang_up_the_call()
+        except Exception:
+            pass
+        self.assertEqual(call.is_text_present_c('飞信电话', default_timeout=15), True)
         call.click_tag_detail_first_element('飞信电话')
         time.sleep(1)
         self.assertEqual(call.on_this_page_call_detail(), True)
@@ -1044,50 +1033,11 @@ class CallPageTest(TestCase):
             call.click_hide_keyboard()
             time.sleep(1)
         # 清除全部通话记录
-        if call.is_text_present('飞信电话'):
-            call.press_tag_detail_first_element('飞信电话')
-            time.sleep(1)
-            if call.check_text_exist('清除全部通话记录'):
-                call.click_locator_key('通话记录_删除全部')
-                time.sleep(0.5)
-                call.click_locator_key('通话记录_确定')
-                call.wait_for_page_load()
-            else:
-                raise RuntimeError('清除通话记录出错')
-        elif call.is_text_present('视频通话'):
-            call.press_tag_detail_first_element('视频通话')
-            time.sleep(1)
-            if call.check_text_exist('清除全部通话记录'):
-                call.click_locator_key('通话记录_删除全部')
-                time.sleep(0.5)
-                call.click_locator_key('通话记录_确定')
-                call.wait_for_page_load()
-            else:
-                raise RuntimeError('清除通话记录出错')
-        elif call.is_text_present('多方视频'):
-            call.press_tag_detail_first_element('多方视频')
-            time.sleep(1)
-            if call.check_text_exist('清除全部通话记录'):
-                call.click_locator_key('通话记录_删除全部')
-                time.sleep(0.5)
-                call.click_locator_key('通话记录_确定')
-                call.wait_for_page_load()
-            else:
-                raise RuntimeError('清除通话记录出错')
-        elif call.is_text_present('多方电话'):
-            call.press_tag_detail_first_element('多方电话')
-            time.sleep(1)
-            if call.check_text_exist('清除全部通话记录'):
-                call.click_locator_key('通话记录_删除全部')
-                time.sleep(0.5)
-                call.click_locator_key('通话记录_确定')
-                call.wait_for_page_load()
-            else:
-                raise RuntimeError('清除通话记录出错')
+        call.clear_all_record()
         call.wait_for_page_call_load()
         # 判断是否有通话标签、‘+’、打电话不花钱
         self.assertEqual(call.is_text_present('通话'), True)
-        self.assertEqual(call.on_this_page_common('+'), True)
+        self.assertEqual(call.on_this_page_common('加号'), True)
         self.assertEqual(call.is_text_present('打电话不花钱'), True)
 
     @tags('ALL', 'CMCC', 'call')
@@ -1291,7 +1241,7 @@ class CallPageTest(TestCase):
         # 保证页面只有一条通话记录
         call.make_sure_p2p_voice_no_college()
         # 等待通话页面加载
-        call.wait_for_page_call_load()
+        call.is_text_present_c('飞信电话', default_timeout=15)
         time.sleep(2)
         # if call.is_element_already_exist_c('通话类型标签'):
         self.assertEqual('[飞信电话]' == call.get_element_text_c('通话类型标签'), True)
@@ -1610,50 +1560,6 @@ class CallPageTest(TestCase):
         self.assertEqual(call.get_elements_count_c('通话记录_号码') > 0, True)
 
     @tags('ALL', 'CMCC', 'call')
-    def test_call_000169(self):
-        """
-        1、正常网络状态下，登录密友圈；
-        2、当前页面在通话页面
-        3、拨号盘已打开
-        4、输入框默认显示“直接拨号或开始搜索”
-        点击拨打	弹出“请输入正确号码”icon提示
-        """
-        call = CallPage()
-        call.wait_for_page_load()
-        # 判断如果键盘已收起，则展开键盘
-        if not call.is_exist_call_key():
-            call.click_show_keyboard()
-            time.sleep(1)
-        # 按首字母搜索
-        call.input_text_c('键盘输入框', '4')
-        time.sleep(0.5)
-        call.swipe_direction_c('通话记录_记录区', 'up')
-        time.sleep(0.5)
-        self.assertEqual(call.get_elements_count_c('通话记录_号码') > 0, True)
-
-    @tags('ALL', 'CMCC', 'call')
-    def test_call_000169(self):
-        """
-        1、正常网络状态下，登录密友圈；
-        2、当前页面在通话页面
-        3、拨号盘已打开
-        4、输入框默认显示“直接拨号或开始搜索”
-        点击拨打	弹出“请输入正确号码”icon提示
-        """
-        call = CallPage()
-        call.wait_for_page_load()
-        # 判断如果键盘已收起，则展开键盘
-        if not call.is_exist_call_key():
-            call.click_show_keyboard()
-            time.sleep(1)
-        # 按首字母搜索
-        call.input_text_c('键盘输入框', '4')
-        time.sleep(0.5)
-        call.swipe_direction_c('通话记录_记录区', 'up')
-        time.sleep(0.5)
-        self.assertEqual(call.get_elements_count_c('通话记录_号码') > 0, True)
-
-    @tags('ALL', 'CMCC', 'call')
     def test_call_000170(self):
         """
         长按0数字键
@@ -1733,18 +1639,13 @@ class CallPageTest(TestCase):
         call.input_text_c('键盘输入框', '13800138001')
         time.sleep(1)
         call.get_elements_list_c('通话记录_号码')[0].click()
-        times = 2 * 60
-        while times > 0:
-            if (call.is_text_present_c('飞信电话', default_timeout=0.5)
-                    and call.is_text_present_c('12560', default_timeout=0.5)):
-                break
-            times -= 1
-        self.assertEqual(call.is_text_present_c('飞信电话', default_timeout=0.5)
-                         and call.is_text_present_c('12560', default_timeout=0.5), True)
+        time.sleep(1)
+        if call.is_element_already_exist_c('回呼_提示文本'):
+            call.click_locator_key_c('回呼_我知道了')
         try:
+            self.assertEqual(call.is_text_present_c('飞信电话', default_timeout=15), True)
+        finally:
             call.hang_up_the_call()
-        except Exception:
-            pass
 
     @tags('ALL', 'CMCC', 'call')
     def test_call_000181(self):
@@ -1766,19 +1667,15 @@ class CallPageTest(TestCase):
         call.input_text_c('键盘输入框', '13800138001')
         time.sleep(1)
         call.get_elements_list_c('通话记录_号码')[0].click()
-        times = 2 * 60
-        while times > 0:
-            if (call.is_text_present_c('飞信电话', default_timeout=0.5)
-                    and call.is_text_present_c('12560', default_timeout=0.5)):
-                break
-            times -= 1
-        self.assertEqual(call.is_text_present_c('飞信电话', default_timeout=0.5)
-                         and call.is_text_present_c('12560', default_timeout=0.5), True)
+        time.sleep(1)
+        if call.is_element_already_exist_c('回呼_提示文本'):
+            call.click_locator_key_c('回呼_我知道了')
+        call.is_text_present_c('飞信电话', default_timeout=15)
         try:
             call.hang_up_the_call()
         except Exception:
             pass
-        call.wait_for_page_call_load()
+        self.assertEqual(call.is_text_present_c('飞信电话', default_timeout=15), True)
         call.click_tag_detail_first_element('飞信电话')
         count = 30
         while count > 0:
@@ -1786,6 +1683,48 @@ class CallPageTest(TestCase):
                 break
             count -= 1
         self.assertEqual(call.on_this_page_call_detail(), True)
+
+    @tags('ALL', 'CMCC', 'call')
+    def test_call_000213(self):
+        """
+            联系人选择页点击“←”或者“取消”
+            1、正常网络状态下，登录密友圈；
+            2、当前页面在多方电话页面"
+            点击‘←’或者“取消”按钮	回到通话主页
+        """
+        call = CallPage()
+        call.wait_for_page_load()
+        # 判断如果键盘已收起，则展开键盘
+        if call.is_exist_call_key():
+            call.click_hide_keyboard()
+            time.sleep(1)
+        # 搜索
+        call.click_locator_key_c('加号')
+        time.sleep(0.5)
+        call.click_locator_key_c('多方电话')
+        time.sleep(1)
+        call.click_locator_key_c('多方电话_返回')
+        time.sleep(1)
+        self.assertEqual(call.is_element_already_exist_c('通话'), True)
+
+    @tags('ALL', 'CMCC', 'call')
+    def test_call_000215(self):
+        """
+            "1、正常网络状态下，登录密友圈；
+            2、当前页面在多方电话页面"
+            搜索联系人电话号码	支持模糊搜索
+        """
+        call = CallPage()
+        call.wait_for_page_load()
+        # 判断如果键盘已收起，则展开键盘
+        # 判断如果键盘已收起，则展开键盘
+        if not call.is_exist_call_key():
+            call.click_show_keyboard()
+            time.sleep(1)
+        # 按首字母搜索
+        call.input_text_c('键盘输入框', '138002')
+        time.sleep(1)
+        self.assertEqual(call.get_elements_count_c('通话记录_号码') > 0, True)
 
     @tags('ALL', 'CMCC', 'call')
     def test_call_000220(self):
@@ -1805,9 +1744,9 @@ class CallPageTest(TestCase):
         time.sleep(1)
         call.is_text_present_c('多方电话')
         time.sleep(1)
-        self.assertEqual('false' == call.get_one_element_c('呼叫').enable, True)
+        self.assertEqual('false' == call.get_one_element_c('呼叫').get_attribute('enabled'), True)
         call.select_contact_n(1)
-        self.assertEqual('true' == call.get_one_element_c('呼叫').enable, True)
+        self.assertEqual('true' == call.get_one_element_c('呼叫').get_attribute('enabled'), True)
 
     @tags('ALL', 'CMCC', 'call')
     def test_call_000221(self):
@@ -1862,3 +1801,136 @@ class CallPageTest(TestCase):
         except Exception:
             print(traceback.print_exc())
             return False
+
+    @tags('ALL', 'CMCC', 'call')
+    def test_call_000239(self):
+        """
+            1、正常登录密友圈
+            2、通话界面中有通话记录
+            3、查看通话界面中的通话记录
+            4、通话记录中记录电话的优惠电话、视频的视频通话与多方视频记录
+            5、（无优惠电话，只判断‘飞信电话’‘多方电话’‘多方视频’‘视频通话’）
+        """
+        call = CallPage()
+        call.wait_for_page_load()
+        # 确保有视频通话
+        if not call.is_text_present_c('视频通话'):
+            call.make_sure_p2p_video_no_college()
+            time.sleep(1)
+            if call.is_element_already_exist_c('流量_不再提醒'):
+                call.click_locator_key_c('流量_不再提醒')
+                call.click_locator_key_c('流量_继续拨打')
+            if call.is_element_already_exist_c('无密友圈_提示文本'):
+                call.click_locator_key_c('无密友圈_取消')
+        call.wait_for_page_c('通话', max_wait_time=60)
+        time.sleep(2)
+        self.assertEqual(call.is_text_present_c('[视频通话]'), True)
+        # 确保有飞信电话
+        if not call.is_text_present_c('飞信电话'):
+            call.make_sure_p2p_voice_no_college()
+        call.wait_for_page_c('通话', max_wait_time=60)
+        time.sleep(2)
+        self.assertEqual(call.is_text_present_c('[飞信电话]'), True)
+        # 确保有多方视频通话记录
+        if not call.is_text_present_c('多方视频'):
+            call.make_sure_have_multiplayer_vedio_record()
+        call.wait_for_page_c('通话', max_wait_time=60)
+        time.sleep(2)
+        self.assertEqual(call.is_text_present_c('[多方视频]'), True)
+        # 确保有多方电话
+        if not call.is_text_present_c('多方电话'):
+            call.make_sure_have_multi_voice_record()
+        call.wait_for_page_c('通话', max_wait_time=60)
+        time.sleep(2)
+        self.assertEqual(call.is_text_present_c('[多方电话]'), True)
+
+
+    @tags('ALL', 'CMCC', 'call')
+    def test_call_000254(self):
+        """
+            1、正常登录密友圈
+            2、使用飞信电话给非联系人/不限时长成员/家庭网成员等关系的陌生号码拨打电话
+            3、查看通话记录
+            4、生成一条呼出的优惠电话记录，记录中昵称位置显示该陌生电话的全号，
+            5、类型显示为：飞信电话，并显示该陌生号码的归属地和运营商
+        """
+        call = CallPage()
+        call.wait_for_page_load()
+        # 清空以前的通话记录
+        call.clear_all_record()
+        time.sleep(0.5)
+        # 保证页面只有一条通话记录
+        call.make_sure_p2p_voice_no_college()
+        # 等待通话页面加载
+        call.wait_for_page_call_load()
+        time.sleep(2)
+        # if call.is_element_already_exist_c('通话类型标签'):
+        self.assertEqual('[飞信电话]' == call.get_element_text_c('通话类型标签'), True)
+        # if call.is_element_already_exist_c('搜索_电话显示'):
+        self.assertEqual('北京 移动' == call.get_element_text_c('通话记录_归属地'), True)
+
+    @tags('ALL', 'CMCC', 'call')
+    def test_call_000296(self):
+        """
+            拨号盘对+86号码优化	"1、正常登录密友圈
+            2、网络正常
+            3、当前页面在通话页面
+            4、展开了拨号盘"	"1、输入+86XX号码
+            2、点击拨打按钮"	"1、显示+86XX号码
+            2、呼叫页面显示XX号码"
+        """
+        call = CallPage()
+        call.wait_for_page_load()
+        # 清空以前的通话记录
+        call.clear_all_record()
+        time.sleep(0.5)
+        # 保证页面只有一条通话记录
+        call.pick_up_p2p_voice('+8613800000000')
+        # 等待通话页面加载
+        time.sleep(2)
+        try:
+            call.hang_up_the_call()
+        except Exception:
+            pass
+        time.sleep(1)
+        call.is_text_present_c('飞信电话', default_timeout=30)
+        self.assertEqual('13800000000' == call.get_element_text_c('搜索_电话昵称'), True)
+
+    @tags('ALL', 'CMCC', 'call')
+    def test_call_000300(self):
+        """
+            不限时长通话记录的标记修改	"1、正常登录密友圈
+            2、网络正常
+            3、当前页面在通话页面
+            4、存在不限时长通话记录"	查看修改内容	将名称下方的以前的“福利电话”修改为“飞信电话”
+        """
+        call = CallPage()
+        call.wait_for_page_load()
+        # 清空以前的通话记录
+        call.clear_all_record()
+        time.sleep(0.5)
+        # 保证页面只有一条通话记录
+        call.make_sure_p2p_voice_no_college()
+        # 等待通话页面加载
+        time.sleep(2)
+        try:
+            call.hang_up_the_call()
+        except Exception:
+            pass
+        time.sleep(1)
+        self.assertEqual(call.is_text_present_c('飞信电话', default_timeout=30), True)
+
+    @tags('ALL', 'CMCC', 'call')
+    def test_call_000306(self):
+        """
+            不限时长通话记录的标记修改	"1、正常登录密友圈
+            2、网络正常
+            3、当前页面在通话页面
+            4、存在不限时长通话记录"	查看修改内容	将名称下方的以前的“福利电话”修改为“飞信电话”
+        """
+        call = CallPage()
+        call.wait_for_page_load()
+        # 清空以前的通话记录
+        call.clear_all_record()
+        time.sleep(0.5)
+        self.assertEqual(call.is_text_present_c('打电话不花钱'), True)

@@ -1,4 +1,5 @@
 import os
+import time
 import traceback
 import unittest
 
@@ -6,10 +7,15 @@ from pip._internal import main as install_requirements
 
 # 自动安装依赖
 install_requirements(['install', '-r', 'requirements.txt'])
+begin_time = time.time()
 
 if __name__ == '__main__':
     os.environ.setdefault('AVAILABLE_DEVICES_SETTING', 'AVAILABLE_DEVICES')
     from library.core.utils import CommandLineTool
+
+    from library.core.total_count import total_count
+
+    total_count._init()  # 先必须在主模块初始化（只在Main模块需要一次即可）
 
     cli_commands = CommandLineTool.parse_and_store_command_line_params()
     if cli_commands.deviceConfig:
@@ -42,6 +48,7 @@ if __name__ == '__main__':
     with common.open_or_create(report_path, 'wb') as output:
         runner = HTMLTestRunner(
             stream=output, title='Test Report', verbosity=2)
+        print('本次测试共有用例%s条' % total_count.get_value())
         result = runner.run(suite)
 
         # 成功、失败、错误、总计、通过率

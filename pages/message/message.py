@@ -40,7 +40,7 @@ class MessagePage(FooterPage):
 
     @TestLogger.log('点击+')
     def click_add(self):
-        self.click_element(self.__locators['+'])
+        self.click_element(self.__locators['加号'])
 
     @TestLogger.log('点击+消息')
     def click_add_message(self):
@@ -59,10 +59,9 @@ class MessagePage(FooterPage):
         while self.is_text_present('始终允许'):
             self.click_element(self.__class__.__locators['始终允许'])
 
-
     @TestLogger.log('是否在消息页面')
     def is_on_this_page(self):
-        el = self.get_elements(self.__locators['+'])
+        el = self.get_elements(self.__locators['加号'])
         if len(el) > 0:
             return True
         return False

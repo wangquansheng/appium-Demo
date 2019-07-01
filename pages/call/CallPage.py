@@ -184,7 +184,8 @@ class CallPage(CommonPage):
         '通话记录_号码': (MobileBy.ID, 'com.cmic.college:id/tvPhone'),
         '通话记录_记录区': (MobileBy.ID, 'com.cmic.college:id/rvCallRecords'),
         '通话记录_键盘区': (MobileBy.ID, 'com.cmic.college:id/t9Keyboard'),
-
+        '通话记录_不限时长': (MobileBy.ID, 'com.cmic.college:id/iv_no_time_limit'),
+        # 开通不限时长 ： 开通不限时长飞信电话,可以去添加更多不限时长成员哦~ 去开通  com.cmic.college:id/ivAction
         # 单人视频详情页
         '详情_视频按钮': (MobileBy.ID, 'com.cmic.college:id/tvVideoCall'),
         '详情_信息按钮': (MobileBy.ID, 'com.cmic.college:id/tvSendMessage'),
@@ -208,6 +209,8 @@ class CallPage(CommonPage):
         '拨号界面_星': (MobileBy.ID, 'com.cmic.college:id/ivStar'),
         '拨号界面_挂断': (MobileBy.ID, 'com.android.incallui:id/endButton'),
         '拨号界面_删除': (MobileBy.ID, 'com.cmic.college:id/ivDelete'),
+        '拨号界面_不限时长': (MobileBy.ID, 'com.cmic.college:id/ivAction'),
+        '拨号界面_详情': (MobileBy.ID, 'com.cmic.college:id/sdDetail'),
         '拨号_返回': (MobileBy.XPATH,
                   '/hierarchy/android.widget.FrameLayout/android.widget.LinearLayout/android.widget.FrameLayout/android.widget.LinearLayout/android.widget.FrameLayout/android.widget.RelativeLayout/android.view.ViewGroup/android.widget.ImageButton'),
         # 福利电话
@@ -400,7 +403,7 @@ class CallPage(CommonPage):
     @TestLogger.log('拨打并挂断一个点对点语音通话')
     def point2point_voice_call(self):
         self.click_locator_key('拨号键盘')
-        self.input_text(self.__locators['拨叫号码'], '13641490071')
+        self.input_text(self.__locators['拨叫号码'], '10086')
         self.click_locator_key('拨号界面_呼叫')
         import time
         time.sleep(1)
@@ -451,7 +454,7 @@ class CallPage(CommonPage):
         if self.is_element_already_exist('多方电话_返回'):
             self.click_locator_key('多方电话_返回')
 
-    @TestLogger.log('拨打并挂断一个多方视频通话')
+    @TestLogger.log('拨打并挂断一个多方电话')
     def multiplayer_voice_call(self):
         time.sleep(0.5)
         self.click_locator_key('加号')
@@ -532,7 +535,7 @@ class CallPage(CommonPage):
         self.click_locator_key('拨号界面_呼叫')
         time.sleep(0.5)
         if self.is_text_present('请注意接听“飞信电话”来电，随后将自动呼叫对方。'):
-            self.click_locator_key('回呼_不再提醒')
+            # self.click_locator_key('回呼_不再提醒')
             self.click_locator_key('回呼_我知道了')
 
     @TestLogger.log('检查是否在点对点通话页面')
@@ -689,7 +692,7 @@ class CallPage(CommonPage):
 
     @TestLogger.log("点击+")
     def click_add(self):
-        self.click_element(self.__class__.__locators['+'])
+        self.click_element(self.__class__.__locators['加号'])
 
     @TestLogger.log()
     def close_ad(self):
@@ -878,7 +881,7 @@ class CallPage(CommonPage):
             print(traceback.print_exc())
             return False
 
-    @TestLogger.log('拨打一个点对点视频通话')
+    @TestLogger.log('拨打一个点对点视频通话，指定号码')
     def pick_up_p2p_video(self, cards):
         time.sleep(0.5)
         self.click_locator_key('加号')
@@ -894,7 +897,7 @@ class CallPage(CommonPage):
         if self.is_text_present('对方还未使用密友圈，喊他一起来免流量视频通话。'):
             self.click_locator_key('无密友圈_取消')
 
-    @TestLogger.log('拨打多人视频通话')
+    @TestLogger.log('拨打多人视频通话，包含一个指定号码')
     def pick_up_multi_video(self, cards):
         time.sleep(1)
         self.click_locator_key_c('加号')
@@ -919,7 +922,7 @@ class CallPage(CommonPage):
                 self.click_text('在其他应用上层显示')
                 self.driver.back()
 
-    @TestLogger.log('拨打一个点对点视频通话')
+    @TestLogger.log('拨打一个多方电话')
     def pick_up_multi_voice(self, cards):
         time.sleep(1)
         self.click_locator_key('加号')
@@ -934,7 +937,7 @@ class CallPage(CommonPage):
             self.click_locator_key('回呼_不再提醒')
             self.click_locator_key('回呼_我知道了')
 
-    @TestLogger.log('拨打一个点对点视频通话')
+    @TestLogger.log('拨打一个点对点飞信电话')
     def pick_up_p2p_voice(self, cards):
         # 判断如果键盘已拉起，则收起键盘
         if not self.is_exist_call_key():

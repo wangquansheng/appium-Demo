@@ -13,7 +13,7 @@ from preconditions.BasePreconditions import LoginPreconditions
 from pages.components.Footer import FooterPage
 
 REQUIRED_MOBILES = {
-    'Android-移动': 'M960BDQN229CH',
+    'Android-移动-N': 'M960BDQN229CH',
     'IOS-移动': '',
     'Android-电信': 'single_telecom',
     'Android-联通': 'single_union',
@@ -93,7 +93,7 @@ class Preconditions(LoginPreconditions):
         if me_page.is_on_this_page():
             return
         # 如果在通话页面
-        if call.is_element_already_exist_c('+'):
+        if call.is_element_already_exist_c('加号'):
             fp.open_me_page()
             time.sleep(1)
             return

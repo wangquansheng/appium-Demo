@@ -21,8 +21,8 @@ import traceback
 from pages.mine.MinePage import MinePage
 
 REQUIRED_MOBILES = {
-    'Android-移动-N': 'M960BDQN229CH',
-    'Android-移动': 'M960BDQN229CH_NOVA',
+    'Android-移动': 'M960BDQN229CH',
+    'Android-移动-N': 'M960BDQN229CH_NOVA',
     'IOS-移动': '',
     'Android-电信': 'single_telecom',
     'Android-联通': 'single_union',
@@ -583,6 +583,60 @@ class CallPageTest(TestCase):
             return False
 
     @tags('ALL', 'CMCC_double', 'call')
+    def test_call_00019(self):
+        """
+            1、联网正常已登录
+            2、对方离线
+            3、当前页通话记录详情
+            1、点击视频通话---1、进入拨打视频通话界面，并弹出提示窗，“对方未接听，请稍候再尝试”
+        """
+        call = CallPage()
+
+        call.wait_for_page_call_load()
+        # 判断如果键盘已拉起，则收起键盘
+        if call.is_exist_call_key():
+            call.click_hide_keyboard()
+            time.sleep(1)
+        call.clear_all_record()
+        # 初始化被叫手机
+        Preconditions.initialize_class('Android-移动-N')
+        # 获取手机号码
+        cards = call.get_cards(CardType.CHINA_MOBILE)
+        call.set_network_status(0)
+        # 切换主叫手机
+        Preconditions.select_mobile('Android-移动')
+        # 拨打视频电话
+        call.pick_up_p2p_video(cards)
+        time.sleep(3)
+        call.click_locator_key('视频界面_挂断')
+        time.sleep(8)
+        call.click_tag_detail_first_element('视频通话')
+        time.sleep(1)
+        self.assertEqual(call.on_this_page_call_detail(), True)
+        # 1. 点击视频通话按钮
+        call.click_locator_key('详情_视频')
+        time.sleep(1)
+        if call.on_this_page_flow():
+            call.set_not_reminders()
+            time.sleep(0.5)
+            call.click_locator_key('流量_继续拨打')
+        time.sleep(25)
+        count = 20
+        while count > 0:
+            exist = call.is_toast_exist("对方未接听，请稍候再尝试", timeout=0.5)
+            if exist:
+                break
+            time.sleep(0.5)
+            count -= 1
+
+    @TestLogger.log('开启网络')
+    def tearDown_test_call_00019(self):
+        """开启网络"""
+        call = CallPage()
+        Preconditions.select_mobile('Android-移动-N')
+        call.set_network_status(6)
+
+    @tags('ALL', 'CMCC_double', 'call')
     def test_call_00020(self):
         """
             1、联网正常已登录
@@ -597,6 +651,7 @@ class CallPageTest(TestCase):
             if call.is_exist_call_key():
                 call.click_hide_keyboard()
                 time.sleep(1)
+            call.clear_all_record()
             # 初始化被叫手机
             Preconditions.initialize_class('Android-移动-N')
             # 获取手机号码
@@ -608,9 +663,8 @@ class CallPageTest(TestCase):
             call.pick_up_p2p_video(cards)
             time.sleep(3)
             call.click_locator_key('视频界面_挂断')
-            # 切换主叫手机
-            Preconditions.select_mobile('Android-移动')
-            time.sleep(2)
+            # # 切换主叫手机
+            call.is_text_present_c('视频通话', default_timeout=8)
             call.click_tag_detail_first_element('视频通话')
             time.sleep(1)
             self.assertEqual(call.on_this_page_call_detail(), True)
@@ -630,6 +684,163 @@ class CallPageTest(TestCase):
             # 切换被叫手机
             Preconditions.select_mobile('Android-移动-N')
             call.set_network_status(0)
+
+
+    @tags('ALL', 'CMCC_double', 'call')
+    def test_call_00048(self):
+        """
+            1、被叫方接到申请后点击“接听”
+            2、点击“切换语音通话”按钮
+            3、被叫方接到申请后点击“接听”
+            4、点击静音按钮
+        """
+        call = CallPage()
+        call.wait_for_page_load()
+        # 判断如果键盘已拉起，则收起键盘
+        if call.is_exist_call_key():
+            call.click_hide_keyboard()
+            time.sleep(1)
+        # 初始化被叫手机
+        Preconditions.initialize_class('Android-移动-N')
+        # 获取手机号码
+        cards = call.get_cards(CardType.CHINA_MOBILE)
+        # 切换主叫手机
+        Preconditions.select_mobile('Android-移动')
+        # 拨打视频电话
+        call.pick_up_p2p_video(cards)
+        # 等待返回结果
+        self.assertEqual(self.to_pick_phone_video(), True)
+        self.assertEqual(self.check_video_call_00048(), True)
+
+    @TestLogger.log()
+    def check_video_call_00048(self):
+        """
+        1、显示视频通话接通界面，小屏为主叫方界面（默认为前摄像头），
+            大屏为被叫方界面（默认前摄像头）。
+            界面右上角为“静音”和“免提”功能，静音默认未选中，
+            免提默认选中。提供“切到语音通话”和“切换摄像头”的功能。
+        2、跳转至语音通话页面，页面布局上方中间为被叫方头像，头像下方为被叫人名称、号码、时间显示，下方左边为静音按钮、
+            中间为切到视频通话按钮、右边为免提按钮，再下方为挂断按钮，背景为灰黑色。
+        :return: True
+        """
+        call = CallPage()
+        try:
+            call.click_locator_key('视频界面_免提')
+            call.tap_coordinate([(100, 100), (100, 110), (100, 120)])
+            time.sleep(1)
+            call.tap_screen_three_point('视频界面_时长')
+            call.click_locator_key('视频界面_静音')
+            self.assertEqual('true' == call.get_one_element('视频界面_静音').get_attribute('selected'), True)
+            return True
+        except Exception:
+            traceback.print_exc()
+            return False
+        finally:
+            call.tap_screen_three_point('视频界面_时长')
+            call.click_locator_key('视频界面_挂断')
+
+    @tags('ALL', 'CMCC_double', 'call')
+    def test_call_00049(self):
+        """
+            1、被叫方接到申请后点击“接听”
+            2、点击“切换语音通话”按钮
+            3、被叫方接到申请后点击“接听”
+            4、点击免提按钮
+        """
+        call = CallPage()
+        call.wait_for_page_load()
+        # 判断如果键盘已拉起，则收起键盘
+        if call.is_exist_call_key():
+            call.click_hide_keyboard()
+            time.sleep(1)
+        # 初始化被叫手机
+        Preconditions.initialize_class('Android-移动-N')
+        # 获取手机号码
+        cards = call.get_cards(CardType.CHINA_MOBILE)
+        # 切换主叫手机
+        Preconditions.select_mobile('Android-移动')
+        # 拨打视频电话
+        call.pick_up_p2p_video(cards)
+        # 等待返回结果
+        self.assertEqual(self.to_pick_phone_video(), True)
+        self.assertEqual(self.check_video_call_00049(), True)
+
+    @TestLogger.log()
+    def check_video_call_00049(self):
+        """
+        1、被叫方接到申请后点击“接听”
+        2、点击免提按钮"
+        3、显示视频通话接通界面，小屏为主叫方界面（默认为前摄像头），大屏为被叫方界面（默认前摄像头）。界面右上角为“静音”和“免提”功能，静音默认未选中，免提默认选中。
+        提供“切到语音通话”和“切换摄像头”的功能。
+        4、免提按钮亮起（对方说话声音变大）。"
+        """
+        call = CallPage()
+        try:
+            call.tap_screen_three_point('视频界面_时长')
+            call.click_locator_key('视频界面_免提')
+            self.assertEqual('false' == call.get_one_element('视频界面_免提').get_attribute('selected'), True)
+
+            return True
+        except Exception:
+            traceback.print_exc()
+            return False
+        finally:
+            call.tap_screen_three_point('视频界面_时长')
+            call.click_locator_key('视频界面_挂断')
+
+
+    @tags('ALL', 'CMCC_double', 'call')
+    def test_call_00050(self):
+        """
+            1、被叫方接到申请后点击“接听”
+            2、点击“切换语音通话”按钮
+            3、被叫方接到申请后点击“接听”
+            4、点击免提按钮
+        """
+        call = CallPage()
+        call.wait_for_page_load()
+        # 判断如果键盘已拉起，则收起键盘
+        if call.is_exist_call_key():
+            call.click_hide_keyboard()
+            time.sleep(1)
+        # 初始化被叫手机
+        Preconditions.initialize_class('Android-移动-N')
+        # 获取手机号码
+        cards = call.get_cards(CardType.CHINA_MOBILE)
+        # 切换主叫手机
+        Preconditions.select_mobile('Android-移动')
+        # 拨打视频电话
+        call.pick_up_p2p_video(cards)
+        # 等待返回结果
+        self.assertEqual(self.to_pick_phone_video(), True)
+        self.assertEqual(self.check_video_call_00050(), True)
+
+    @TestLogger.log()
+    def check_video_call_00050(self):
+        """
+        1、被叫方接到申请后点击“接听”
+        2、点击免提按钮"
+        3、显示视频通话接通界面，小屏为主叫方界面（默认为前摄像头），大屏为被叫方界面（默认前摄像头）。界面右上角为“静音”和“免提”功能，静音默认未选中，免提默认选中。
+        提供“切到语音通话”和“切换摄像头”的功能。
+        4、主叫点击“切换摄像头”，小屏显示主叫后摄像头的界面。
+        """
+        call = CallPage()
+        try:
+            # 主叫
+            Preconditions.select_mobile('Android-移动')
+            call.tap_screen_three_point('视频界面_时长')
+            call.click_locator_key('视频界面_切换摄像头')
+            time.sleep(2)
+            # call.tap_screen_three_point('视频界面_时长')
+            # call.click_locator_key('视频界面_挂断')
+            return True
+        except Exception:
+            traceback.print_exc()
+            return False
+        finally:
+            call.tap_screen_three_point('视频界面_时长')
+            call.click_locator_key('视频界面_挂断')
+
 
     @tags('ALL', 'CMCC_double', 'call')
     def test_call_00051(self):
@@ -3010,6 +3221,62 @@ class CallPageTest(TestCase):
     #                      and call.is_text_present_c('12560'), True)
 
     @tags('ALL', 'CMCC_double', 'call')
+    def test_call_000174(self):
+        """
+            1、正常网络状态下，登录密友圈；
+            2、当前页面在通话页面
+            3、拨号盘已打开
+            4、输入框显示123456
+            5、点击清除键一下
+            6、输入框显示12345
+            7、长按清除键
+            8、清除全部输入内容，输入框显示默认字体“直接拨号或拼音搜索”"
+        """
+        call = CallPage()
+        call.wait_for_page_load()
+        # 初始化被叫手机
+        Preconditions.initialize_class('Android-移动-N')
+        # 获取手机号码
+        cards = call.get_cards_c(CardType.CHINA_MOBILE)
+        # 切换主叫手机
+        Preconditions.select_mobile('Android-移动')
+        # 判断如果键盘已收起，则展开键盘
+        if not call.is_exist_call_key():
+            call.click_show_keyboard()
+            time.sleep(1)
+        # 按首字母搜索
+        call.input_text_c('键盘输入框', cards)
+        self.assertEqual(call.get_elements_count_c('拨号界面_不限时长') > 0, True)
+
+    @tags('ALL', 'CMCC_double', 'call')
+    def test_call_000183(self):
+        """
+            拨号盘搜素源新增不限时长成员	"1、正常网络状态下，登录密友圈；
+            2、当前页面在拨号盘打开状态"	输入框输入不限时长成员号码或数字匹配
+            （去重家庭网、联系人、本地通讯录，补充不限时长成员）优先显示不限时长成员，
+            右边有详情页图标,详情页面没有删除按钮
+        """
+        call = CallPage()
+        call.wait_for_page_load()
+        # 初始化被叫手机
+        Preconditions.initialize_class('Android-移动-N')
+        # 获取手机号码
+        cards = call.get_cards_c(CardType.CHINA_MOBILE)
+        # 切换主叫手机
+        Preconditions.select_mobile('Android-移动')
+        # 判断如果键盘已收起，则展开键盘
+        if not call.is_exist_call_key():
+            call.click_show_keyboard()
+            time.sleep(1)
+        # 按首字母搜索
+        call.input_text_c('键盘输入框', cards)
+        time.sleep(1)
+        self.assertEqual(call.is_element_already_exist_c('拨号界面_详情'), True)
+        call.get_some_elements_c('拨号界面_详情')[0].clicl()
+        time.sleep(1)
+        self.assertEqual(call.is_text_present_c('删除'), False)
+
+    @tags('ALL', 'CMCC_double', 'call')
     def test_call_000185(self):
         """
             选择1人发起视频通话
@@ -3082,8 +3349,8 @@ class CallPageTest(TestCase):
                and call.is_element_already_exist_c('多方视频_静音', default_timeout=0.5) \
                and call.is_element_already_exist_c('多方视频_挂断', default_timeout=0.5)
 
+    # @tags('ALL', 'CMCC_double', 'call')
     @unittest.skip('浮窗抓取不到')
-    @tags('ALL', 'CMCC_double', 'call')
     def test_call_000198(self):
         """
             收起和展开视频通话
@@ -3362,3 +3629,127 @@ class CallPageTest(TestCase):
                 call.click_locator_key_c('多方视频_挂断')
                 if call.is_text_present_c('是否关闭此次多方视频'):
                     call.click_locator_key_c('确定')
+
+    @tags('ALL', 'CMCC_double', 'call')
+    def test_call_000253(self):
+        """
+            通话记录显示	1、正常登录密友圈
+            1、呼出一个点对点视频通话
+            2、呼出一个多方视频通话
+            3、接听一个视频通话
+            4、拒接一个多方视频通话
+            5、为主叫方呼出一个电话
+            6、查看生成的通话记录显示"	"1、生成一个呼出的通话记录，记录中显示通话类型为：视频通话
+            2、生成一个呼出的通话记录，记录中显示通话类型为：多方视频
+            3、生成一个呼入的通话记录，记录中显示通话类型为：视频通话
+            4、生成一个呼入的通话记录，记录中显示通话类型为：多方视频
+            5、生成一个呼出的通话记录，记录中显示通话类型为：飞信电话"
+        """
+        # 拒接多方视频后没有生成通话记录
+        call = CallPage()
+        call.wait_for_page_load()
+        call.clear_all_record()
+        time.sleep(0.5)
+        # 呼出一个点对点视频通话
+        call.make_sure_p2p_video_no_college()
+        if call.is_element_already_exist_c('无密友圈_提示文本'):
+            call.click_locator_key_c('无密友圈_取消')
+            time.sleep(1)
+        call.wait_for_page_call_load()
+        time.sleep(1)
+        print('--->检查点1<====================')
+        self.assertEqual(call.is_text_present_c('视频通话'), True)
+        call.clear_all_record()
+        time.sleep(0.5)
+        # 呼出一个多方视频通话
+        call.multiplayer_vedio_call()
+        call.wait_for_page_call_load()
+        time.sleep(1)
+        print('--->检查点2<====================')
+        self.assertEqual(call.is_text_present_c('多方视频'), True)
+        # 接听一个视频通话
+        time.sleep(0.5)
+        call.clear_all_record()
+        # 初始化被叫手机
+        Preconditions.initialize_class('Android-移动-N')
+        call.clear_all_record()
+        # 获取手机号码
+        cards = call.get_cards_c(CardType.CHINA_MOBILE)
+        # 切换主叫手机
+        Preconditions.select_mobile('Android-移动')
+        # 拨打点对点视频电话
+        call.pick_up_p2p_video(cards)
+        # 等待返回结果
+        self.assertEqual(self.to_pick_phone_video(), True)
+        call.click_locator_key_c('视频界面_免提')
+        time.sleep(2)
+        call.tap_screen_three_point_element_c('视频界面_时长')
+        time.sleep(0.5)
+        call.click_locator_key_c('视频界面_挂断')
+        time.sleep(3)
+        print('--->检查点3<====================')
+        self.assertEqual(call.is_text_present_c('视频通话'), True)
+        # 拒接一个多方视频
+        time.sleep(1)
+        call.clear_all_record()
+        # 切换到主叫手机
+        Preconditions.select_mobile('Android-移动')
+        # 拨打视频电话
+        call.pick_up_multi_video(cards)
+        # 切换到被叫手机
+        Preconditions.select_mobile('Android-移动-N')
+        call.click_locator_key_c('视频通话_挂断')
+        time.sleep(3)
+        print('--->检查点4<====================')
+        self.assertEqual(call.is_text_present_c('多方视频'), False)
+        # 切换到主叫手机
+        Preconditions.select_mobile('Android-移动')
+        if call.is_element_already_exist_c('多方视频_挂断'):
+            call.click_locator_key_c('多方视频_挂断')
+        if call.is_element_already_exist('多方电话_返回'):
+            call.click_locator_key('多方电话_返回')
+        # 呼出一个多方电话
+        call.clear_all_record()
+        call.make_sure_have_multi_voice_record()
+        time.sleep(1)
+        print('--->检查点5<====================')
+        self.assertEqual(call.is_text_present_c('多方电话'), True)
+
+    @tags('ALL', 'CMCC_double', 'call')
+    def test_call_000272(self):
+        """
+           首次拨打回呼电话弹框提示	"1、网络正常
+            2、正常登录
+            3、首次点击回呼电话
+            4、当前在福利电话页面
+            5、已弹出拨打电话的选择栏"	"1、点击拨打电话
+            2、点击我知道了按钮"	"1、弹出上部是过渡页中部文案“请注意接听“密友圈电话”来电，系统将自动呼叫对方。”我知道了按钮
+            2、跳转至回呼过渡页面"
+        """
+        call = CallPage()
+        call.wait_for_page_load()
+        # 初始化被叫手机
+        Preconditions.initialize_class('Android-移动-N')
+        # 获取手机号码
+        cards = call.get_cards_c(CardType.CHINA_MOBILE)
+        # 切换主叫手机
+        Preconditions.select_mobile('Android-移动')
+        # 拨打视频电话 # 请先接听来电，随后将自动呼叫对方
+        call.click_show_keyboard()
+        call.input_text_c('键盘输入框', cards)
+        call.click_locator_key_c('拨号界面_呼叫')
+        flag = False
+        try:
+            for i in range(10):
+                if call.is_element_already_exist_c('回呼_提示文本', default_timeout=0.1):
+                    call.click_locator_key_c('回呼_我知道了')
+                flag = call.is_text_present_c('随后将自动呼叫对方', default_timeout=0.1)
+                if flag:
+                    break
+            self.assertEqual(flag, True)
+            time.sleep(5)
+            self.assertEqual(call.is_text_present_c('飞信电话', default_timeout=0.5)
+                             and call.is_text_present_c('12560', default_timeout=0.5), True)
+        finally:
+            call.hang_up_the_call()
+

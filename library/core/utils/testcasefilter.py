@@ -2,6 +2,7 @@ import json
 import os
 import unittest
 from json import JSONDecodeError
+from library.core.total_count import total_count
 
 TEST_CASE_TAG_ENVIRON = 'RUN_TAG'
 
@@ -31,6 +32,7 @@ def tags(*args):
         if not isinstance(case_tags, list):
             return unittest.skipIf(not FilterResult.RUN, '')
         if flags.issuperset(set(case_tags)):
+            total_count.add_value()
             return unittest.skipIf(not FilterResult.RUN, '')
         else:
             return unittest.skip("用例类型:{}; ".format(flags) + '当前执行:{}.'.format(case_tags))
