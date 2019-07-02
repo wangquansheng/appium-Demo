@@ -13,7 +13,7 @@ from preconditions.BasePreconditions import LoginPreconditions
 from pages.components.Footer import FooterPage
 
 REQUIRED_MOBILES = {
-    'Android-移动-N': 'M960BDQN229CH',
+    'Android-移动': 'M960BDQN229CH',
     'IOS-移动': '',
     'Android-电信': 'single_telecom',
     'Android-联通': 'single_union',

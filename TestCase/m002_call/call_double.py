@@ -685,7 +685,6 @@ class CallPageTest(TestCase):
             Preconditions.select_mobile('Android-移动-N')
             call.set_network_status(0)
 
-
     @tags('ALL', 'CMCC_double', 'call')
     def test_call_00048(self):
         """
@@ -788,7 +787,6 @@ class CallPageTest(TestCase):
             call.tap_screen_three_point('视频界面_时长')
             call.click_locator_key('视频界面_挂断')
 
-
     @tags('ALL', 'CMCC_double', 'call')
     def test_call_00050(self):
         """
@@ -840,7 +838,6 @@ class CallPageTest(TestCase):
         finally:
             call.tap_screen_three_point('视频界面_时长')
             call.click_locator_key('视频界面_挂断')
-
 
     @tags('ALL', 'CMCC_double', 'call')
     def test_call_00051(self):
@@ -3752,4 +3749,3 @@ class CallPageTest(TestCase):
                              and call.is_text_present_c('12560', default_timeout=0.5), True)
         finally:
             call.hang_up_the_call()
-
