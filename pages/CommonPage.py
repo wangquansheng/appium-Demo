@@ -156,6 +156,11 @@ class CommonPage(BasePage):
         """设置复选框为未选中"""
         return self.get_element(self.__class__.get_locators(self, locator)).get_attribute('selected')
 
+    @TestLogger.log('获取元素的属性')
+    def get_element_attr_c(self, locator, attr, wait_time=0):
+        """获取元素的属性"""
+        return self.mobile.get_element_attribute(self.__class__.get_locators(self, locator), attr, wait_time)
+
     @TestLogger.log('获取指定运营商类型的手机卡（不传类型返回全部配置的手机卡）')
     def get_cards_c(self, card_type):
         """返回指定类型卡手机号列表"""

@@ -6,8 +6,6 @@ from pages.login.LoginPage import OneKeyLoginPage
 from pages.guide import GuidePage
 from pages.call.CallPage import CallPage
 
-
-
 REQUIRED_MOBILES = {
     'Android-移动': 'M960BDQN229CH',
     # 'Android-移动': 'single_mobile',
@@ -34,6 +32,15 @@ class LoginPreconditions(object):
         return client
 
     @staticmethod
+    def switch_mobile(category, reset=False):
+        """选择手机"""
+        client = switch_to_mobile(REQUIRED_MOBILES[category])
+        client.connect_mobile()
+        if reset:
+            current_mobile().reset_app()
+        return client
+
+    @staticmethod
     def make_already_in_one_key_login_page():
         """已经进入一键登录页"""
         # 如果当前页面已经是一键登录页，不做任何操作
@@ -43,23 +50,7 @@ class LoginPreconditions(object):
         else:
             # 如果当前页不是引导页第一页，重新启动app
             guide_page = GuidePage()
-            # current_mobile().launch_app()
             current_mobile().reset_app()
-            # guide_page.wait_for_page_load(20)
-            # # 跳过引导页
-            # guide_page.swipe_to_the_second_banner()
-            # guide_page.swipe_to_the_third_banner()
-            # current_mobile().hide_keyboard_if_display()
-            # guide_page.click_start_the_experience()
-            # time.sleep(1)
-            # # 权限页
-            # guide_page.click_one_button_on()
-            # time.sleep(2)
-            # if guide_page.is_text_present("取消"):
-            #     guide_page.click_text("取消")
-            #     time.sleep(2)
-            #     guide_page.click_text("取消")
-            #     current_mobile().launch_app()
             time.sleep(2)
             guide_page.click_always_allow()
             one_key.wait_for_page_load(30)
@@ -79,7 +70,7 @@ class LoginPreconditions(object):
         if one_key.is_text_present('用户协议和隐私保护'):
             one_key.click_agree_user_aggrement()
             time.sleep(1)
-            one_key.click_agree_login_by_number()
+            # one_key.click_agree_login_by_number()
 
         # 等待通话页面加载
         call_page = CallPage()
@@ -87,7 +78,6 @@ class LoginPreconditions(object):
         call_page.click_always_allow_c()
         time.sleep(2)
         call_page.remove_mask_c(2)
-
 
     @staticmethod
     def make_already_in_call_page(reset=False):
@@ -108,7 +98,6 @@ class LoginPreconditions(object):
                 LoginPreconditions.make_already_in_one_key_login_page()
                 #  从一键登录页面登录
                 LoginPreconditions.login_by_one_key_login()
-
 
     # @staticmethod
     # def enter_private_chat_page(reset=False):

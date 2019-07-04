@@ -8,7 +8,6 @@ from pip._internal import main as install_requirements
 # 自动安装依赖
 install_requirements(['install', '-r', 'requirements.txt'])
 begin_time = time.time()
-
 if __name__ == '__main__':
     os.environ.setdefault('AVAILABLE_DEVICES_SETTING', 'AVAILABLE_DEVICES')
     from library.core.utils import CommandLineTool
@@ -43,13 +42,19 @@ if __name__ == '__main__':
         case_path = ConfigManager.get_test_case_root()
         suite = unittest.defaultTestLoader.discover(case_path, '*.py')
     # RunTest
-    from library.HTMLTestRunner import HTMLTestRunner
+    from library.HTMLTestRunner import HTMLTestRunner, lists
 
     with common.open_or_create(report_path, 'wb') as output:
         runner = HTMLTestRunner(
             stream=output, title='Test Report', verbosity=2)
         print('本次测试共有用例%s条' % total_count.get_value())
         result = runner.run(suite)
+        file_path = os.path.join(os.path.dirname(report_path), 'test_list.csv')
+        with open(file_path, 'w+') as f:
+            for logs in lists:
+                log = logs.split('.')
+                content = ('%s,%s' % (log[0].split(' ')[0], log[-1].split(' ')[0]))
+                f.write(content)
 
         # 成功、失败、错误、总计、通过率
         try:

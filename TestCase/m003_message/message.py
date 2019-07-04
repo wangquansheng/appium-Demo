@@ -246,12 +246,12 @@ class Preconditions(object):
         gcp.wait_for_page_group_chart()
 
 #   #  26条
-# class MessageTest(TestCase):
-#     """Message 模块"""
+class MessageTest(TestCase):
+    """Message 模块"""
 #
-#     @classmethod
-#     def setUpClass(cls):
-#         warnings.simplefilter('ignore', ResourceWarning)
+    @classmethod
+    def setUpClass(cls):
+        warnings.simplefilter('ignore', ResourceWarning)
 #         Preconditions.select_mobile('Android-移动')
 #         current_mobile().hide_keyboard_if_display()
 #         try:

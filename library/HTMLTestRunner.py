@@ -48,11 +48,11 @@ LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
 NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 """
+import os
 import time
 
 __author__ = "Wai Yip Tung,  Findyou"
 __version__ = "0.8.2.2"
-
 # TODO: color stderr
 # TODO: simplify javascript using ,ore than 1 class in the class attribute?
 
@@ -437,7 +437,7 @@ class _TestResult(TestResult):
         if self.verbosity > 1:
             log = 'PASS  {}\n'.format(common.get_test_id(test))
             lists.add(log)
-            _real_stdout.write('PASS  {}\n'.format(common.get_test_id(test)))
+            _real_stdout.write(log)
             _real_stdout.flush()
             self._progress_bars()
         else:
@@ -457,7 +457,7 @@ class _TestResult(TestResult):
         if self.verbosity > 1:
             log = 'ERROR {}\n'.format(common.get_test_id(test))
             lists.add(log)
-            _real_stdout.write('ERROR {}\n'.format(common.get_test_id(test)))
+            _real_stdout.write(log)
             _real_stdout.flush()
             self._progress_bars()
         else:
@@ -477,7 +477,7 @@ class _TestResult(TestResult):
         if self.verbosity > 1:
             log = 'FAIL  {}\n'.format(common.get_test_id(test))
             lists.add(log)
-            _real_stdout.write('FAIL  {}\n'.format(common.get_test_id(test)))
+            _real_stdout.write(log)
             _real_stdout.flush()
             self._progress_bars()
         else:
@@ -489,9 +489,6 @@ class _TestResult(TestResult):
         from library.core.TestLogger import TestLogger
         TestLogger.test_skip(test, reason)
         super(_TestResult, self).addSkip(test, reason)
-        # log = str(test) + ' ' + str(reason)
-        # lists.add(log)
-        # self._progress_bars()
 
     def _dump_test_stderr(self, data):
         self.log_output.write(data)
@@ -513,17 +510,6 @@ class _TestResult(TestResult):
         h = '{:0>2d}'.format(int(total_time // 3600))
         m = '{:0>2d}'.format(int(total_time // 60))
         s = '{:0>2d}'.format(int(total_time % 60))
-        # if lists is not None:
-        #     for l in lists:
-        #         if 'ERROR' != l.split(' ')[0] or 'FAIL' == l.split(' ')[0]:
-        #             _real_stdout.write(str(l))
-        #             _real_stdout.flush()
-        #         else:
-        #             _real_stdout.write(str(l))
-        #             _real_stdout.flush()
-
-        # _real_stdout.write('\033[4A')
-        # _real_stdout.write('本次测试共有用例%s条\n' % total_count.get_value())
         time.sleep(0.5)
         _real_stderr.write("已完成：%.0f%% | (%d/%d) | %s | 总用时：%s:%s:%s\n" % (rate, tested, total, flag, h, m, s))
 

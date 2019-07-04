@@ -1243,10 +1243,10 @@ class CallPageTest(TestCase):
         # 等待通话页面加载
         call.is_text_present_c('飞信电话', default_timeout=15)
         time.sleep(2)
-        # if call.is_element_already_exist_c('通话类型标签'):
-        self.assertEqual('[飞信电话]' == call.get_element_text_c('通话类型标签'), True)
-        # if call.is_element_already_exist_c('搜索_电话显示'):
-        self.assertEqual('北京 移动' == call.get_element_text_c('通话记录_归属地'), True)
+        if call.is_element_already_exist_c('通话类型标签', default_timeout=8):
+            self.assertEqual('[飞信电话]' == call.get_element_text_c('通话类型标签'), True)
+        if call.is_element_already_exist_c('搜索_电话显示', default_timeout=8):
+            self.assertEqual('北京 移动' == call.get_element_text_c('通话记录_归属地'), True)
 
     @tags('ALL', 'CMCC', 'call')
     def test_call_000156(self):
@@ -1843,7 +1843,6 @@ class CallPageTest(TestCase):
         call.wait_for_page_c('通话', max_wait_time=60)
         time.sleep(2)
         self.assertEqual(call.is_text_present_c('[多方电话]'), True)
-
 
     @tags('ALL', 'CMCC', 'call')
     def test_call_000254(self):
