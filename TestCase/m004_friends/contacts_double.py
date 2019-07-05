@@ -19,7 +19,7 @@ from pages.contacts.contactlocal import ContactsPage
 
 REQUIRED_MOBILES = {
     'Android-移动': 'M960BDQN229CH',
-    'Android-移动-N': 'M960BDQN229CH_NOVA',
+    'Android-移动-N': 'M960BDQN229CH_N',
     'IOS-移动': '',
     'Android-电信': 'single_telecom',
     'Android-联通': 'single_union',
@@ -204,46 +204,6 @@ class Preconditions(object):
             time.sleep(1)
             call.click_text('取消')
 
-    #
-    # @staticmethod
-    # def connect_mobiles(category):
-    #     """选择手机手机"""
-    #     client = switch_to_mobile(REQUIRED_MOBILES[category])
-    #     client.connect_mobile()
-    #     return client
-    #
-    # @staticmethod
-    # def reset_and_relaunch_app():
-    #     """首次启动APP（使用重置APP代替）"""
-    #     app_package = 'com.chinasofti.rcs'
-    #     current_driver().activate_app(app_package)
-    #     current_mobile().reset_app()
-    #
-    # @staticmethod
-    # def terminate_app():
-    #     """
-    #     强制关闭app,退出后台
-    #     :return:
-    #     """
-    #     app_id = current_driver().desired_capability['appPackage']
-    #     current_mobile().termiate_app(app_id)
-    #
-    # @staticmethod
-    # def background_app():
-    #     """后台运行"""
-    #     current_mobile().press_home_key()
-    #
-    # @staticmethod
-    # def initialize_class(moudel):
-    #     """确保每个用例开始之前在通话界面界面"""
-    #     warnings.simplefilter('ignore', ResourceWarning)
-    #     Preconditions.connect_mobiles(moudel)
-    #     Preconditions.make_already_in_call_page()
-    #     FooterPage().open_contact_page()
-    #     contact = ContactsPage()
-    #     contact.permission_box_processing()
-    #     contact.remove_mask_c(1)
-
 
 class ContactlocalPage(TestCase):
     """本地通讯录界面"""
@@ -262,7 +222,7 @@ class ContactlocalPage(TestCase):
         contact.permission_box_processing()
         contact.remove_mask_c(1)
 
-    @tags('ALL', 'CMCC', 'contact')
+    @tags('ALL', 'CMCC_double', 'contact')
     def test_member_014(self):
         """
             1、联网正常
@@ -284,7 +244,7 @@ class ContactlocalPage(TestCase):
         if contact_page.if_home_net_expand():
             contact_page.click_locator_key_c('家庭网_展开_收起')
             time.sleep(1)
-        # 点击家庭网第一个联系人
+        # 点击联系人
         n = 0
         flag = False
         while n < 8:
@@ -311,7 +271,7 @@ class ContactlocalPage(TestCase):
         self.assertEqual(contact_page.is_element_already_exist_c('联系人_更多编辑'), True)
         self.assertEqual(contact_page.is_element_already_exist_c('联系人_规则'), True)
 
-    @tags('ALL', 'CMCC', 'contact')
+    @tags('ALL', 'CMCC_double', 'contact')
     def test_member_030(self):
         """
             1、联网正常
@@ -361,3 +321,141 @@ class ContactlocalPage(TestCase):
         self.assertEqual(contact_page.is_text_present_c(name), True)
         if contact_page.is_element_already_exist_c('视频页面_挂断'):
             contact_page.click_locator_key_c('视频页面_挂断')
+
+    @tags('ALL', 'CMCC_double', 'contact')
+    def test_member_00112(self):
+        """
+            1、联网正常
+            2、已登陆客户端（家庭网主号）
+            3、当前在通讯录模块页面，已开通家庭网
+            "	"1、查看家庭网列表展示
+            2、点击“管理”"	"1、家庭网列表默认收起状态；
+            2、家庭网主好提供管理入口，点击则进入家庭网成员管理页面；
+        """
+        contact_page = ContactsPage()
+        Preconditions.initialize_class('Android-移动-N')
+        # 确保在通讯录界面
+        self.assertEqual(contact_page.is_element_already_exist_c('通讯录_标题', default_timeout=20), True)
+        # 展开家庭网
+        # 展开家庭网
+        if not contact_page.if_home_net_expand():
+            contact_page.click_locator_key_c('家庭网_展开_收起')
+            time.sleep(1)
+        # 点击家庭网第一个联系人
+        self.assertEqual(contact_page.is_element_already_exist_c('家庭网_管理'), False)
+
+    @tags('ALL', 'CMCC_double', 'contact')
+    def test_member_00117_01(self):
+        """
+            "1、联网正常
+            2、已登陆客户端（已打开通讯录权限）
+            3、当前在通讯录模块页面，已开通家庭网
+            "	"1、查看联系人列表展示
+            2、点击联系人后的电话icon
+            3、点击通讯录页中各列表内的成员；
+            1、联系人获逻辑取复用福利电话页面,显示在家庭网下方，列表展开显示；
+            联系人后方带有电话icon；
+            2、 点击电话icon,发起电话流程（回拨或者CS电话），打电话逻辑不变；
+            3、跳转至对应的联系人详情页（密友详情页、家庭网成员详情页、陌生人详情页）"
+        """
+        contact_page = ContactsPage()
+        contact_page.is_element_already_exist_c('通讯录_标题')
+        # 初始化被叫手机
+        Preconditions.initialize_class('Android-移动-N')
+        # 获取手机号码
+        cards = contact_page.get_cards_c(CardType.CHINA_MOBILE)[0]
+        # 切换主叫手机
+        Preconditions.select_mobile('Android-移动')
+        # 确保在通讯录界面
+        self.assertEqual(contact_page.is_element_already_exist_c('通讯录_标题'), True)
+        time.sleep(1)
+        # 展开家庭网
+        # if contact_page.if_home_net_expand():
+        #     contact_page.click_locator_key_c('家庭网_展开_收起')
+        #     time.sleep(1)
+        # 点击联系人
+        n = 0
+        flag = False
+        while n < 8:
+            for contact in contact_page.get_elements_list_c('联系人号码'):
+                if cards == contact.text:
+                    contact_page.click_to_call(cards)
+                    flag = True
+                    break
+            if flag:
+                break
+            contact_page.page_up()
+            n += 1
+        time.sleep(1)
+        contact_page.hang_up_the_call()
+        time.sleep(2)
+
+    @tags('ALL', 'CMCC_double', 'contact')
+    def test_member_00117_02(self):
+        """
+            "1、联网正常
+            2、已登陆客户端（已打开通讯录权限）
+            3、当前在通讯录模块页面，已开通家庭网
+            "	"1、查看联系人列表展示
+            2、点击联系人后的电话icon
+            3、点击通讯录页中各列表内的成员；
+            1、联系人获逻辑取复用福利电话页面,显示在家庭网下方，列表展开显示；
+            联系人后方带有电话icon；
+            2、 点击电话icon,发起电话流程（回拨或者CS电话），打电话逻辑不变；
+            3、跳转至对应的联系人详情页（密友详情页、家庭网成员详情页、陌生人详情页）"
+        """
+        contact_page = ContactsPage()
+        contact_page.is_element_already_exist_c('通讯录_标题')
+        # 初始化被叫手机
+        Preconditions.initialize_class('Android-移动-N')
+        # 获取手机号码
+        cards = contact_page.get_cards_c(CardType.CHINA_MOBILE)[0]
+        # 切换主叫手机
+        Preconditions.select_mobile('Android-移动')
+        # 确保在通讯录界面
+        self.assertEqual(contact_page.is_element_already_exist_c('通讯录_标题'), True)
+        time.sleep(1)
+        # 展开家庭网
+        # if contact_page.if_home_net_expand():
+        #     contact_page.click_locator_key_c('家庭网_展开_收起')
+        #     time.sleep(1)
+        # 点击联系人
+        n = 0
+        flag = False
+        while n < 8:
+            for contact in contact_page.get_elements_list_c('联系人号码'):
+                if cards == contact.text:
+                    contact.click()
+                    flag = True
+                    break
+            if flag:
+                break
+            contact_page.page_up()
+            n += 1
+        time.sleep(3)
+        contact_page.is_text_present_c('电话规则说明')
+
+    @tags('ALL', 'CMCC_double', 'contact')
+    def test_member_00119(self):
+        """
+            1、联网正常
+            2、已登陆客户端
+            3、当前通讯录页面"	1、在搜索框中输入“13543418221”
+            1、展示该号码的搜索记录
+        """
+        contact_page = ContactsPage()
+        contact_page.is_element_already_exist_c('通讯录_标题')
+        # 初始化被叫手机
+        Preconditions.initialize_class('Android-移动-N')
+        # 获取手机号码
+        cards = contact_page.get_cards_c(CardType.CHINA_MOBILE)[0]
+        # 切换主叫手机
+        Preconditions.select_mobile('Android-移动')
+        # 确保在通讯录界面
+        self.assertEqual(contact_page.is_element_already_exist_c('通讯录_标题'), True)
+        time.sleep(1)
+        contact_page.click_locator_key_c('搜索')
+        time.sleep(0.5)
+        contact_page.input_text_c('搜索_搜索框', cards)
+        time.sleep(0.8)
+        self.assertEqual(cards == contact_page.get_elements_list_c('搜索_联系人号码')[0].text, True)

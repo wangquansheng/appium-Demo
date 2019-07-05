@@ -511,7 +511,7 @@ class _TestResult(TestResult):
         m = '{:0>2d}'.format(int(total_time // 60))
         s = '{:0>2d}'.format(int(total_time % 60))
         time.sleep(0.5)
-        _real_stderr.write("已完成：%.0f%% | (%d/%d) | %s | 总用时：%s:%s:%s\n" % (rate, tested, total, flag, h, m, s))
+        # _real_stderr.write("已完成：%.0f%% | (%d/%d) | %s | 总用时：%s:%s:%s\n" % (rate, tested, total, flag, h, m, s))
 
 
 class HTMLTestRunner(Template_mixin):

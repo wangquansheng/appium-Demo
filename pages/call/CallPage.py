@@ -472,7 +472,7 @@ class CallPage(CommonPage):
         time.sleep(10)
         try:
             self.hang_up_the_call()
-        except:
+        except Exception:
             pass
 
     @TestLogger.log('确保页面有点对点视频的记录')

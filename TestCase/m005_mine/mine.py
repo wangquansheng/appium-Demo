@@ -127,7 +127,7 @@ class MineTest(TestCase):
         current_mobile().hide_keyboard_if_display()
         Preconditions.make_already_in_me_page()
 
-    @tags('ALL', 'SMOKE', 'CMCC')
+    @tags('ALL', 'CMCC', 'me')
     def test_me_0001(self):
         """资料页面的字段可显示并且可以编辑"""
         me_page = MinePage()
@@ -151,7 +151,7 @@ class MineTest(TestCase):
         self.assertEqual(meEdit_page.element_is_clickable("我的标签"), True)
         self.assertEqual(meEdit_page.element_is_clickable("职业"), True)
 
-    @tags('ALL', 'SMOKE', 'CMCC')
+    @tags('ALL', 'CMCC', 'me')
     def test_me_0002(self):
         """编辑资料页面里面点击头像"""
         me_page = MinePage()
@@ -164,7 +164,7 @@ class MineTest(TestCase):
         meEdit_page.element_is_clickable('从手机相册选择')
         meEdit_page.element_is_clickable('保存到手机')
 
-    @tags('ALL', 'SMOKE', 'CMCC')
+    @tags('ALL', 'CMCC', 'me')
     def test_me_0003(self):
         """编辑资料页面昵称里面输入sql语句"""
         me_page = MinePage()
@@ -180,18 +180,17 @@ class MineTest(TestCase):
                     or meEdit_page.is_toast_exist('您的资料未变化', timeout=0.3):
                 break
 
-    # @unittest.skip('用例有问题，输入字符串无法保存成功')
-    # def test_me_0004(self):
-    #     """编辑资料页面昵称里面输入字符串"""
-    #     me_page = MinePage()
-    #     self.assertEqual(me_page.is_on_this_page(), True)
-    #     me_page.click_personal_photo()
-    #     meEdit_page = MeEditProfilePage()
-    #     meEdit_page.input_profile_name('昵称', r"<>'\"&\n\r")
-    #     meEdit_page.click_save()
-    #     self.assertTrue(meEdit_page.check_text_exist('保存成功'))
+    @tags('ALL', 'CMCC', 'me')
+    def test_me_0004(self):
+        """编辑资料页面昵称里面输入字符串"""
+        me_page = MinePage()
+        self.assertEqual(me_page.is_on_this_page(), True)
+        me_page.click_personal_photo()
+        meEdit_page = MeEditProfilePage()
+        meEdit_page.input_profile_name('昵称', r"<>'\"&\n\r")
+        self.assertEqual(meEdit_page.is_toast_exist('不能包含特殊字符和表情'), True)
 
-    @tags('ALL', 'SMOKE', 'CMCC')
+    @tags('ALL', 'CMCC', 'me')
     def test_me_0005(self):
         """编辑资料页面昵称里面输入数字"""
         me_page = MinePage()
@@ -202,7 +201,7 @@ class MineTest(TestCase):
         meEdit_page.click_save()
         self.assertTrue(meEdit_page.check_text_exist('保存成功'))
 
-    @tags('ALL', 'SMOKE', 'CMCC')
+    @tags('ALL', 'CMCC', 'me')
     def test_me_0006(self):
         """点击性别选项选择性别"""
         me_edit_page = MeEditProfilePage()
@@ -214,7 +213,7 @@ class MineTest(TestCase):
         me_edit_page.click_locator_key('保存')
         self.assertTrue(me_edit_page.is_toast_exist('保存成功'), True)
 
-    @tags('ALL', 'SMOKE', 'CMCC')
+    @tags('ALL', 'CMCC', 'me')
     def test_me_0007(self):
         """编辑年龄选项选择年龄"""
         me_edit_page = MeEditProfilePage()
@@ -226,7 +225,7 @@ class MineTest(TestCase):
         me_edit_page.click_locator_key('保存')
         self.assertTrue(me_edit_page.check_text_exist('保存成功'))
 
-    @tags('ALL', 'SMOKE', 'CMCC')
+    @tags('ALL', 'CMCC', 'me')
     def test_me_0008(self):
         """编辑标签选项选择标签"""
         me_edit_page = MeEditProfilePage()
@@ -240,7 +239,7 @@ class MineTest(TestCase):
             me_edit_page.click_tag_index('标签', i)
         self.assertTrue(me_edit_page.check_text_exist('最多选择5个标签来形容自己'))
 
-    @tags('ALL', 'SMOKE', 'CMCC')
+    @tags('ALL', 'CMCC', 'me')
     def test_me_0009(self):
         """编辑职业选项选择职业"""
         me_edit_page = MeEditProfilePage()
@@ -292,7 +291,7 @@ class MineTest(TestCase):
     #     self.assertEqual(me_page.get_element_text('分享_QQ'), 'QQ')
     #     self.assertEqual(me_page.get_element_text('分享_QQ空间'), 'QQ空间')
 
-    @tags('ALL', 'SMOKE', 'CMCC')
+    @tags('ALL', 'CMCC', 'me')
     def test_me_0013(self):
         """验证活动中心页面正常打开"""
         me_page = MinePage()
@@ -300,7 +299,7 @@ class MineTest(TestCase):
         self.assertTrue(me_page.check_wait_text_exits('活动中心', timeout=3 * 60))
         me_page.click_locator_key_c('我_二级页面_相同返回')
 
-    @tags('ALL', 'SMOKE', 'CMCC')
+    @tags('ALL', 'CMCC', 'me')
     def test_me_0014(self):
         """验证卡券页面正常打开"""
         me_page = MinePage()
@@ -308,22 +307,31 @@ class MineTest(TestCase):
         self.assertTrue(me_page.check_wait_text_exits('我的卡券'))
         me_page.click_locator_key_c('我_二级页面_相同返回')
 
-    @tags('ALL', 'SMOKE', 'CMCC')
+    @tags('ALL', 'CMCC', 'me')
     def test_me_0015(self):
         """验证积分页面正常打开"""
         me_page = MinePage()
-        me_page.click_locator_key_c('积分')
-        times = 2 * 60
-        while times > 0:
-            if me_page.is_text_present_c('已连续签到', default_timeout=0.5):
-                me_page.click_text('我知道了')
-            if me_page.is_text_present_c('我的积分', default_timeout=0.5):
+        count = 3
+        flag = False
+        while count > 0:
+            times = 1 * 60
+            me_page.click_locator_key_c('积分')
+            while times > 0:
+                if me_page.is_text_present_c('已连续签到', default_timeout=0.5):
+                    me_page.click_text('我知道了')
+                if me_page.is_text_present_c('我的积分', default_timeout=0.5):
+                    flag = True
+                    break
+                times -= 1
+            else:
+                me_page.click_locator_key_c('我_二级页面_相同返回')
+            if flag:
                 break
-            times -= 1
+            count -= 1
         self.assertTrue(me_page.check_wait_text_exits('我的积分'))
         me_page.click_locator_key_c('我_二级页面_相同返回')
 
-    @tags('ALL', 'SMOKE', 'CMCC')
+    @tags('ALL', 'CMCC', 'me')
     def test_me_0016(self):
         """验证网上营业厅正常打开"""
         me_page = MinePage()
@@ -331,7 +339,7 @@ class MineTest(TestCase):
         self.assertTrue(me_page.check_wait_text_exits('网上营业厅'))
         me_page.click_locator_key_c('我_二级页面_相同返回')
 
-    @tags('ALL', 'SMOKE', 'CMCC')
+    @tags('ALL', 'CMCC', 'me')
     def test_me_0017(self):
         """验证邀请有礼正常打开"""
         me_page = MinePage()
@@ -339,7 +347,7 @@ class MineTest(TestCase):
         self.assertTrue(me_page.check_wait_text_exits('邀请有奖'))
         me_page.click_locator_key_c('我_二级页面_相同返回')
 
-    @tags('ALL', 'SMOKE', 'CMCC')
+    @tags('ALL', 'CMCC', 'me')
     def test_me_0018(self):
         """验证帮助与反馈正常打开"""
         me_page = MinePage()
@@ -347,7 +355,7 @@ class MineTest(TestCase):
         self.assertTrue(me_page.check_wait_text_exits('帮助与反馈'))
         me_page.click_locator_key_c('我_二级页面_相同返回')
 
-    @tags('ALL', 'SMOKE', 'CMCC')
+    @tags('ALL', 'CMCC', 'me')
     def test_me_0019(self):
         """验证我-设置-退出当前账号	中	"1、联网正常
         2、已登陆客户端

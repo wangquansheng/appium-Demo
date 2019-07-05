@@ -22,7 +22,7 @@ from pages.mine.MinePage import MinePage
 
 REQUIRED_MOBILES = {
     'Android-移动': 'M960BDQN229CH',
-    'Android-移动-N': 'M960BDQN229CH_NOVA',
+    'Android-移动-N': 'M960BDQN229CH_N',
     'IOS-移动': '',
     'Android-电信': 'single_telecom',
     'Android-联通': 'single_union',
@@ -239,188 +239,6 @@ class Preconditions(object):
         footer.open_call_page()
         return times
 
-
-# class CallTest(TestCase):
-#     """Call 模块"""
-#
-#     @staticmethod
-#     def setUp_test_call_0001():
-#         Preconditions.select_mobile('Android-移动')
-#         current_mobile().hide_keyboard_if_display()
-#         Preconditions.make_sure_in_after_login_callpage()
-#
-#     @tags('ALL', 'SMOKE', 'CMCC')
-#     def test_call_0001(self):
-#         """通话列表页面的显示（单条记录的删除）"""
-#         call_page = CallPage()
-#         call_page.make_sure_have_p2p_vedio_record()
-#         call_page.make_sure_have_multiplayer_vedio_record()
-#         call_page.make_sure_have_p2p_voicecall_record()
-#         self.assertTrue(call_page.check_delete_text_first_element('视频通话'))
-#         call_page.wait_until(condition=lambda x: call_page.is_on_this_page())
-#         self.assertTrue(call_page.check_delete_text_first_element('多方视频'))
-#         self.assertTrue(call_page.check_delete_text_first_element('福利电话'))
-#
-#     @staticmethod
-#     def setUp_test_call_0002():
-#         Preconditions.select_mobile('Android-移动')
-#         current_mobile().hide_keyboard_if_display()
-#         Preconditions.make_sure_in_after_login_callpage()
-#
-#     @tags('ALL', 'SMOKE', 'CMCC')
-#     def test_call_0002(self):
-#         """通话列表页面的显示（清空全部通话记录）"""
-#         call_page = CallPage()
-#         call_page.make_sure_have_p2p_vedio_record()
-#         call_page.make_sure_have_multiplayer_vedio_record()
-#         call_page.make_sure_have_p2p_voicecall_record()
-#         call_page.click_tag_text_delete_all_record('视频通话')
-#         self.assertTrue(call_page.check_text_exist('点击右下角,不花钱打电话'))
-#
-#     @staticmethod
-#     def setUp_test_call_0003():
-#         Preconditions.select_mobile('Android-移动')
-#         current_mobile().hide_keyboard_if_display()
-#         Preconditions.make_sure_in_after_login_callpage()
-#
-#     @tags('ALL', 'SMOKE', 'CMCC')
-#     def test_call_0003(self):
-#         """通话列表页面空白文案"""
-#         call_page = CallPage()
-#         call_page.check_is_have_friend()
-#         bol = call_page.wait_until(condition=lambda x: call_page.is_text_present('点击右下角,不花钱打电话'), timeout=8,
-#                                    auto_accept_permission_alert=False)
-#         self.assertTrue(bol)
-#
-#     @staticmethod
-#     def setUp_test_call_0005():
-#         Preconditions.select_mobile('Android-移动')
-#         current_mobile().hide_keyboard_if_display()
-#         Preconditions.make_sure_in_after_login_callpage()
-#
-#     @tags('ALL', 'SMOKE', 'CMCC')
-#     def test_call_0005(self):
-#         """查看视频通话详情页面"""
-#         call_page = CallPage()
-#         call_page.make_sure_have_p2p_vedio_record()
-#         call_page.click_tag_detail_first_element('视频通话')
-#         call_page.wait_until(condition=lambda x: call_page.is_text_present('通话记录 (视频通话)'))
-#         self.assertTrue(call_page.check_vedio_call_detail_page())
-#         call_page.click_locator_key('详情_返回')
-#
-#     @staticmethod
-#     def setUp_test_call_0046():
-#         Preconditions.select_mobile('Android-移动')
-#         current_mobile().hide_keyboard_if_display()
-#         Preconditions.make_already_in_call_page()
-#
-#     @tags('ALL', 'SMOKE', 'CMCC')
-#     def test_call_0046(self):
-#         """免费电话业务规则说明入口"""
-#         call_page = CallPage()
-#         call_page.click_locator_key('电话图标')
-#         call_page.click_locator_key('页面规则')
-#         bol = call_page.wait_until(
-#             condition=lambda d: call_page.is_text_present('规则说明'), timeout=20
-#             , auto_accept_permission_alert=False)
-#         self.assertTrue(bol)
-#
-#     @staticmethod
-#     def setUp_test_call_0047():
-#         Preconditions.select_mobile('Android-移动')
-#         current_mobile().hide_keyboard_if_display()
-#         Preconditions.make_already_in_call_page()
-#
-#     @tags('ALL', 'SMOKE', 'CMCC')
-#     def test_call_0047(self):
-#         """通过手机号码、用户昵称搜索端内联系人"""
-#         call_page = CallPage()
-#         call_page.click_locator_key('视频')
-#         first_phoneNumber = call_page.get_element_text('电话号码')
-#         call_page.click_locator_key('多方电话_返回')
-#         call_page.click_locator_key('电话图标')
-#         call_page.click_locator_key('电话_搜索栏')
-#         call_page.input_locator_text('搜索_电话', 1)
-#         self.assertTrue(len(call_page.get_elements_count('搜索_电话显示')) > 0)
-#         call_page.input_locator_text('搜索_电话', first_phoneNumber)
-#         self.assertNotEqual(call_page.get_element_text('搜索_电话昵称'), '未知号码')
-#
-#     @staticmethod
-#     def setUp_test_call_0048():
-#         Preconditions.select_mobile('Android-移动')
-#         current_mobile().hide_keyboard_if_display()
-#         Preconditions.make_already_in_call_page()
-#
-#     @tags('ALL', 'SMOKE', 'CMCC')
-#     def test_call_0048(self):
-#         """通过手机号码、用户昵称搜索端外联系人"""
-#         call_page = CallPage()
-#         call_page.click_locator_key('电话图标')
-#         call_page.click_locator_key('电话_搜索栏')
-#         call_page.input_locator_text('搜索_电话', 12345678)
-#         self.assertEqual(len(call_page.get_elements_count('搜索_电话显示')), 0)
-#         call_page.input_locator_text('搜索_电话', 13658489578)
-#         self.assertEqual(call_page.get_element_text('搜索_电话昵称'), '未知号码')
-#
-#     @staticmethod
-#     def setUp_test_call_0049():
-#         Preconditions.select_mobile('Android-移动')
-#         current_mobile().hide_keyboard_if_display()
-#         Preconditions.make_already_in_call_page()
-#
-#     @tags('ALL', 'SMOKE', 'CMCC')
-#     def test_call_0049(self):
-#         """多方通话剩余分钟数"""
-#         call_page = CallPage()
-#         call_page.mobile.turn_off_mobile_data()
-#         call_page.mobile.turn_off_wifi()
-#         call_page.mobile.launch_app()
-#         call_page.click_locator_key('电话图标')
-#         self.assertIn('--', call_page.get_element_text('免费时长'))
-#         call_page.click_locator_key('拨号_返回')
-#         call_page.mobile.turn_on_mobile_data()
-#         current_mobile().wait_until_not(condition=lambda d: current_mobile().is_text_present('正在登录...'), timeout=20)
-#         call_page.click_locator_key('电话图标')
-#         import time
-#         time.sleep(1.5)
-#         self.assertNotIn('--', call_page.get_element_text('免费时长'))
-#         call_page.click_locator_key('拨号_返回')
-#         call_page.mobile.turn_off_mobile_data()
-#         call_page.mobile.turn_off_wifi()
-#         call_page.click_locator_key('电话图标')
-#         self.assertNotIn('--', call_page.get_element_text('免费时长'))
-#
-#     @staticmethod
-#     def tearDown_test_call_0049():
-#         call_page = CallPage()
-#         call_page.mobile.turn_on_wifi()
-#         call_page.mobile.turn_on_mobile_data()
-#
-#     @staticmethod
-#     def setUp_test_call_0050():
-#         Preconditions.select_mobile('Android-移动')
-#         current_mobile().hide_keyboard_if_display()
-#         Preconditions.make_already_in_call_page()
-#
-#     @tags('ALL', 'SMOKE', 'CMCC')
-#     def test_call_0050(self):
-#         """未加载到多方通话剩余分钟数"""
-#         call_page = CallPage()
-#         call_page.mobile.turn_off_mobile_data()
-#         call_page.mobile.turn_off_wifi()
-#         call_page.mobile.launch_app()
-#         import time
-#         time.sleep(1.5)
-#         call_page.click_locator_key('电话图标')
-#         self.assertIn('--', call_page.get_element_text('免费时长'))
-#         call_page.click_locator_key('拨号_返回')
-#
-#     @staticmethod
-#     def tearDown_test_call_0050():
-#         call_page = CallPage()
-#         call_page.mobile.turn_on_wifi()
-#         call_page.mobile.turn_on_mobile_data()
-#
 
 # noinspection PyBroadException
 class CallPageTest(TestCase):
@@ -2864,67 +2682,6 @@ class CallPageTest(TestCase):
             call.tap_screen_three_point_element_c('视频界面_时长')
             call.click_locator_key_c('视频界面_挂断')
 
-    # @tags('ALL', 'CMCC_double', 'call')
-    # def test_call_000105(self):
-    #     """
-    #         1、4G网络
-    #         2、已登录客户端
-    #         3、当前页面在视频通话接听页面
-    #         4、点击非icon区域
-    #         5、再点击非icon区域
-    #         6、隐藏界面其它，只显示两个视频窗口
-    #     """
-    #     call = CallPage()
-    #     call.wait_for_page_load()
-    #     # 初始化被叫手机
-    #     Preconditions.initialize_class('Android-移动-N')
-    #     # 获取手机号码
-    #     cards = call.get_cards_c(CardType.CHINA_MOBILE)
-    #     # 切换主叫手机
-    #     Preconditions.select_mobile('Android-移动')
-    #     # 拨打视频电话
-    #     call.pick_up_p2p_video(cards)
-    #     # 等待返回结果
-    #     self.assertEqual(self.to_pick_phone_video(), True)
-    #     self.assertEqual(self.check_video_call_000105(), True)
-    #
-    # @TestLogger.log('验证结果')
-    # def check_video_call_000105(self):
-    #     """
-    #         1、点击非icon区域
-    #         2、再点击非icon区域
-    #         3、隐藏界面其它，只显示两个视频窗口
-    #     """
-    #     call = CallPage()
-    #     try:
-    #         if call.is_element_already_exist_c('视频界面_时长'):
-    #             call.tap_screen_center_c('视频界面_小屏')
-    #             time.sleep(1)
-    #             self.assertEqual(call.is_element_already_exist_c('视频界面_免提'), False)
-    #             self.assertEqual(call.is_element_already_exist_c('视频界面_静音'), False)
-    #             self.assertEqual(call.is_element_already_exist_c('视频界面_转为语音 '), False)
-    #             self.assertEqual(call.is_element_already_exist_c('视频界面_涂鸦'), False)
-    #             self.assertEqual(call.is_element_already_exist_c('视频界面_切换摄像头'), False)
-    #             self.assertEqual(call.is_element_already_exist_c('视频界面_挂断'), False)
-    #             self.assertEqual(call.is_element_already_exist_c('视频界面_小屏'), True)
-    #         else:
-    #             call.tap_screen_center_c('视频界面_小屏')
-    #             time.sleep(0.5)
-    #             self.assertEqual(call.is_element_already_exist_c('视频界面_免提'), True)
-    #             self.assertEqual(call.is_element_already_exist_c('视频界面_静音'), True)
-    #             self.assertEqual(call.is_element_already_exist_c('视频界面_转为语音 '), True)
-    #             self.assertEqual(call.is_element_already_exist_c('视频界面_涂鸦'), True)
-    #             self.assertEqual(call.is_element_already_exist_c('视频界面_切换摄像头'), True)
-    #             self.assertEqual(call.is_element_already_exist_c('视频界面_挂断'), True)
-    #             self.assertEqual(call.is_element_already_exist_c('视频界面_小屏'), True)
-    #         return True
-    #     except Exception:
-    #         traceback.print_exc()
-    #         return False
-    #     finally:
-    #         call.tap_screen_three_point_element_c('视频界面_时长')
-    #         call.click_locator_key_c('视频界面_挂断')
-
     @tags('ALL', 'CMCC_double', 'call')
     def test_call_000106(self):
         """
@@ -3186,37 +2943,6 @@ class CallPageTest(TestCase):
         time2 = Preconditions.get_remaining_call_time()
         self.assertEqual((time1 - time2 >= n), True)
 
-    # @tags('ALL', 'CMCC_double', 'call')
-    # def test_call_000148(self):
-    #     """
-    #         1. 验证剩余时长更新 网络正常
-    #         2.已使用多方电话通话并减少剩余时长"	"1.点击免费电话icon
-    #         2.查看剩余时长100分钟
-    #         3.拨打多方电话10分钟后返回列表页面
-    #         4.查看剩余时长"	"1.进入多方电话列表页面
-    #         2.剩余时长显示100分钟
-    #         3.多方电话成功通话并成功返回
-    #         4.剩余时长显示为90分钟"
-    #
-    #     """
-    #     call = CallPage()
-    #     call.wait_for_page_load()
-    #     # 初始化被叫手机
-    #     Preconditions.initialize_class('Android-移动-N')
-    #     # 获取手机号码
-    #     cards = call.get_cards_c(CardType.CHINA_MOBILE)
-    #     # 切换主叫手机
-    #     Preconditions.select_mobile('Android-移动')
-    #     # 拨打多方电话
-    #     call.pick_up_multi_voice(cards)
-    #     time.sleep(8)
-    #     current_mobile().press_home_key()
-    #     time.sleep(3)
-    #     current_mobile().launch_app()
-    #     time.sleep(1)
-    #     self.assertEqual(call.is_text_present_c('飞信电话') \
-    #                      and call.is_text_present_c('12560'), True)
-
     @tags('ALL', 'CMCC_double', 'call')
     def test_call_000174(self):
         """
@@ -3347,33 +3073,33 @@ class CallPageTest(TestCase):
                and call.is_element_already_exist_c('多方视频_挂断', default_timeout=0.5)
 
     # @tags('ALL', 'CMCC_double', 'call')
-    @unittest.skip('浮窗抓取不到')
-    def test_call_000198(self):
-        """
-            收起和展开视频通话
-            1、网络正常，已登录密友圈，权限已开启；
-            2、多方视频已接通；
-            1、A点击左上角的【收起】按钮；
-            2、查看B的视频窗口；
-            3、A单击通话浮层；
-            1、视频窗口缩小以浮层的方式悬浮在页面的右上角，可按住移动浮层位置；
-            窗口收起后，默认停留在发起视频通话页面，切换到任一页面，浮层位置保持不变；
-            2、收起视频通话不影响其他视频成员端的视频窗口展示；
-            3、A用户返回视频通话窗口；
-        """
-        call = CallPage()
-        call.wait_for_page_load()
-        # 初始化被叫手机
-        Preconditions.initialize_class('Android-移动-N')
-        # 获取手机号码
-        cards = call.get_cards_c(CardType.CHINA_MOBILE)
-        # 切换主叫手机
-        Preconditions.select_mobile('Android-移动')
-        # 拨打多人视频 指定一个号码
-        call.pick_up_multi_video(cards)
-        # 等待结果
-        self.assertEqual(self.to_pick_phone_video(), True)
-        self.assertEqual(self.check_result_000198(), True)
+    # @unittest.skip('浮窗抓取不到')
+    # def test_call_000198(self):
+    #     """
+    #         收起和展开视频通话
+    #         1、网络正常，已登录密友圈，权限已开启；
+    #         2、多方视频已接通；
+    #         1、A点击左上角的【收起】按钮；
+    #         2、查看B的视频窗口；
+    #         3、A单击通话浮层；
+    #         1、视频窗口缩小以浮层的方式悬浮在页面的右上角，可按住移动浮层位置；
+    #         窗口收起后，默认停留在发起视频通话页面，切换到任一页面，浮层位置保持不变；
+    #         2、收起视频通话不影响其他视频成员端的视频窗口展示；
+    #         3、A用户返回视频通话窗口；
+    #     """
+    #     call = CallPage()
+    #     call.wait_for_page_load()
+    #     # 初始化被叫手机
+    #     Preconditions.initialize_class('Android-移动-N')
+    #     # 获取手机号码
+    #     cards = call.get_cards_c(CardType.CHINA_MOBILE)
+    #     # 切换主叫手机
+    #     Preconditions.select_mobile('Android-移动')
+    #     # 拨打多人视频 指定一个号码
+    #     call.pick_up_multi_video(cards)
+    #     # 等待结果
+    #     self.assertEqual(self.to_pick_phone_video(), True)
+    #     self.assertEqual(self.check_result_000198(), True)
 
     @TestLogger.log('验证结果')
     def check_result_000198(self):
@@ -3748,4 +3474,7 @@ class CallPageTest(TestCase):
             self.assertEqual(call.is_text_present_c('飞信电话', default_timeout=0.5)
                              and call.is_text_present_c('12560', default_timeout=0.5), True)
         finally:
-            call.hang_up_the_call()
+            try:
+                call.hang_up_the_call()
+            except Exception:
+                pass

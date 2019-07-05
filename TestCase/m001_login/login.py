@@ -27,30 +27,6 @@ REQUIRED_MOBILES = {
 }
 
 
-# class LoginTest(TestCase):
-#     """Login 模块"""
-#
-#     def setUp_test_login_0001(self):
-#         """"""
-#         mb = switch_to_mobile('M960BDQN229CH1')
-#         mb.connect_mobile()
-#         self.gd = GuidePage()
-#         self.gd.mobile.reset_app()
-#         self.gd.wait_for_page_load()
-#         self.gd.swipe_by_percent_on_screen(90, 50, 10, 50, 600)
-#         self.gd.swipe_by_percent_on_screen(90, 50, 10, 50, 600)
-#         mb.click_text('立即体验')
-#         mb.click_text('一键开启')
-#         mb.click_text('本机号码一键登录')
-#         mb.click_text('确定')
-#
-#     @tags('DEMO')
-#     def test_login_0001(self):
-#         """ 本网非首次登录已设置头像-一键登录页面元素检查"""
-#         import time
-#         time.sleep(4)
-#         self.gd.mobile.assert_screen_contain_text('本机号码')
-
 class Preconditions(LoginPreconditions):
     """
     分解前置条件
@@ -146,7 +122,7 @@ class LoginTest(TestCase):
         Preconditions.app_start_for_the_first_time()
         Preconditions.make_already_in_one_key_login_page()
 
-    @tags('ALL', 'SMOKE', 'CMCC')
+    @tags('ALL', 'CMCC', 'login')
     def test_login_0001(self):
         """
             取消首次登录时登录按钮的置灰显示	"1、正常网络
@@ -189,32 +165,6 @@ class LoginTest(TestCase):
         call.remove_mask_c(2)
         self.assertEqual(call.is_on_this_page(), True)
 
-    # @staticmethod
-    # def setUp_test_login_0002():
-    #     Preconditions.select_mobile('Android-移动')
-    #     current_mobile().hide_keyboard_if_display()
-    #     Preconditions.app_start_for_the_first_time()
-    #     Preconditions.make_already_in_one_key_login_page()
-    #
-    # @tags('ALL', 'SMOKE', 'CMCC')
-    # def test_login_0002(self):
-    #     """ 本网正常网络首次登录4G-登录响应成功"""
-    #     # 1.点击一键登录
-    #     one_key = OneKeyLoginPage()
-    #     one_key.wait_for_tell_number_load(60)
-    #     one_key.click_one_key_login()
-    #     one_key.click_agree_user_aggrement()
-    #     one_key.click_agree_login_by_number()
-    #     # 已登录密友圈
-    #     cp = CallPage()
-    #     call_page = CallPage()
-    #     call_page.wait_for_page_call_load()
-    #     call_page.click_always_allow_c()
-    #     time.sleep(2)
-    #     call_page.remove_mask_c(2)
-    #     time.sleep(2)
-    #     self.assertEquals(cp.is_on_this_page(), True)
-
     @staticmethod
     def setUp_test_login_0003():
         Preconditions.select_mobile('Android-移动')
@@ -222,7 +172,7 @@ class LoginTest(TestCase):
         # Preconditions.app_start_for_the_first_time()
         Preconditions.make_already_in_one_key_login_page()
 
-    @tags('ALL', 'SMOKE', 'CMCC')
+    @tags('ALL', 'CMCC', 'me')
     def test_login_0003(self):
         """ 非首次登陆	"1、正常网络
             2、当前在一键登录页面

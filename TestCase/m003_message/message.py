@@ -1,5 +1,6 @@
 import re
 import time
+import unittest
 import warnings
 from selenium.common.exceptions import TimeoutException
 
@@ -245,13 +246,13 @@ class Preconditions(object):
         gcp = GroupChartPage()
         gcp.wait_for_page_group_chart()
 
-#   #  26条
-class MessageTest(TestCase):
-    """Message 模块"""
+
+# class MessageTest(TestCase):
+#     """Message 模块"""
 #
-    @classmethod
-    def setUpClass(cls):
-        warnings.simplefilter('ignore', ResourceWarning)
+#     @classmethod
+#     def setUpClass(cls):
+#         warnings.simplefilter('ignore', ResourceWarning)
 #         Preconditions.select_mobile('Android-移动')
 #         current_mobile().hide_keyboard_if_display()
 #         try:
@@ -265,36 +266,38 @@ class MessageTest(TestCase):
 #             except:
 #                 pass
 #
-#     # @staticmethod
-#     # def setUp_test_message_0001():
-#     #     Preconditions.select_mobile('Android-移动')
-#     #     current_mobile().hide_keyboard_if_display()
-#     #     Preconditions.make_already_in_message_chart_page()
-#     #
-#     # @tags('ALL', 'SMOKE', 'CMCC')
-#     # def test_message_0001(self):
-#     #     """ 本网正常网络首次登录4G-登录响应"""
-#     #     mep = MessagePage()
-#     #     mep.wait_for_page_chart_message()
-#     #     # 1.长按“录制语音”icon,是否有取消按钮
-#     #     mep.click_record_audio()
-#     #     mep.long_click_record_audio()
-#     #     mep.is_exist_cancel_audio()
-#     #
-#     # @staticmethod
-#     # def setUp_test_message_0002():
-#     #     Preconditions.select_mobile('Android-移动')
-#     #     current_mobile().hide_keyboard_if_display()
-#     #     Preconditions.make_already_in_message_chart_page()
-#     #
-#     # @tags('ALL', 'SMOKE', 'CMCC')
-#     # def test_message_0002(self):
-#     #     """ 取消录制语音消息"""
-#     #     mep = MessagePage()
-#     #     mep.wait_for_page_chart_message()
-#     #     # 1.长按“录制语音”icon,是否有取消按钮
-#     #     mep.click_record_audio()
-#     #     mep.press_and_move_to_el("开始录音", "取消录音")
+#     @staticmethod
+#     def setUp_test_message_0001():
+#         Preconditions.select_mobile('Android-移动')
+#         current_mobile().hide_keyboard_if_display()
+#         Preconditions.make_already_in_message_chart_page()
+#
+#     # @tags('ALL', 'CMCC', 'message')
+#     @unittest.skip
+#     def test_message_0001(self):
+#         """ 本网正常网络首次登录4G-登录响应"""
+#         mep = MessagePage()
+#         mep.wait_for_page_chart_message()
+#         # 1.长按“录制语音”icon,是否有取消按钮
+#         mep.click_record_audio()
+#         mep.long_click_record_audio()
+#         mep.is_exist_cancel_audio()
+#
+#     @staticmethod
+#     def setUp_test_message_0002():
+#         Preconditions.select_mobile('Android-移动')
+#         current_mobile().hide_keyboard_if_display()
+#         Preconditions.make_already_in_message_chart_page()
+#
+#     # @tags('ALL', 'CMCC', 'message')
+#     @unittest.skip
+#     def test_message_0002(self):
+#         """ 取消录制语音消息"""
+#         mep = MessagePage()
+#         mep.wait_for_page_chart_message()
+#         # 1.长按“录制语音”icon,是否有取消按钮
+#         mep.click_record_audio()
+#         mep.press_and_move_to_el("开始录音", "取消录音")
 #
 #     @staticmethod
 #     def setUp_test_message_0003():
@@ -302,7 +305,8 @@ class MessageTest(TestCase):
 #         current_mobile().hide_keyboard_if_display()
 #         Preconditions.make_already_in_message_chart_page()
 #
-#     @tags('ALL1', 'SMOKE', 'CMCC')
+#     # @tags('ALL', 'CMCC', 'message')
+#     @unittest.skip
 #     def test_message_0003(self):
 #         """ 发送语音消息"""
 #         mep = MessagePage()
@@ -323,8 +327,10 @@ class MessageTest(TestCase):
 #         current_mobile().hide_keyboard_if_display()
 #         Preconditions.make_already_in_message_chart_page()
 #
-#     @tags('ALL1', 'SMOKE', 'CMCC')
+#     # @tags('ALL', 'CMCC', 'message')
+#     @unittest.skip
 #     def test_message_0004(self):
+#
 #         """ 会话界面使用录音功能发送0秒语音"""
 #         mep = MessagePage()
 #         mep.wait_for_page_chart_message()
@@ -341,7 +347,8 @@ class MessageTest(TestCase):
 #         current_mobile().hide_keyboard_if_display()
 #         Preconditions.make_already_in_message_chart_page()
 #
-#     @tags('ALL1', 'SMOKE', 'CMCC')
+#     # @tags('ALL', 'CMCC', 'message')
+#     @unittest.skip
 #     def test_message_0005(self):
 #         """ 消息会话-发送相册照片页面显示"""
 #         mep = MessagePage()
@@ -363,7 +370,8 @@ class MessageTest(TestCase):
 #         current_mobile().hide_keyboard_if_display()
 #         Preconditions.make_already_in_message_chart_page()
 #
-#     @tags('ALL1', 'SMOKE', 'CMCC')
+#     # @tags('ALL', 'CMCC', 'message')
+#     @unittest.skip
 #     def test_message_0006(self):
 #         """ 消息会话-发送相册照片页面显示"""
 #         mep = MessagePage()
@@ -389,7 +397,8 @@ class MessageTest(TestCase):
 #         current_mobile().hide_keyboard_if_display()
 #         Preconditions.make_already_in_message_chart_page()
 #
-#     @tags('ALL1', 'SMOKE', 'CMCC')
+#     # @tags('ALL', 'CMCC', 'message')
+#     @unittest.skip
 #     def test_message_0007(self):
 #         """ 消息会话-发送相册照片-预览照片页面"""
 #         mep = MessagePage()
@@ -431,7 +440,8 @@ class MessageTest(TestCase):
 #         current_mobile().hide_keyboard_if_display()
 #         Preconditions.make_already_in_message_chart_page()
 #
-#     @tags('ALL1', 'SMOKE', 'CMCC')
+#     # @tags('ALL', 'CMCC', 'message')
+#     @unittest.skip
 #     def test_message_0008(self):
 #         """ 文件消息-发送文件入口"""
 #         mep = MessagePage()
@@ -455,7 +465,8 @@ class MessageTest(TestCase):
 #         current_mobile().hide_keyboard_if_display()
 #         Preconditions.make_already_have_group_chart()
 #
-#     @tags('ALL1', 'SMOKE', 'CMCC')
+#     # @tags('ALL', 'CMCC', 'message')
+#     @unittest.skip
 #     def test_message_0011(self):
 #         """ 群聊设置页新增邀请微信或者QQ 好友进群入口"""
 #         # 0.在群聊天设置页面，进入群管理员页面页面
@@ -518,7 +529,8 @@ class MessageTest(TestCase):
 #         current_mobile().hide_keyboard_if_display()
 #         Preconditions.make_already_have_group_chart()
 #
-#     @tags('ALL1', 'SMOKE', 'CMCC')
+#     # @tags('ALL', 'CMCC', 'message')
+#     @unittest.skip
 #     def test_message_0014(self):
 #         """ 群聊设置页新增邀请微信或者QQ 好友进群入口"""
 #         # 1.在群聊天设置页面,检查新增邀请微信或者QQ好友进群
@@ -553,7 +565,8 @@ class MessageTest(TestCase):
 #         current_mobile().hide_keyboard_if_display()
 #         Preconditions.make_already_have_group_chart()
 #
-#     @tags('ALL1', 'SMOKE', 'CMCC')
+#     # @tags('ALL', 'CMCC', 'message')
+#     @unittest.skip
 #     def test_message_0015(self):
 #         """ 点击后弹出群口令的生成弹窗"""
 #         # 1.在群聊天设置页面,检查新增邀请微信或者QQ好友进群
@@ -593,7 +606,8 @@ class MessageTest(TestCase):
 #         current_mobile().hide_keyboard_if_display()
 #         Preconditions.make_already_have_group_chart()
 #
-#     @tags('ALL1', 'SMOKE', 'CMCC')
+#     # @tags('ALL', 'CMCC', 'message')
+#     @unittest.skip
 #     def test_message_0016(self):
 #         """ 群管理入口-群主"""
 #         # 1.在群聊天设置页面,检查群管理入口
@@ -619,7 +633,8 @@ class MessageTest(TestCase):
 #         current_mobile().hide_keyboard_if_display()
 #         Preconditions.make_already_have_group_chart()
 #
-#     @tags('ALL1', 'SMOKE', 'CMCC')
+#     # @tags('ALL', 'CMCC', 'message')
+#     @unittest.skip
 #     def test_message_0017(self):
 #         """ 查看“群二维码”页面显示"""
 #         # 1.在群聊天设置页面,检查群管理入口
@@ -658,7 +673,8 @@ class MessageTest(TestCase):
 #         current_mobile().hide_keyboard_if_display()
 #         Preconditions.make_already_in_message_chart_page()
 #
-#     @tags('ALL1', 'SMOKE', 'CMCC')
+#     # @tags('ALL', 'CMCC', 'message')
+#     @unittest.skip
 #     def test_message_0018(self):
 #         """消息会话拍摄1张照片并发送"""
 #         # 1.在群聊天设置页面,检查群管理入口
@@ -684,7 +700,8 @@ class MessageTest(TestCase):
 #         current_mobile().hide_keyboard_if_display()
 #         Preconditions.make_already_in_message_chart_page()
 #
-#     @tags('ALL1', 'SMOKE', 'CMCC')
+#     # @tags('ALL', 'CMCC', 'message')
+#     @unittest.skip
 #     def test_message_0019(self):
 #         """消息会话录制1段视频并发送"""
 #         # 1.在群聊天设置页面,检查群管理入口
@@ -710,7 +727,8 @@ class MessageTest(TestCase):
 #         current_mobile().hide_keyboard_if_display()
 #         Preconditions.make_already_in_message_chart_page()
 #
-#     @tags('ALL1', 'SMOKE', 'CMCC')
+#     # @tags('ALL', 'CMCC', 'message')
+#     @unittest.skip
 #     def test_message_0020(self):
 #         """消息会话录制1段视频并预览"""
 #         # 1.在群聊天设置页面,检查群管理入口
@@ -737,7 +755,8 @@ class MessageTest(TestCase):
 #         current_mobile().hide_keyboard_if_display()
 #         Preconditions.make_already_in_message_chart_page()
 #
-#     @tags('ALL1', 'SMOKE', 'CMCC')
+#     # @tags('ALL', 'CMCC', 'message')
+#     @unittest.skip
 #     def test_message_0021(self):
 #         """聊天设置-聊天背景设置入口"""
 #         # 1.在群聊天设置页面,检查更改聊天主题背景入口
@@ -763,7 +782,8 @@ class MessageTest(TestCase):
 #         current_mobile().hide_keyboard_if_display()
 #         Preconditions.make_already_in_message_chart_page()
 #
-#     @tags('ALL1', 'SMOKE', 'CMCC')
+#     # @tags('ALL', 'CMCC', 'message')
+#     @unittest.skip
 #     def test_message_0022(self):
 #         """聊天设置-聊天背景设置入口"""
 #         # 1.在群聊天设置页面,检查更改聊天主题背景入口
@@ -794,7 +814,8 @@ class MessageTest(TestCase):
 #         current_mobile().hide_keyboard_if_display()
 #         Preconditions.make_already_in_message_chart_page()
 #
-#     @tags('ALL1', 'SMOKE', 'CMCC')
+#     # @tags('ALL', 'CMCC', 'message')
+#     @unittest.skip
 #     def test_message_0023(self):
 #         """聊天设置-聊天背景更改取消"""
 #         # 1.在群聊天设置页面,检查更改聊天主题背景入口
@@ -828,7 +849,8 @@ class MessageTest(TestCase):
 #         current_mobile().hide_keyboard_if_display()
 #         Preconditions.make_already_in_message_chart_page()
 #
-#     @tags('ALL1', 'SMOKE', 'CMCC')
+#     # @tags('ALL', 'CMCC', 'message')
+#     @unittest.skip
 #     def test_message_0024(self):
 #         """聊天设置-聊天背景更改应用"""
 #         # 1.在群聊天设置页面,检查更改聊天主题背景入口
@@ -862,7 +884,8 @@ class MessageTest(TestCase):
 #         current_mobile().hide_keyboard_if_display()
 #         Preconditions.make_already_in_message_chart_page()
 #
-#     @tags('ALL1', 'SMOKE', 'CMCC')
+#     # @tags('ALL', 'CMCC', 'message')
+#     @unittest.skip
 #     def test_message_0025(self):
 #         """消息-进入联系人profile页页面展示"""
 #         # 1.在群聊天设置页面,检查更改聊天主题背景入口
@@ -885,7 +908,8 @@ class MessageTest(TestCase):
 #         current_mobile().hide_keyboard_if_display()
 #         Preconditions.make_already_in_message_chart_page()
 #
-#     @tags('ALL1', 'SMOKE', 'CMCC')
+#     # @tags('ALL', 'CMCC', 'message')
+#     @unittest.skip
 #     def test_message_0026(self):
 #         """联系人profile页-发送消息"""
 #         # 1.在群聊天设置页面,检查更改聊天主题背景入口
@@ -911,7 +935,8 @@ class MessageTest(TestCase):
 #         current_mobile().hide_keyboard_if_display()
 #         Preconditions.make_already_in_message_chart_page()
 #
-#     @tags('ALL1', 'SMOKE', 'CMCC')
+#     # @tags('ALL', 'CMCC', 'message')
+#     @unittest.skip
 #     def test_message_0027(self):
 #         """点击视频通话入口"""
 #         # 1.在群聊天设置页面,检查更改聊天主题背景入口
@@ -937,7 +962,8 @@ class MessageTest(TestCase):
 #         current_mobile().hide_keyboard_if_display()
 #         Preconditions.make_already_have_group_chart()
 #
-#     @tags('ALL1', 'SMOKE', 'CMCC')
+#     # @tags('ALL', 'CMCC', 'message')
+#     @unittest.skip
 #     def test_message_0028(self):
 #         """群聊消息-群聊设置页面（群主）-解散并退出"""
 #         # 0.在群聊天设置页面,检查群管理入口
@@ -969,7 +995,8 @@ class MessageTest(TestCase):
 #         current_mobile().hide_keyboard_if_display()
 #         Preconditions.make_already_in_message_chart_page()
 #
-#     @tags('ALL1', 'SMOKE', 'CMCC')
+#     # @tags('ALL', 'CMCC', 'message')
+#     @unittest.skip
 #     def test_message_0030(self):
 #         """表情消息-表情选择入口显示"""
 #         # 0.在群聊天设置页面,检查群管理入口
@@ -987,7 +1014,8 @@ class MessageTest(TestCase):
 #         current_mobile().hide_keyboard_if_display()
 #         Preconditions.make_already_in_message_chart_page()
 #
-#     @tags('ALL1', 'SMOKE', 'CMCC')
+#     # @tags('ALL', 'CMCC', 'message')
+#     @unittest.skip
 #     def test_message_0031(self):
 #         """表情消息-表情选择入口显示"""
 #         # 0.在群聊天设置页面,检查群管理入口
@@ -1008,7 +1036,8 @@ class MessageTest(TestCase):
 #         current_mobile().hide_keyboard_if_display()
 #         Preconditions.make_already_in_message_chart_page()
 #
-#     @tags('ALL1', 'SMOKE', 'CMCC')
+#     # @tags('ALL', 'CMCC', 'message')
+#     @unittest.skip
 #     def test_message_0032(self):
 #         """表情消息-表情选择入口显示"""
 #         # 0.在群聊天设置页面,检查群管理入口
@@ -1029,7 +1058,8 @@ class MessageTest(TestCase):
 #         current_mobile().hide_keyboard_if_display()
 #         Preconditions.make_already_in_message_chart_page()
 #
-#     @tags('ALL1', 'SMOKE', 'CMCC')
+#     # @tags('ALL', 'CMCC', 'message')
+#     @unittest.skip
 #     def test_message_0033(self):
 #         """撤回消息"""
 #         # 0.在群聊天设置页面,检查群管理入口

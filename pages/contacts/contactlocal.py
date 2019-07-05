@@ -3,8 +3,9 @@ from appium.webdriver.common.mobileby import MobileBy
 from library.core.TestLogger import TestLogger
 from pages.CommonPage import CommonPage
 import time
+import traceback
 
-
+# noinspection PyBroadException
 class ContactsPage(CommonPage):
     """通讯录页面"""
     ACTIVITY = 'com.cmcc.cmrcs.android.ui.activities.HomeActivity'
@@ -16,6 +17,10 @@ class ContactsPage(CommonPage):
         '遮罩1': (MobileBy.ID, 'com.cmic.college:id/contact_list'),
         # 通讯录首页
         '搜索': (MobileBy.ID, 'com.cmic.college:id/action_search'),
+        '搜索_返回': (MobileBy.ID, 'com.cmic.college:id/iv_back'),
+        '搜索_搜索框': (MobileBy.ID, 'com.cmic.college:id/edit_query'),
+        '搜索_清空': (MobileBy.ID, 'com.cmic.college:id/iv_delect'),
+        '搜索_联系人号码': (MobileBy.ID, 'com.cmic.college:id/tv_phone'),
         '消息': (MobileBy.ID, 'com.cmic.college:id/action_message'),
         '不限时长-去开通': (MobileBy.ID, 'com.cmic.college:id/tv_open'),
         '联系人名称': (MobileBy.ID, 'com.cmic.college:id/contact_name'),
@@ -37,6 +42,7 @@ class ContactsPage(CommonPage):
         '家庭网_通讯录_号码': (MobileBy.ID, 'com.cmic.college:id/contact_number'),
         # 密友圈（不限时长）
         '密友圈_管理': (MobileBy.ID, 'com.cmic.college:id/tv_manage'),
+        '密友圈_添加成员': (MobileBy.ID, 'com.cmic.college:id/iv_add'),
         '密友圈_管理_成员': (MobileBy.ID, 'com.cmic.college:id/rl_root'),
         '密友圈_解绑_确定': (MobileBy.ID, 'com.cmic.college:id/btnConfirm'),
         '密友圈_解绑_取消': (MobileBy.ID, 'com.cmic.college:id/btnCancel'),
@@ -59,6 +65,7 @@ class ContactsPage(CommonPage):
         '联系人_规则': (MobileBy.ID, 'com.cmic.college:id/tv_freecall_rule'),
         '联系人_规则说明': (MobileBy.ID, 'com.cmic.college:id/tv_title_actionbar'),
         '联系人_规则返回': (MobileBy.ID, 'com.cmic.college:id/ibt_back_actionbar'),
+        '联系人_联系人': (MobileBy.ID, 'com.cmic.college:id/rl_content'),
         # 更多页面
         '更多_性别_标签': (MobileBy.ID, 'com.cmic.college:id/tv_sex_title'),
         '更多_年龄_标签': (MobileBy.ID, 'com.cmic.college:id/tv_age_title'),
@@ -121,3 +128,13 @@ class ContactsPage(CommonPage):
             return len(self.get_elements(locator)) > 0
         except:
             return False
+
+    @TestLogger.log()
+    def click_to_call(self, text):
+        """点击指定联系人的电话图标"""
+        locator = (
+            'xpath', '//*[contains(@text,%s)]/../following-sibling::*[2]' % text)
+        try:
+            self.get_element(locator).click()
+        except Exception:
+            traceback.print_exc()
