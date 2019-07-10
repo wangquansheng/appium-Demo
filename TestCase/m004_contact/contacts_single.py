@@ -1028,3 +1028,100 @@ class ContactlocalPage(TestCase):
         contact_page.click_locator_key_c('搜索')
         time.sleep(0.5)
         self.assertEqual('搜索联系人' == contact_page.get_element_text_c('搜索_搜索框'), True)
+
+    @tags('ALL', 'CMCC', 'contact')
+    def test_member_00132(self):
+        """
+            顶部新增“添加异网成员资格”剩余个数提示	"1、已登录密友圈
+            2、网络正常
+            3、当前页面不限时长管理
+            4、非四川卡
+            5、活动期间内"	查看顶部文案显示	文案显示“您还可以设置XX个成员，其中非移动号成员体验名额还有X个”每个主叫号码添加异网成员体验资格为2个，超过2个后，不可再继续添加（体验资格设置为动态更新，默认为2个，方便往后配合活动增加体验资格上限的改造）
+        """
+        contact_page = ContactsPage()
+        # 确保在通讯录界面
+        self.assertEqual(contact_page.is_element_already_exist_c('通讯录_标题', default_timeout=20), True)
+        contact_page.click_locator_key_c('密友圈_管理')
+        time.sleep(0.5)
+        self.assertEqual(contact_page.is_text_present_c('其中非移动号成员体验名额还有'), True)
+
+    # @tags('ALL', 'CMCC', 'contact')
+    @unittest.skip('元素无法滑动')
+    def test_member_00145(self):
+        """
+            1、已登录密友圈
+            2、网络正常
+            3、当前页面添加不限时长成员页面"	查看页面数据显示
+            1、存在不限时长、家庭网、本地通讯录、好友成员数据，去重显示
+        """
+        contact_page = ContactsPage()
+        # 确保在通讯录界面
+        self.assertEqual(contact_page.is_element_already_exist_c('通讯录_标题', default_timeout=20), True)
+        els = contact_page.get_elements_list_c('不限时长_昵称')
+        n = 5
+        while n > 0:
+            for el in els:
+                if '添加' == el.text:
+                    el.click()
+                    break
+            else:
+                n -= 1
+                print(n)
+                contact_page.press_and_move_to_left(els[-2])
+                continue
+            break
+        time.sleep(1)
+        self.assertEqual(contact_page.get_elements_count_c('不限时长_添加联系人') > 0, True)
+
+    @tags('ALL', 'CMCC', 'contact')
+    def test_member_00146(self):
+        """
+            1、已登录密友圈
+            2、网络正常
+            3、当前页面添加不限时长成员页面"	查看页面数据显示
+            1、存在不限时长、家庭网、本地通讯录、好友成员数据，去重显示
+        """
+        contact_page = ContactsPage()
+        # 确保在通讯录界面
+        self.assertEqual(contact_page.is_element_already_exist_c('通讯录_标题', default_timeout=20), True)
+        self.assertEqual(contact_page.get_elements_count_c('联系人号码') > 0, True)
+
+    @tags('ALL', 'CMCC', 'contact')
+    def test_member_00152(self):
+        """
+            对通讯录列表搜索结果新增按钮	"1、正常网络状态下
+            2、已登录密友圈
+            3、通讯录列表存在数据"	"1、输入一个与通讯录列表匹配的号码或名称
+            2、点击除拨打按钮外的其他区域"	"1、展示的搜索结果右侧新增拨打电话按钮
+            2、进入个人详情页面"
+        """
+        contact_page = ContactsPage()
+        # 确保在通讯录界面
+        self.assertEqual(contact_page.is_element_already_exist_c('通讯录_标题', default_timeout=20), True)
+        contact_page.click_locator_key_c('搜索')
+        time.sleep(0.5)
+        contact_page.input_text_c('搜索_搜索框', '138')
+        time.sleep(1)
+        contact_page.get_elements_list_c('搜索_联系人号码')[0].click()
+        time.sleep(1)
+        self.assertEqual(contact_page.is_element_already_exist_c('联系人_添加桌面'), True)
+
+    @tags('ALL', 'CMCC', 'contact')
+    def test_member_00155(self):
+        """
+            1、登录密友圈
+            2、跳转通讯录界面"	"1、跳转通讯录tab
+            2、点击通讯录成员列表中的去添加快捷方式按钮
+            3、点击去开启"	"1、在通讯录界面显示成员列表并显示添加快捷方式按钮
+            2、弹窗已尝试添加到桌面弹窗，对于主流手机（华为、OPPO、vivo、小米），弹窗右侧按钮改成“去开启”。点击“去开启”跳转到系统设置页面
+            3、若用户未悬浮窗权限，则以长toast的形式，根据机型不同，提示不同的提示文案
+            ②若用户已开启悬浮窗权限，则以悬浮窗形式（悬浮窗停留5S），根据机型不同，提示不同文案
+        """
+        contact_page = ContactsPage()
+        # 确保在通讯录界面
+        self.assertEqual(contact_page.is_element_already_exist_c('通讯录_标题', default_timeout=20), True)
+        contact_page.click_locator_key_c('添加桌面图标')
+        time.sleep(0.5)
+        if contact_page.is_text_present_c('已尝试添加到桌面'):
+            contact_page.click_text('去开启')
+

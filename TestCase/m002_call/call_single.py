@@ -208,6 +208,7 @@ class Preconditions(object):
         Preconditions.make_already_in_call_page()
 
 
+# noinspection PyBroadException
 class CallPageTest(TestCase):
     """Call 模块--全量"""
 
@@ -441,6 +442,7 @@ class CallPageTest(TestCase):
         call.is_text_present_c('飞信电话', default_timeout=15)
         try:
             call.hang_up_the_call()
+
         except Exception:
             pass
         self.assertEqual(call.is_text_present_c('飞信电话', default_timeout=15), True)
@@ -602,33 +604,46 @@ class CallPageTest(TestCase):
         time.sleep(3)
         self.assertEqual(call.on_this_page_call_detail(), True)
 
-    # @tags('ALL', 'CMCC', 'call')
-    # def test_call_00027(self):
-    #     """
-    #         1、联网正常已登录
-    #         2、对方未注册
-    #         3、当前页通话记录详情
-    #         点击视频通话---点击取消---"1、进入拨打视频电话界面，并弹出提示窗--下方是“取消” 和“确定”按钮--返回通话记录详情页"
-    #     """
-    #     call = CallPage()
-    #     call.wait_for_page_load()
-    #     # 判断如果键盘已拉起，则收起键盘
-    #     if call.is_exist_call_key():
-    #         call.click_hide_keyboard()
-    #         time.sleep(1)
-    #     call.make_sure_have_p2p_vedio_record()
-    #     call.click_tag_detail_first_element('视频通话')
-    #     time.sleep(2)
-    #     self.assertEqual(call.on_this_page_call_detail(), True)
-    #     # 1. 点击视频通话按钮
-    #     call.click_locator_key('详情_视频')
-    #     time.sleep(1)
-    #     if call.on_this_page_flow():
-    #         call.set_not_reminders()
-    #         time.sleep(1)
-    #         call.click_locator_key('回呼_我知道了')
-    #     time.sleep(1)
-    #     # TODO 限时回呼电话
+    @tags('ALL', 'CMCC', 'call')
+    def test_call_00027(self):
+        """
+            1、联网正常已登录
+            2、对方未注册
+            3、当前页通话记录详情
+            点击视频通话---点击取消---"1、进入拨打视频电话界面，并弹出提示窗--下方是“取消” 和“确定”按钮--返回通话记录详情页"
+        """
+        call = CallPage()
+        call.wait_for_page_load()
+        # 判断如果键盘已拉起，则收起键盘
+        if call.is_exist_call_key():
+            call.click_hide_keyboard()
+            time.sleep(1)
+        call.make_sure_have_p2p_vedio_record()
+        call.click_tag_detail_first_element('视频通话')
+        time.sleep(2)
+        self.assertEqual(call.on_this_page_call_detail(), True)
+        # 1. 点击视频通话按钮
+        call.click_locator_key('详情_通话')
+        time.sleep(1)
+        if call.on_this_page_flow():
+            # call.set_not_reminders()
+            time.sleep(1)
+            call.click_locator_key('回呼_我知道了')
+        time.sleep(1)
+        n = 20
+        flag = False
+        while n > 0:
+            if (call.is_text_present_c('飞信电话', default_timeout=0.1)
+                    and call.is_text_present_c('12560', default_timeout=0.1)):
+                flag = True
+                break
+        try:
+            self.assertEqual(flag, True)
+        finally:
+            try:
+                call.hang_up_the_call()
+            except Exception:
+                pass
 
     @tags('ALL', 'CMCC', 'call')
     def test_call_00031(self):

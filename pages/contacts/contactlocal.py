@@ -1,9 +1,11 @@
 from appium.webdriver.common.mobileby import MobileBy
+from appium.webdriver.common.touch_action import TouchAction
 
 from library.core.TestLogger import TestLogger
 from pages.CommonPage import CommonPage
 import time
 import traceback
+
 
 # noinspection PyBroadException
 class ContactsPage(CommonPage):
@@ -26,6 +28,7 @@ class ContactsPage(CommonPage):
         '联系人名称': (MobileBy.ID, 'com.cmic.college:id/contact_name'),
         '联系人号码': (MobileBy.ID, 'com.cmic.college:id/contact_phone'),
         '电话图标': (MobileBy.ID, 'com.cmic.college:id/rl_call'),
+        '添加桌面图标': (MobileBy.ID, 'com.cmic.college:id/iv_share'),
         # title
         '通讯录_标题': (MobileBy.XPATH, '//android.widget.RelativeLayout[@resource-id="com.'
                                    'cmic.college:id/rl_toolbar"]/android.widget.TextView[1]'),
@@ -90,6 +93,10 @@ class ContactsPage(CommonPage):
         # 通讯录--密友圈(不限时长)
         '不限时长_联系人组': (MobileBy.XPATH, '//android.support.v7.widget.RecyclerView[@resource-id="com.'
                                       'cmic.college:id/rv_content"]/android.widget.LinearLayout'),
+        '不限时长_联系人容器': (
+            MobileBy.XPATH, '//android.support.v7.widget.RecyclerView[@resource-id="com.cmic.college:id/rv_content"]'),
+        '不限时长_昵称': (MobileBy.ID, 'com.cmic.college:id/tv_name'),
+        '不限时长_添加联系人': (MobileBy.ID, 'com.cmic.college:id/tvPhoneNum'),
         # 回呼
         '回呼_提示文本': (MobileBy.ID, 'com.cmic.college:id/content'),
         '回呼_不再提醒': (MobileBy.ID, 'com.cmic.college:id/select_checkbox'),
