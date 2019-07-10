@@ -480,7 +480,7 @@ DEVICES_CONFIG_YYX = {
 
 
 DEVICES_CONFIG_WJH = {
-    'M960BDQN229CH': {
+    'M960BDQN229CH_N': {
         "MODEL": SupportedModel.HUAWEI_P20,
         "SERVER_URL": 'http://127.0.0.1:4723/wd/hub',
         "DEFAULT_CAPABILITY": {
@@ -500,7 +500,7 @@ DEVICES_CONFIG_WJH = {
             },
         ]
     },
-    'M960BDQN229CH_NOVA': {
+    'M960BDQN229CH': {
         "MODEL": SupportedModel.HUAWEI_P20,
         "SERVER_URL": 'http://127.0.0.1:4724/wd/hub',
         "DEFAULT_CAPABILITY": {
