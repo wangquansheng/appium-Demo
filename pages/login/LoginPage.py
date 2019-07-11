@@ -39,8 +39,8 @@ class OneKeyLoginPage(CommonPage):
     @TestLogger.log()
     def is_on_this_page(self):
         """当前页面是否在一键登录页"""
-        el = self.get_elements(self.__locators['一键登录'])
-        if len(el) > 0:
+        # el = self.get_elements(self.__locators['一键登录'])
+        if self.is_text_present_c('一键登录', default_timeout=60):
             return True
         return False
 
