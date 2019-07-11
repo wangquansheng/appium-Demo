@@ -1,17 +1,18 @@
 from appium.webdriver.common.mobileby import MobileBy
-from library.core.BasePage import BasePage
 from library.core.TestLogger import TestLogger
+from pages.CommonPage import CommonPage
 
 
-class FooterPage(BasePage):
+class FooterPage(CommonPage):
     """主页页脚标签栏"""
     ACTIVITY = 'com.cmcc.cmrcs.android.ui.activities.HomeActivity'
 
     __locators = {
         '我': (MobileBy.ID, 'com.cmic.college:id/tvMe'),
         '消息': (MobileBy.ID, 'com.cmic.college:id/tvMessage'),
-        '通话': (MobileBy.ID, 'com.cmic.college:id/tvContact'),
+        '通讯录': (MobileBy.ID, 'com.cmic.college:id/tvContact'),
         '密友': (MobileBy.ID, 'com.chinasofti.rcs:id/tvCircle'),
+        '通话': (MobileBy.ID, 'com.cmic.college:id/tvCall'),
     }
 
     @TestLogger.log()
@@ -28,6 +29,11 @@ class FooterPage(BasePage):
     def open_call_page(self):
         """切换到标签页：通话"""
         self.click_element(self.__locators['通话'])
+
+    @TestLogger.log()
+    def open_contact_page(self):
+        """切换到标签页：通讯录"""
+        self.click_element(self.__locators['通讯录'])
 
     @TestLogger.log()
     def open_friend_page(self):

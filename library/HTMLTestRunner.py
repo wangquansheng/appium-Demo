@@ -48,10 +48,11 @@ LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
 NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 """
+import os
+import time
 
 __author__ = "Wai Yip Tung,  Findyou"
 __version__ = "0.8.2.2"
-
 # TODO: color stderr
 # TODO: simplify javascript using ,ore than 1 class in the class attribute?
 
@@ -59,6 +60,9 @@ import datetime
 import sys
 import unittest
 from xml.sax import saxutils
+# from library.core.total_count.progress_bars import progress_bars, lists
+from library.core.total_count import total_count
+from main import begin_time
 
 _real_stdout = sys.stdout
 _real_stderr = sys.stderr
@@ -369,6 +373,7 @@ tr.errorClass > td  { background-color: #ea7e7b; }
 
 
 TestResult = unittest.TestResult
+lists = set()
 
 
 class _TestResult(TestResult):
@@ -430,11 +435,15 @@ class _TestResult(TestResult):
         output = self.log_output.getvalue()
         self.result.append((0, test, output, ''))
         if self.verbosity > 1:
-            _real_stdout.write('PASS  {}\n'.format(common.get_test_id(test)))
+            log = 'PASS  {}\n'.format(common.get_test_id(test))
+            lists.add(log)
+            _real_stdout.write(log)
             _real_stdout.flush()
+            self._progress_bars()
         else:
             _real_stdout.write('PASS\n')
             _real_stdout.flush()
+            self._progress_bars()
 
     def addError(self, test, err):
         from library.core.TestLogger import TestLogger
@@ -446,11 +455,15 @@ class _TestResult(TestResult):
         output = self.log_output.getvalue()
         self.result.append((2, test, output, _exc_str))
         if self.verbosity > 1:
-            _real_stdout.write('ERROR {}\n'.format(common.get_test_id(test)))
+            log = 'ERROR {}\n'.format(common.get_test_id(test))
+            lists.add(log)
+            _real_stdout.write(log)
             _real_stdout.flush()
+            self._progress_bars()
         else:
             _real_stdout.write('ERROR')
             _real_stdout.flush()
+            self._progress_bars()
 
     def addFailure(self, test, err):
         from library.core.TestLogger import TestLogger
@@ -462,11 +475,15 @@ class _TestResult(TestResult):
         output = self.log_output.getvalue()
         self.result.append((1, test, output, _exc_str))
         if self.verbosity > 1:
-            _real_stdout.write('FAIL  {}\n'.format(common.get_test_id(test)))
+            log = 'FAIL  {}\n'.format(common.get_test_id(test))
+            lists.add(log)
+            _real_stdout.write(log)
             _real_stdout.flush()
+            self._progress_bars()
         else:
             _real_stdout.write('FAIL')
             _real_stdout.flush()
+            self._progress_bars()
 
     def addSkip(self, test, reason):
         from library.core.TestLogger import TestLogger
@@ -482,6 +499,19 @@ class _TestResult(TestResult):
         self.log_output.write(data)
         from library.core.utils import common
         common.write_lines_to_log_file(data)
+
+    def _progress_bars(self):
+        total = total_count.get_value()
+        tested = len(lists)
+        rate = len(lists) / total * 100
+        flag = '{:<100}'.format('#' * int(rate))
+        now_time = time.time()
+        total_time = now_time - begin_time
+        h = '{:0>2d}'.format(int(total_time // 3600))
+        m = '{:0>2d}'.format(int(total_time // 60))
+        s = '{:0>2d}'.format(int(total_time % 60))
+        time.sleep(0.5)
+        # _real_stderr.write("已完成：%.0f%% | (%d/%d) | %s | 总用时：%s:%s:%s\n" % (rate, tested, total, flag, h, m, s))
 
 
 class HTMLTestRunner(Template_mixin):
@@ -573,7 +603,7 @@ class HTMLTestRunner(Template_mixin):
             report=report,
             ending=ending,
             ReportBackgroundStyle="TestSuitePass" if not (
-                result.failure_count or result.error_count) else "TestSuiteFail"
+                    result.failure_count or result.error_count) else "TestSuiteFail"
         )
         self.stream.write(output.encode('utf8'))
 

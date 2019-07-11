@@ -1,12 +1,15 @@
 import re
+import time
 
 from appium.webdriver.common.mobileby import MobileBy
 
 from library.core.BasePage import BasePage
 from library.core.TestLogger import TestLogger
+from library.core.common.simcardtype import CardType
+from pages.CommonPage import CommonPage
 
 
-class OneKeyLoginPage(BasePage):
+class OneKeyLoginPage(CommonPage):
     """一键登录页"""
 
     ACTIVITY = 'com.cmcc.cmrcs.android.ui.activities.OneKeyLoginActivity'
@@ -17,15 +20,27 @@ class OneKeyLoginPage(BasePage):
         "切换另一号码登录": (MobileBy.ID, "com.chinasofti.rcs:id/change_to_smslogin"),
         "已阅读并同意复选框": (MobileBy.ID, "	com.cmic.college:id/agreement_checkbox"),
         "客户端头像": (MobileBy.ID, "com.cmic.college:id/profile_photo_one_login"),
-        "和飞信软件许可及服务协议": (MobileBy.ID, "com.cmic.college:id/agreement_text"),
+        "软件许可及服务协议": (MobileBy.ID, "com.cmic.college:id/agreement_text"),
         '提示内容': (MobileBy.ID, 'com.chinasofti.rcs:id/tv_content'),
+
+        "用户协议与隐私保护": (MobileBy.ID, "com.cmic.college:id/tvTitle"),
+        "同意": (MobileBy.ID, "com.cmic.college:id/btnConfirm"),
+        "不同意": (MobileBy.ID, "com.cmic.college:id/btnCancel"),
+
+        # "使用号码登录": (MobileBy.ID, "com.cmic.college:id/tvTitle"),
+        # "确定": (MobileBy.ID, "com.cmic.college:id/btnConfirm"),
+
     }
+
+    @TestLogger.log("getLocators")
+    def get_locators(self, locator):
+        return self.__locators[locator]
 
     @TestLogger.log()
     def is_on_this_page(self):
         """当前页面是否在一键登录页"""
-        el = self.get_elements(self.__locators['一键登录'])
-        if len(el) > 0:
+        # el = self.get_elements(self.__locators['一键登录'])
+        if self.is_text_present_c('一键登录', default_timeout=60):
             return True
         return False
 
@@ -38,7 +53,18 @@ class OneKeyLoginPage(BasePage):
     @TestLogger.log()
     def click_one_key_login(self):
         """点击一键登录"""
-        self.click_element(self.__locators["一键登录"])
+        # self.click_element(self.__locators["一键登录"])
+        self.click_text('一键登录')
+
+    @TestLogger.log()
+    def click_agree_user_aggrement(self):
+        """点击同意用户协议"""
+        self.click_element(self.__locators["同意"])
+
+    @TestLogger.log()
+    def click_agree_login_by_number(self):
+        """点击同意号码登录"""
+        self.click_element(self.__locators["确定"])
 
     @TestLogger.log()
     def click_sure_login(self):
@@ -97,7 +123,7 @@ class OneKeyLoginPage(BasePage):
             self.wait_until(
                 timeout=timeout,
                 auto_accept_permission_alert=auto_accept_alerts,
-                condition=lambda d: self._is_element_present(self.__class__.__locators["一键登录"])
+                condition=lambda d: self.is_text_present('一键登录')
             )
         except:
             message = "页面在{}s内，没有加载成功".format(timeout)
@@ -122,10 +148,11 @@ class OneKeyLoginPage(BasePage):
     def wait_for_tell_number_load(self, timeout=60, auto_accept_alerts=True):
         """等待一键登录页面的‘将以本机号码登录’变成 手机号码 """
         try:
+            cards = self.get_cards_c(CardType.CHINA_MOBILE)
             self.wait_until(
                 timeout=timeout,
                 auto_accept_permission_alert=auto_accept_alerts,
-                condition=lambda d: self._is_element_text_match(self.__locators["电话号码"], r"\d+", regex=True)
+                condition=lambda d: self.is_text_present_c('使用{}一键登录'.format((cards[0])))
             )
         except:
             message = "电话号码在{}s内，没有加载成功".format(timeout)
@@ -139,8 +166,8 @@ class OneKeyLoginPage(BasePage):
 
     @TestLogger.log()
     def click_license_agreement(self):
-        """点击和飞信软件许可及服务协议"""
-        self.click_element(self.__locators["和飞信软件许可及服务协议"])
+        """点击软件许可及服务协议"""
+        self.click_element(self.__locators["软件许可及服务协议"])
 
     @TestLogger.log()
     def wait_one_key_or_sms_login_page_load(self, timeout=20):

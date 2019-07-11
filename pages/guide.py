@@ -2,7 +2,7 @@ from appium.webdriver.common.mobileby import MobileBy
 
 from library.core.BasePage import BasePage
 from library.core.TestLogger import TestLogger
-
+import time
 
 class GuidePage(BasePage):
     """fg"""
@@ -15,7 +15,19 @@ class GuidePage(BasePage):
         '去体验': (MobileBy.ID, 'com.cmic.college:id/btn_update'),
         '不再提醒': (MobileBy.ID, 'com.cmic.college:id/select_checkbox'),
         '不去体验': (MobileBy.ID, 'com.cmic.college:id/btn_not_update'),
+        # 发现新版本页面
+        '暂不升级': (MobileBy.XPATH, '//*[@text="暂不升级"]'),
+        #权限页
+        '一键开启':(MobileBy.ID, 'com.cmic.college:id/btnConfirm'),
+        '禁止':(MobileBy.ID, 'com.android.packageinstaller:id/permission_deny_button'),
+        '始终允许': (MobileBy.ID, 'com.android.packageinstaller:id/permission_allow_button'),
+
     }
+
+    @TestLogger.log()
+    def click_cancel_update(self):
+        """点击不再提醒"""
+        self.click_element(self.__locators["暂不升级"], 25)
 
     @TestLogger.log()
     def click_the_checkbox(self):
@@ -31,6 +43,23 @@ class GuidePage(BasePage):
     def click_the_no_start_experience(self):
         """点击不去体验"""
         self.click_element(self.__locators["不去体验"])
+
+    @TestLogger.log()
+    def click_one_button_on(self):
+        """点击一键开启"""
+        if self.page_should_contain_text('一键开启'):
+            self.click_element(self.__class__.__locators['一键开启'])
+            time.sleep(2)
+
+    @TestLogger.log()
+    def click_always_allow(self):
+        """权限框-点击始终允许"""
+        self.click_text('始终允许')
+        time.sleep(2)
+        self.click_text('始终允许')
+        time.sleep(2)
+        self.click_text('始终允许')
+        time.sleep(8)
 
     @TestLogger.log()
     def is_on_the_first_guide_page(self):

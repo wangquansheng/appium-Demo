@@ -13,27 +13,27 @@ TARGET_APP = dict(
 
 # ======================= 移动CI环境手机配置 =======================
 AVAILABLE_DEVICES = {
-    'M960BDQN229CH--': {
+    'M960BDQN229CH': {
         "MODEL": SupportedModel.HUAWEI_P20,
-        "SERVER_URL": 'http://221.176.34.113:5000/wd/hub',
+        "SERVER_URL": 'http://192.168.200.111:4723/wd/hub',
         "DEFAULT_CAPABILITY": {
             "platformName": "Android",
-            "platformVersion": "6.0",
-            "deviceName": "8DF6R17526001515",
-            "udid": "8DF6R17526001515",
+            "platformVersion": "8.1.0",
+            "deviceName": "DRB5T18721004015",
+            "udid": "DRB5T18721004015",
             "automationName": "UiAutomator2",
             "newCommandTimeout": 600,
-            "appPackage": "com.chinasofti.rcs",
+            "appPackage": "com.cmic.college",
             "appActivity": "com.cmcc.cmrcs.android.ui.activities.WelcomeActivity",
         },
         'CARDS': [
             {
                 'TYPE': CardType.CHINA_MOBILE,
-                'CARD_NUMBER': '14775970982'
+                'CARD_NUMBER': '19876463626'
             },
         ]
     },
-    'M960BDQN229CH': {
+    'M960BDQN229CH--': {
         "MODEL": SupportedModel.MEIZU_PRO_6_PLUS,
         "SERVER_URL": 'http://192.168.200.130:4723/wd/hub',
         "DEFAULT_CAPABILITY": {
@@ -340,28 +340,28 @@ DEVICES_CONFIG_XIN = {
     # }
 }
 
-DEVICES_CONFIG_YYX = {
-    'M960BDQN229CH': {
-        "MODEL": SupportedModel.HUAWEI_P20,
-        "SERVER_URL": 'http://127.0.0.1:4723/wd/hub',
-        "DEFAULT_CAPABILITY": {
-            "platformName": "Android",
-            "platformVersion": "8.1.0",
-            "deviceName": "JUBNU18816112025",
-            "udid": "JUBNU18816112025",
-            "automationName": "UiAutomator2",
-            "newCommandTimeout": 600,
-            "appPackage": "com.chinasofti.rcs",
-            "appActivity": "com.cmcc.cmrcs.android.ui.activities.WelcomeActivity",
-        },
-        'CARDS': [
-            {
-                'TYPE': CardType.CHINA_MOBILE,
-                'CARD_NUMBER': '13537795364'
-            },
-        ]
-    },
-}
+# DEVICES_CONFIG_YYX = {
+#     'M960BDQN229CH': {
+#         "MODEL": SupportedModel.HUAWEI_P20,
+#         "SERVER_URL": 'http://127.0.0.1:4723/wd/hub',
+#         "DEFAULT_CAPABILITY": {
+#             "platformName": "Android",
+#             "platformVersion": "8.1.0",
+#             "deviceName": "JUBNU18816112025",
+#             "udid": "JUBNU18816112025",
+#             "automationName": "UiAutomator2",
+#             "newCommandTimeout": 600,
+#             "appPackage": "com.chinasofti.rcs",
+#             "appActivity": "com.cmcc.cmrcs.android.ui.activities.WelcomeActivity",
+#         },
+#         'CARDS': [
+#             {
+#                 'TYPE': CardType.CHINA_MOBILE,
+#                 'CARD_NUMBER': '13537795364'
+#             },
+#         ]
+#     },
+# }
 
 DEVICES_P20 = {
     'M960BDQN229CH': {
@@ -386,24 +386,137 @@ DEVICES_P20 = {
     },
 }
 
-DEVICES_CONFIG_YMS = {
+DEVICES_CONFIG_YMS2 = {
     'M960BDQN229CH': {
         "MODEL": SupportedModel.HUAWEI_P20,
         "SERVER_URL": 'http://127.0.0.1:4723/wd/hub',
         "DEFAULT_CAPABILITY": {
             "platformName": "Android",
-            "platformVersion": "8.1.0",
-            "deviceName": "DWT7N18614014715",
-            "udid": "DWT7N18614014715",
+            "platformVersion": "9",
+            "deviceName": "RKKDU18321000975",
+            "udid": "RKKDU18321000975",
             "automationName": "UiAutomator2",
             "newCommandTimeout": 600,
-            "appPackage": "com.chinasofti.rcs",
+            "appPackage": "com.cmic.college",
             "appActivity": "com.cmcc.cmrcs.android.ui.activities.WelcomeActivity",
         },
         'CARDS': [
             {
                 'TYPE': CardType.CHINA_MOBILE,
                 'CARD_NUMBER': '19849476421'
+            },
+        ]
+    },
+}
+
+DEVICES_CONFIG_nova3 = {
+    'M960BDQN229CH': {
+        "MODEL": SupportedModel.HUAWEI_P20,
+        "SERVER_URL": 'http://127.0.0.1:4723/wd/hub',
+        "DEFAULT_CAPABILITY": {
+            "platformName": "Android",
+            "platformVersion": "8.1.0",
+            "deviceName": "DRB5T18721004015",
+            "udid": "DRB5T18721004015",
+            "automationName": "UiAutomator2",
+            "newCommandTimeout": 600,
+            "appPackage": "com.cmic.college",
+            "appActivity": "com.cmcc.cmrcs.android.ui.activities.WelcomeActivity",
+        },
+        'CARDS': [
+            {
+                'TYPE': CardType.CHINA_MOBILE,
+                'CARD_NUMBER': '19876463626'
+            },
+        ]
+    },
+}
+
+DEVICES_CONFIG_YYX = {
+    'M960BDQN229CH': {
+        "MODEL": SupportedModel.HUAWEI_P20,
+        "SERVER_URL": 'http://127.0.0.1:4723/wd/hub',
+        "DEFAULT_CAPABILITY": {
+            "platformName": "Android",
+            "platformVersion": "8.1.0",
+            "deviceName": "JUBNU18816112025",
+            "udid": "JUBNU18816112025",
+            "automationName": "UiAutomator2",
+            "newCommandTimeout": 600,
+            "appPackage": "com.cmic.college",
+            "appActivity": "com.cmcc.cmrcs.android.ui.activities.WelcomeActivity",
+        },
+        'CARDS': [
+            {
+                'TYPE': CardType.CHINA_MOBILE,
+                'CARD_NUMBER': '19864759568'
+            },
+        ]
+    },
+}
+
+# DEVICES_CONFIG_WJH = {
+#     'M960BDQN229CH': {
+#         "MODEL": SupportedModel.HUAWEI_P20,
+#         "SERVER_URL": 'http://127.0.0.1:4723/wd/hub',
+#         "DEFAULT_CAPABILITY": {
+#             "platformName": "Android",
+#             "platformVersion": "8.0.0",
+#             "deviceName": "8GP4C18720026139",
+#             "udid": "8GP4C18720026139",
+#             "automationName": "UiAutomator2",
+#             "newCommandTimeout": 600,
+#             "appPackage": "com.chinasofti.rcs",
+#             "appActivity": "com.cmic.module_main.ui.activity.WelcomeActivity",
+#         },
+#         'CARDS': [
+#             {
+#                 'TYPE': CardType.CHINA_MOBILE,
+#                 'CARD_NUMBER': '14775451723'
+#             },
+#         ]
+#     },
+# }
+
+
+DEVICES_CONFIG_WJH = {
+    'M960BDQN229CH_N': {
+        "MODEL": SupportedModel.HUAWEI_P20,
+        "SERVER_URL": 'http://127.0.0.1:4723/wd/hub',
+        "DEFAULT_CAPABILITY": {
+            "platformName": "Android",
+            "platformVersion": "8.1.0",
+            "deviceName": "BGX4C18904013758",
+            "udid": "BGX4C18904013758",
+            "automationName": "UiAutomator2",
+            "newCommandTimeout": 600,
+            "appPackage": "com.cmic.college",
+            "appActivity": "com.cmcc.cmrcs.android.ui.activities.WelcomeActivity",
+        },
+        'CARDS': [
+            {
+                'TYPE': CardType.CHINA_MOBILE,
+                'CARD_NUMBER': '14775451723'
+            },
+        ]
+    },
+    'M960BDQN229CH': {
+        "MODEL": SupportedModel.HUAWEI_P20,
+        "SERVER_URL": 'http://127.0.0.1:4724/wd/hub',
+        "DEFAULT_CAPABILITY": {
+            "platformName": "Android",
+            "platformVersion": "8.0.0",
+            "deviceName": "8GP4C18720026139",
+            "udid": "8GP4C18720026139",
+            "automationName": "UiAutomator2",
+            "newCommandTimeout": 600,
+            "appPackage": "com.cmic.college",
+            "appActivity": "com.cmcc.cmrcs.android.ui.activities.WelcomeActivity",
+        },
+        'CARDS': [
+            {
+                'TYPE': CardType.CHINA_MOBILE,
+                'CARD_NUMBER': '13641490071'
             },
         ]
     },
