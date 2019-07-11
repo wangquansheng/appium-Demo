@@ -486,8 +486,8 @@ DEVICES_CONFIG_WJH = {
         "DEFAULT_CAPABILITY": {
             "platformName": "Android",
             "platformVersion": "8.1.0",
-            "deviceName": "LKX0218814000312",
-            "udid": "LKX0218814000312",
+            "deviceName": "BGX4C18904013758",
+            "udid": "BGX4C18904013758",
             "automationName": "UiAutomator2",
             "newCommandTimeout": 600,
             "appPackage": "com.cmic.college",
@@ -496,7 +496,7 @@ DEVICES_CONFIG_WJH = {
         'CARDS': [
             {
                 'TYPE': CardType.CHINA_MOBILE,
-                'CARD_NUMBER': '13641490071'
+                'CARD_NUMBER': '14775451723'
             },
         ]
     },
@@ -516,7 +516,7 @@ DEVICES_CONFIG_WJH = {
         'CARDS': [
             {
                 'TYPE': CardType.CHINA_MOBILE,
-                'CARD_NUMBER': '14775451723'
+                'CARD_NUMBER': '13641490071'
             },
         ]
     },
