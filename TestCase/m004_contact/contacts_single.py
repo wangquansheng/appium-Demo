@@ -519,6 +519,7 @@ class ContactlocalPage(TestCase):
                     or contact_page.is_text_present_c('对方已振铃', default_timeout=0.1):
                 flag = True
                 break
+            n -= 1
         try:
             self.assertEqual(flag, True)
         finally:
@@ -929,6 +930,7 @@ class ContactlocalPage(TestCase):
                     or contact_page.is_text_present_c('对方已振铃', default_timeout=0.1):
                 flag = True
                 break
+            n -= 1
         try:
             self.assertEqual(flag, True)
         finally:

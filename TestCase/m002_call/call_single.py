@@ -637,6 +637,7 @@ class CallPageTest(TestCase):
                     and call.is_text_present_c('12560', default_timeout=0.1)):
                 flag = True
                 break
+            n -= 1
         try:
             self.assertEqual(flag, True)
         finally:
