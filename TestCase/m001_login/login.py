@@ -1,9 +1,6 @@
-import re
 import time
-import unittest
 import warnings
 
-from selenium.common.exceptions import TimeoutException
 
 from library.core.TestCase import TestCase
 from library.core.common.simcardtype import CardType
@@ -11,7 +8,6 @@ from library.core.utils.applicationcache import current_mobile, current_driver, 
 from library.core.utils.testcasefilter import tags
 from pages.call.CallPage import CallPage
 
-from pages.guide import GuidePage
 from pages.login.LoginPage import OneKeyLoginPage
 from preconditions.BasePreconditions import LoginPreconditions
 
