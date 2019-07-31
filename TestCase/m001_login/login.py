@@ -1,14 +1,14 @@
 import time
 import warnings
 
-
 from library.core.TestCase import TestCase
 from library.core.common.simcardtype import CardType
 from library.core.utils.applicationcache import current_mobile, current_driver, switch_to_mobile
 from library.core.utils.testcasefilter import tags
-from pages.call.CallPage import CallPage
 
+from pages.call.CallPage import CallPage
 from pages.login.LoginPage import OneKeyLoginPage
+
 from preconditions.BasePreconditions import LoginPreconditions
 
 REQUIRED_MOBILES = {

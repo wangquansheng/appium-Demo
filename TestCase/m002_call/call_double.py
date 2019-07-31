@@ -1,5 +1,8 @@
 import threading
-import unittest
+import time
+import datetime
+import warnings
+import traceback
 
 from selenium.common.exceptions import TimeoutException
 
@@ -7,18 +10,14 @@ from library.core.TestLogger import TestLogger
 from library.core.common.simcardtype import CardType
 from library.core.utils.applicationcache import current_mobile, current_driver, switch_to_mobile
 from library.core.utils.testcasefilter import tags
+from library.core.TestCase import TestCase
+
 from pages.guide import GuidePage
 from pages.login.LoginPage import OneKeyLoginPage
 from pages.call.CallPage import CallPage
-from library.core.TestCase import TestCase
 from pages.components.Footer import FooterPage
-
-import time
-import datetime
-import warnings
-import traceback
-
 from pages.mine.MinePage import MinePage
+
 
 REQUIRED_MOBILES = {
     'Android-移动': 'M960BDQN229CH',

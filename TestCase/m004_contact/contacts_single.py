@@ -4,7 +4,6 @@ import time
 import warnings
 
 from preconditions.BasePreconditions import LoginPreconditions
-
 from selenium.common.exceptions import NoSuchElementException
 
 from library.core.TestCase import TestCase
