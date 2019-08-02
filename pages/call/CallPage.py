@@ -291,6 +291,9 @@ class CallPage(CommonPage):
         # 版本升级
         '暂不升级': (MobileBy.XPATH, '//*[@text="暂不升级"]'),
 
+        # 发送短消息返回
+        '短信发送返回': (MobileBy.ID, 'com.android.mms:id/bt_cancel'),
+
     }
 
     @TestLogger.log("getLocators")
@@ -517,21 +520,27 @@ class CallPage(CommonPage):
 
     @TestLogger.log('确保页面第一条视频通话记录为对方无密友圈')
     def make_sure_p2p_video_no_college(self):
+        time.sleep(0.5)
         self.click_locator_key('加号')
-        time.sleep(1)
+        time.sleep(1.5)
         self.click_locator_key('视频通话x')
+        time.sleep(0.5)
         self.input_text(self.__locators['视频通话_搜索'], '13800138005')
         self.get_elements(self.__locators['电话号码'])[0].click()
+        time.sleep(0.5)
         self.click_locator_key('呼叫')
         if self.is_element_already_exist_c('流量_提示内容'):
             self.set_checkbox_checked_c('流量_不再提醒')
             self.click_locator_key_c('流量_继续拨打')
+        time.sleep(0.5)
 
     @TestLogger.log('确保页面第一条视频通话记录为对方无密友圈')
     def make_sure_p2p_voice_no_college(self):
+        time.sleep(0.5)
         self.click_show_keyboard()
-        time.sleep(1)
+        time.sleep(1.5)
         self.input_text(self.__locators['键盘输入框'], '13800138005')
+        time.sleep(0.5)
         self.click_locator_key('拨号界面_呼叫')
         time.sleep(0.5)
         if self.is_text_present('请注意接听“飞信电话”来电，随后将自动呼叫对方。'):

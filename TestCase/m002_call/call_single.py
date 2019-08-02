@@ -240,9 +240,10 @@ class CallPageTest(TestCase):
         call.edit_clear()
         call.input_text_in_nickname(name)
         call.click_save_nickname()
-        time.sleep(2)
+        time.sleep(2.5)
         if not call.on_this_page_call_detail():
             return False
+        time.sleep(0.5)
         if name != call.get_nickname():
             return False
         return True
@@ -422,6 +423,7 @@ class CallPageTest(TestCase):
         except Exception:
             pass
         self.assertEqual(call.is_text_present_c('飞信电话', default_timeout=15), True)
+        time.sleep(0.5)
         call.click_tag_detail_first_element('飞信电话')
         time.sleep(1)
         self.assertEqual(call.on_this_page_call_detail(), True)
@@ -531,9 +533,10 @@ class CallPageTest(TestCase):
             call.set_not_reminders()
             time.sleep(1)
             call.click_locator_key('流量_继续拨打')
-        time.sleep(1)
+            time.sleep(1)
         if call.on_this_page_common('无密友圈_提示文本'):
             call.click_locator_key('无密友圈_取消')
+            time.sleep(0.5)
         time.sleep(3)
         self.assertEqual(call.on_this_page_call_detail(), True)
 
@@ -573,6 +576,10 @@ class CallPageTest(TestCase):
             call.click_locator_key('无密友圈_确定')
         time.sleep(3)
         self.assertEqual('com.android.mms' == Preconditions.get_current_activity_name(), True)
+        time.sleep(2)
+        if call.is_element_already_exist_c('短信发送返回'):
+            call.click_locator_key_c('短信发送返回')
+            time.sleep(1)
 
     @tags('ALL', 'CMCC', 'call')
     def test_call_00026(self):
@@ -588,6 +595,7 @@ class CallPageTest(TestCase):
         if call.is_exist_call_key():
             call.click_hide_keyboard()
             time.sleep(1)
+        time.sleep(0.5)
         call.make_sure_p2p_video_no_college()
         call.click_locator_key('无密友圈_取消')
         time.sleep(3)
@@ -665,6 +673,7 @@ class CallPageTest(TestCase):
         call.is_text_present_c('飞信电话', default_timeout=15)
         try:
             call.hang_up_the_call()
+            time.sleep(1)
         except Exception:
             pass
         self.assertEqual(call.is_text_present_c('飞信电话', default_timeout=15), True)
@@ -674,12 +683,12 @@ class CallPageTest(TestCase):
         # 1. 修改为中文
         name = '修改后的备注'
         self.assertEqual(self.check_modify_nickname(name), True)
-        call.click_locator_key('详情_视频')
-        time.sleep(1)
-        if call.is_element_already_exist('流量_不再提醒'):
-            call.set_not_reminders()
-            call.click_locator_key('流量_继续拨打')
-        time.sleep(2)
+        # call.click_locator_key('详情_视频')
+        # time.sleep(1)
+        # if call.is_element_already_exist('流量_不再提醒'):
+        #     call.set_not_reminders()
+        #     call.click_locator_key('流量_继续拨打')
+        #     time.sleep(2)
         comment = call.get_element_text('视频_备注')
         self.assertEqual(name == comment, True)
         # name = '大佬1'
@@ -704,6 +713,7 @@ class CallPageTest(TestCase):
         call.is_text_present_c('飞信电话', default_timeout=15)
         try:
             call.hang_up_the_call()
+            time.sleep(0.5)
         except Exception:
             pass
         self.assertEqual(call.is_text_present_c('飞信电话', default_timeout=15), True)
@@ -717,6 +727,10 @@ class CallPageTest(TestCase):
         activity_name = Preconditions.get_current_activity_name()
         print(activity_name)
         self.assertEqual('com.android.mms' == activity_name, True)
+        time.sleep(2)
+        if call.is_element_already_exist_c('短信发送返回'):
+            call.click_locator_key_c('短信发送返回')
+            time.sleep(1)
 
     @tags('ALL', 'CMCC', 'call')
     def test_call_00034(self):
@@ -1096,7 +1110,7 @@ class CallPageTest(TestCase):
         call = CallPage()
         call.wait_for_page_load()
         call.clear_all_record()
-        time.sleep(0.5)
+        time.sleep(1)
         # 呼出一个多方视频通话
         call.multiplayer_vedio_call()
         call.wait_for_page_call_load()
@@ -1108,8 +1122,10 @@ class CallPageTest(TestCase):
             time.sleep(10)
             if call.is_element_already_exist_c('挂断_多方通话'):
                 call.click_locator_key_c('挂断_多方通话')
+                time.sleep(0.5)
             if call.is_element_already_exist_c('挂断_多方通话_确定'):
                 call.click_locator_key_c('挂断_多方通话_确定')
+                time.sleep(0.5)
 
     @tags('ALL', 'CMCC', 'call')
     def test_call_000158(self):
@@ -1157,7 +1173,9 @@ class CallPageTest(TestCase):
                 if call.is_element_already_exist_c('无密友圈_提示文本'):
                     call.click_locator_key_c('无密友圈_取消')
                     time.sleep(3)
+        time.sleep(0.5)
         call.click_tag_detail_first_element('视频通话')
+        time.sleep(1)
         self.assertEqual(call.is_text_present_c('通话记录 (视频通话)'), True)
 
     @tags('ALL', 'CMCC', 'call')
@@ -1255,6 +1273,7 @@ class CallPageTest(TestCase):
         self.assertEqual(call.is_element_already_exist_c('收起键盘'), True)
         self.assertEqual(call.is_element_already_exist_c('拨号界面_呼叫'), True)
         self.assertEqual(call.is_element_already_exist_c('拨号界面_删除'), True)
+        time.sleep(1)
         call.edit_clear_c('键盘输入框')
         time.sleep(1)
         self.assertEqual(call.is_text_present_c('直接拨号或拼音搜索')
@@ -1276,11 +1295,14 @@ class CallPageTest(TestCase):
         if not call.is_exist_call_key():
             call.click_show_keyboard()
             time.sleep(1)
+        # 键盘输入框
+        time.sleep(1)
         call.input_text_c('键盘输入框', '12345666')
         time.sleep(1)
         call.swipe_direction_c('通话记录_记录区', 'up')
-        time.sleep(0.5)
+        time.sleep(1)
         call.swipe_direction_c('通话记录_记录区', 'down')
+        time.sleep(0.5)
         self.assertEqual(call.is_element_already_exist_c('拨号界面_呼叫') and
                          call.is_element_already_exist_c('收起键盘'), True)
         self.assertEqual(call.is_text_present_c('无该联系人'), True)
@@ -1479,6 +1501,7 @@ class CallPageTest(TestCase):
             call.click_show_keyboard()
             time.sleep(1)
         # 搜索
+        time.sleep(0.5)
         call.input_text_c('键盘输入框', '13800138001')
         time.sleep(1)
         call.get_elements_list_c('通话记录_号码')[0].click()
