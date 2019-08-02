@@ -210,6 +210,13 @@ class Preconditions(object):
         Preconditions.select_mobile(moudel)
         Preconditions.make_already_in_call_page()
 
+    @staticmethod
+    def disconnect_mobile(category):
+        """断开手机连接"""
+        client = switch_to_mobile(REQUIRED_MOBILES[category])
+        client.disconnect_mobile()
+        return client
+
 
 # noinspection PyBroadException
 class CallPageTest(TestCase):
@@ -228,6 +235,7 @@ class CallPageTest(TestCase):
         if call.get_network_status() != 6:
             call.set_network_status(6)
         time.sleep(2)
+        Preconditions.disconnect_mobile('Android-移动')
 
     @TestLogger.log('修改并验证备注是否修改成功')
     def check_modify_nickname(self, name):
@@ -425,7 +433,7 @@ class CallPageTest(TestCase):
         self.assertEqual(call.is_text_present_c('飞信电话', default_timeout=15), True)
         time.sleep(0.5)
         call.click_tag_detail_first_element('飞信电话')
-        time.sleep(1)
+        time.sleep(2)
         self.assertEqual(call.on_this_page_call_detail(), True)
         # 单击左上角返回按钮
         time.sleep(0.5)
@@ -674,7 +682,7 @@ class CallPageTest(TestCase):
             call.click_hide_keyboard()
             time.sleep(1)
         call.make_sure_p2p_voice_no_college()
-        call.is_text_present_c('飞信电话', default_timeout=15)
+        # call.is_text_present_c('飞信电话', default_timeout=15)
         try:
             call.hang_up_the_call()
         except Exception:
@@ -1060,6 +1068,10 @@ class CallPageTest(TestCase):
         # 确保有飞信电话
         if not call.is_text_present_c('飞信电话'):
             call.make_sure_p2p_voice_no_college()
+            try:
+                call.hang_up_the_call()
+            except Exception:
+                pass
         call.wait_for_page_c('通话', max_wait_time=60)
         time.sleep(2)
         self.assertEqual(call.is_text_present_c('[飞信电话]'), True)
@@ -1089,16 +1101,23 @@ class CallPageTest(TestCase):
         call.wait_for_page_load()
         # 清空以前的通话记录
         call.clear_all_record()
-        time.sleep(0.5)
+        time.sleep(1)
         # 保证页面只有一条通话记录
         call.make_sure_p2p_voice_no_college()
+        try:
+            call.hang_up_the_call()
+            time.sleep(1)
+        except Exception:
+            pass
         # 等待通话页面加载
         call.is_text_present_c('飞信电话', default_timeout=15)
         time.sleep(2)
         if call.is_element_already_exist_c('通话类型标签', default_timeout=8):
             self.assertEqual('[飞信电话]' == call.get_element_text_c('通话类型标签'), True)
+            time.sleep(0.5)
         if call.is_element_already_exist_c('搜索_电话显示', default_timeout=8):
             self.assertEqual('北京 移动' == call.get_element_text_c('通话记录_归属地'), True)
+            time.sleep(0.5)
 
     @tags('ALL', 'CMCC', 'call')
     def test_call_000156(self):
@@ -1672,6 +1691,10 @@ class CallPageTest(TestCase):
         time.sleep(0.5)
         if not call.is_text_present_c('飞信电话'):
             call.make_sure_p2p_voice_no_college()
+            try:
+                call.hang_up_the_call()
+            except Exception:
+                pass
         call.wait_for_page_c('通话', max_wait_time=60)
         time.sleep(2)
         self.assertEqual(call.is_text_present_c('[飞信电话]'), True)
@@ -1706,6 +1729,10 @@ class CallPageTest(TestCase):
         time.sleep(0.5)
         # 保证页面只有一条通话记录
         call.make_sure_p2p_voice_no_college()
+        try:
+            call.hang_up_the_call()
+        except Exception:
+            pass
         # 等待通话页面加载
         call.wait_for_page_call_load()
         time.sleep(2)

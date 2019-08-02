@@ -6,6 +6,7 @@ import warnings
 from preconditions.BasePreconditions import LoginPreconditions
 from selenium.common.exceptions import NoSuchElementException
 
+from library.core.TestLogger import TestLogger
 from library.core.TestCase import TestCase
 from library.core.utils.applicationcache import current_mobile, current_driver, switch_to_mobile
 from library.core.utils.testcasefilter import tags
@@ -59,6 +60,13 @@ class Preconditions(LoginPreconditions):
         """后台运行"""
         current_mobile().press_home_key()
 
+    @staticmethod
+    def disconnect_mobile(category):
+        """断开手机连接"""
+        client = switch_to_mobile(REQUIRED_MOBILES[category])
+        client.disconnect_mobile()
+        return client
+
 
 # noinspection PyBroadException
 class ContactlocalPage(TestCase):
@@ -78,6 +86,10 @@ class ContactlocalPage(TestCase):
         contact.permission_box_processing()
         contact.remove_mask_c(1)
         time.sleep(1)
+
+    @TestLogger.log('执行TearDown')
+    def default_tearDown(self):
+        Preconditions.disconnect_mobile('Android-移动')
 
     @tags('ALL', 'CMCC', 'contact')
     def test_member_001(self):
