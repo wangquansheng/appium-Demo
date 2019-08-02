@@ -475,9 +475,10 @@ class CallPageTest(TestCase):
         if call.is_exist_call_key():
             call.click_hide_keyboard()
             time.sleep(1)
+        time.sleep(0.5)
         call.make_sure_have_p2p_vedio_record()
         call.click_tag_detail_first_element('视频通话')
-        time.sleep(1)
+        time.sleep(2)
         self.assertEqual(call.on_this_page_call_detail(), True)
         # 1. 修改为中文
         name = 'select now()'
@@ -527,6 +528,7 @@ class CallPageTest(TestCase):
         time.sleep(2)
         self.assertEqual(call.on_this_page_call_detail(), True)
         # 1. 点击视频通话按钮
+        time.sleep(0.5)
         call.click_locator_key('详情_视频')
         time.sleep(1)
         if call.on_this_page_flow():
@@ -539,6 +541,7 @@ class CallPageTest(TestCase):
             time.sleep(0.5)
         time.sleep(3)
         self.assertEqual(call.on_this_page_call_detail(), True)
+        time.sleep(0.5)
 
     @tags('ALL', 'CMCC', 'call')
     def test_call_00025(self):
@@ -1135,12 +1138,14 @@ class CallPageTest(TestCase):
         call.wait_for_page_load()
         if call.is_on_this_page():
             call.click_show_keyboard()
-        time.sleep(1)
+            time.sleep(1)
         # 向左滑动
+        time.sleep(0.5)
         call.page_left()
         # 判断滑动后是否还在此页面
         self.assertEqual(call.is_exist_call_key(), True)
         # 向右滑动
+        time.sleep(0.5)
         call.page_right()
         # 判断滑动后是否还在此页面
         self.assertEqual(call.is_exist_call_key(), True)
@@ -1660,22 +1665,26 @@ class CallPageTest(TestCase):
                 call.click_locator_key_c('流量_继续拨打')
             if call.is_element_already_exist_c('无密友圈_提示文本'):
                 call.click_locator_key_c('无密友圈_取消')
+                time.sleep(0.5)
         call.wait_for_page_c('通话', max_wait_time=60)
         time.sleep(2)
         self.assertEqual(call.is_text_present_c('[视频通话]'), True)
         # 确保有飞信电话
+        time.sleep(0.5)
         if not call.is_text_present_c('飞信电话'):
             call.make_sure_p2p_voice_no_college()
         call.wait_for_page_c('通话', max_wait_time=60)
         time.sleep(2)
         self.assertEqual(call.is_text_present_c('[飞信电话]'), True)
         # 确保有多方视频通话记录
+        time.sleep(0.5)
         if not call.is_text_present_c('多方视频'):
             call.make_sure_have_multiplayer_vedio_record()
         call.wait_for_page_c('通话', max_wait_time=60)
         time.sleep(2)
         self.assertEqual(call.is_text_present_c('[多方视频]'), True)
         # 确保有多方电话
+        time.sleep(0.5)
         if not call.is_text_present_c('多方电话'):
             call.make_sure_have_multi_voice_record()
         call.wait_for_page_c('通话', max_wait_time=60)
