@@ -428,8 +428,10 @@ class CallPageTest(TestCase):
         time.sleep(1)
         self.assertEqual(call.on_this_page_call_detail(), True)
         # 单击左上角返回按钮
+        time.sleep(0.5)
         call.click_detail_back()
         call.wait_for_page_load()
+        time.sleep(0.5)
         self.assertEqual(call.is_on_this_page(), True)
 
     @tags('ALL', 'CMCC', 'call')
@@ -447,7 +449,6 @@ class CallPageTest(TestCase):
         call.is_text_present_c('飞信电话', default_timeout=15)
         try:
             call.hang_up_the_call()
-
         except Exception:
             pass
         self.assertEqual(call.is_text_present_c('飞信电话', default_timeout=15), True)
@@ -676,7 +677,6 @@ class CallPageTest(TestCase):
         call.is_text_present_c('飞信电话', default_timeout=15)
         try:
             call.hang_up_the_call()
-            time.sleep(1)
         except Exception:
             pass
         self.assertEqual(call.is_text_present_c('飞信电话', default_timeout=15), True)
@@ -716,7 +716,6 @@ class CallPageTest(TestCase):
         call.is_text_present_c('飞信电话', default_timeout=15)
         try:
             call.hang_up_the_call()
-            time.sleep(0.5)
         except Exception:
             pass
         self.assertEqual(call.is_text_present_c('飞信电话', default_timeout=15), True)
@@ -1780,3 +1779,4 @@ class CallPageTest(TestCase):
         call.clear_all_record()
         time.sleep(0.5)
         self.assertEqual(call.is_text_present_c('打电话不花钱'), True)
+

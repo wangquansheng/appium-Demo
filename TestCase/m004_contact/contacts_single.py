@@ -358,35 +358,6 @@ class ContactlocalPage(TestCase):
         self.assertEqual(contact_page.is_element_already_exist_c('联系人_备注内容', default_timeout=30), True)
         self.assertEqual(name == contact_page.get_element_text_c('联系人_备注内容'), True)
 
-    # @tags('ALL', 'CMCC')
-    # def test_member_0011(self):
-    #     """
-    #         1、联网正常
-    #         2、已登陆客户端
-    #         3、在家庭网-家庭网详情页面
-    #         1、点击福利电话说明规则字体按钮
-    #         2、点击返回按钮"	"1、跳转至电话规则H5页面
-    #         2、返回家庭网详情页面
-    #     """
-    #     contact_page = ContactsPage()
-    #     # 确保在通讯录界面
-    #     self.assertEqual(contact_page.is_element_already_exist_c('通讯录_标题'), True)
-    #     # 展开家庭网
-    #     if not contact_page.if_home_net_expand():
-    #         contact_page.click_locator_key_c('家庭网_展开_收起')
-    #         time.sleep(1)
-    #     # 点击家庭网第一个联系人
-    #     contact_page.get_elements_list_c('联系人号码')[0].click()
-    #     time.sleep(3)
-    #     # 验证规则
-    #     contact_page.click_locator_key_c('联系人_规则')
-    #     time.sleep(1)
-    #     self.assertEqual(contact_page.is_element_already_exist_c('联系人_规则说明', default_timeout=20), True)
-    #     time.sleep(1)
-    #     contact_page.click_locator_key_c('联系人_规则返回')
-    #     time.sleep(0.5)
-    #     self.assertEqual(contact_page.is_element_already_exist_c('联系人_添加桌面'), True)
-
     @tags('ALL', 'CMCC', 'contact')
     def test_member_0011(self):
         """
@@ -400,9 +371,9 @@ class ContactlocalPage(TestCase):
         # 确保在通讯录界面
         self.assertEqual(contact_page.is_element_already_exist_c('通讯录_标题'), True)
         # 展开家庭网
-        if not contact_page.if_home_net_expand():
-            contact_page.click_locator_key_c('家庭网_展开_收起')
-            time.sleep(1)
+        # if not contact_page.if_home_net_expand():
+        contact_page.click_locator_key_c('家庭网_展开_收起')
+        time.sleep(1)
         # 点击家庭网第一个联系人
         contact_page.get_elements_list_c('联系人号码')[0].click()
         time.sleep(3)
@@ -461,7 +432,6 @@ class ContactlocalPage(TestCase):
         finally:
             try:
                 contact_page.hang_up_the_call()
-                time.sleep(0.5)
             except Exception:
                 pass
 
@@ -508,7 +478,6 @@ class ContactlocalPage(TestCase):
         finally:
             try:
                 contact_page.hang_up_the_call()
-                time.sleep(0.5)
             except Exception:
                 pass
 
@@ -655,9 +624,9 @@ class ContactlocalPage(TestCase):
         # 确保在通讯录界面
         self.assertEqual(contact_page.is_element_already_exist_c('通讯录_标题', default_timeout=20), True)
         # 展开家庭网
-        if not contact_page.if_home_net_expand():
-            contact_page.click_locator_key_c('家庭网_展开_收起')
-            time.sleep(1)
+        # if not contact_page.if_home_net_expand():
+        contact_page.click_locator_key_c('家庭网_展开_收起')
+        time.sleep(1)
         # 点击家庭网第一个联系人
         contact_page.click_locator_key_c('家庭网_管理')
         time.sleep(1)

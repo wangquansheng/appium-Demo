@@ -127,6 +127,7 @@ class MineTest(TestCase):
         Preconditions.select_mobile('Android-移动')
         current_mobile().hide_keyboard_if_display()
         Preconditions.make_already_in_me_page()
+        time.sleep(1)
 
     @tags('ALL', 'CMCC', 'me')
     def test_me_0001(self):

@@ -561,7 +561,8 @@ class BasePage(object):
     @TestLogger.log('挂断电话')
     def hang_up_the_call(self):
         """挂断电话"""
-        return self.mobile.hang_up_the_call()
+        self.mobile.hang_up_the_call()
+        time.sleep(1)
 
     @TestLogger.log('接听电话')
     def pick_up_the_call(self):

@@ -481,7 +481,6 @@ class CallPage(CommonPage):
         time.sleep(10)
         try:
             self.hang_up_the_call()
-            time.sleep(0.5)
         except Exception:
             pass
 
