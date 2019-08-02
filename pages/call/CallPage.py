@@ -383,6 +383,7 @@ class CallPage(CommonPage):
 
     @TestLogger.log("点击包含文本的第一个详细信息(i)元素")
     def click_tag_detail_first_element(self, text):
+        time.sleep(0.5)
         elements_list = self.get_elements(self.__locators['通话类型标签'])
         detail_list = self.get_elements(self.__locators['联系人_详情图标'])
         text_list = [i.text for i in elements_list]
@@ -419,11 +420,14 @@ class CallPage(CommonPage):
     @TestLogger.log('拨打并挂断一个点对点视频通话')
     def point2point_vedio_call(self):
         self.click_locator_key('加号')
+        time.sleep(0.5)
         self.click_locator_key('视频通话')
+        time.sleep(0.5)
         self.click_locator_key('视频通话_第一个联系人')
         time.sleep(0.5)
         if self.is_toast_exist('不能选择本机号码', timeout=8):
             self.click_locator_key('视频通话_第二个联系人')
+            time.sleep(0.5)
         self.click_locator_key('呼叫')
         time.sleep(1)
         if self.on_this_page_common('流量_继续拨打'):
@@ -433,6 +437,7 @@ class CallPage(CommonPage):
         time.sleep(5)
         if self.on_this_page_common('挂断'):
             self.click_locator_key('挂断')
+            time.sleep(0.5)
 
     @TestLogger.log('拨打并挂断一个多方视频通话')
     def multiplayer_vedio_call(self):
@@ -456,6 +461,7 @@ class CallPage(CommonPage):
         time.sleep(2)
         if self.is_element_already_exist('多方电话_返回'):
             self.click_locator_key('多方电话_返回')
+        time.sleep(0.5)
 
     @TestLogger.log('拨打并挂断一个多方电话')
     def multiplayer_voice_call(self):
@@ -475,6 +481,7 @@ class CallPage(CommonPage):
         time.sleep(10)
         try:
             self.hang_up_the_call()
+            time.sleep(0.5)
         except Exception:
             pass
 
