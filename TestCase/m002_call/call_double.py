@@ -56,6 +56,13 @@ class Preconditions(object):
         return client
 
     @staticmethod
+    def disconnect_mobile(category):
+        """断开手机连接"""
+        client = switch_to_mobile(REQUIRED_MOBILES[category])
+        client.disconnect_mobile()
+        return client
+
+    @staticmethod
     def select_assisted_mobile2():
         """切换到单卡、异网卡Android手机 并启动应用"""
         switch_to_mobile(REQUIRED_MOBILES['辅助机2'])
@@ -257,6 +264,8 @@ class CallPageTest(TestCase):
         if call.get_network_status() != 6:
             call.set_network_status(6)
         time.sleep(2)
+        Preconditions.disconnect_mobile('Android-移动')
+        Preconditions.disconnect_mobile('Android-移动-N')
 
     @TestLogger.log('切换手机，接听视频电话')
     def to_pick_phone_video(self):
@@ -362,9 +371,6 @@ class CallPageTest(TestCase):
         call = CallPage()
         call.wait_for_page_load()
         # 判断如果键盘已拉起，则收起键盘
-        if call.is_exist_call_key():
-            call.click_hide_keyboard()
-            time.sleep(1)
         if len(call.get_elements_list('视频通话')) <= 0:
             # 初始化被叫手机
             Preconditions.initialize_class('Android-移动-N')
@@ -380,7 +386,8 @@ class CallPageTest(TestCase):
             call.click_locator_key('视频界面_挂断')
             # 切换主叫手机
             Preconditions.select_mobile('Android-移动')
-        time.sleep(1)
+        # call.wait_for_page_call_load()
+        time.sleep(5)
         call.click_tag_detail_first_element('视频通话')
         # 判断
         time.sleep(1)
@@ -500,7 +507,7 @@ class CallPageTest(TestCase):
         finally:
             # 切换被叫手机
             Preconditions.select_mobile('Android-移动-N')
-            call.set_network_status(0)
+            call.set_network_status(6)
 
     @tags('ALL', 'CMCC_double', 'call')
     def test_call_00029(self):
@@ -842,8 +849,8 @@ class CallPageTest(TestCase):
         """
         call = CallPage()
         try:
-            call.tap_coordinate([(100, 100), (100, 110), (100, 120)])
-            time.sleep(1)
+            # call.tap_coordinate([(100, 100), (100, 110), (100, 120)])
+            time.sleep(6)
             call.tap_screen_three_point('视频界面_时长')
             self.assertEqual(call.is_element_already_exist('视频界面_静音'), True)
             # time.sleep(12)
@@ -878,7 +885,11 @@ class CallPageTest(TestCase):
             traceback.print_exc()
             return False
         finally:
-            call.click_locator_key('语音界面_挂断')
+            try:
+                call.click_locator_key('语音界面_挂断')
+            except Exception:
+                traceback.print_exc()
+                pass
 
     @tags('ALL', 'CMCC_double', 'call')
     def test_call_00053(self):
@@ -1137,7 +1148,7 @@ class CallPageTest(TestCase):
         """
         call = CallPage()
         try:
-            time.sleep(3)
+            time.sleep(6)
             call.tap_screen_three_point('视频界面_时长')
             self.assertEqual('false' == call.get_one_element('视频界面_静音').get_attribute('selected'), True)
             call.tap_screen_three_point('视频界面_时长')
@@ -1679,10 +1690,10 @@ class CallPageTest(TestCase):
     def check_video_call_00069(self):
         call = CallPage()
         try:
-            count = 5
+            count = 150
             while count > 0:
                 # 持续时间太短，不一定能捕捉到
-                if call.is_toast_exist('对方拒绝了你的通话邀请', timeout=3):
+                if call.is_toast_exist('对方拒绝了你的通话邀请', timeout=0.1):
                     print('已检测到提示文本，执行成功', datetime.datetime.now().date().strftime('%Y-%m-%d'),
                           datetime.datetime.now().time().strftime("%H-%M-%S-%f"))
                     return True
@@ -1732,7 +1743,7 @@ class CallPageTest(TestCase):
         """
         call = CallPage()
         try:
-            time.sleep(3)
+            time.sleep(6)
             call.tap_screen_three_point('视频界面_时长')
             self.assertEqual('false' == call.get_one_element('视频界面_静音').get_attribute('selected'), True)
             call.tap_screen_three_point('视频界面_时长')
@@ -1744,16 +1755,6 @@ class CallPageTest(TestCase):
             call.tap_screen_three_point('视频界面_时长')
             call.click_locator_key('视频界面_转为语音')
             self.assertEqual(call.is_toast_exist('已切为语音通话，请使用听筒接听'), True)
-            # call.click_locator_key('语音界面_转为视频')
-            # # 主叫
-            # Preconditions.select_mobile('Android-移动')
-            # call.click_locator_key('切视频_接受')
-            # time.sleep(1)
-            # call.tap_screen_three_point('视频界面_时长')
-            # call.click_locator_key('视频界面_转为语音')
-            # # 被叫
-            # Preconditions.select_mobile('Android-移动-N')
-            # self.assertEqual(call.is_toast_exist('对方切为语音通话，请使用听筒接听'), True)
             return True
         except Exception:
             traceback.print_exc()
@@ -1795,7 +1796,7 @@ class CallPageTest(TestCase):
         """
         call = CallPage()
         try:
-            time.sleep(3)
+            time.sleep(6)
             call.tap_screen_three_point('视频界面_时长')
             self.assertEqual('false' == call.get_one_element('视频界面_静音').get_attribute('selected'), True)
             call.tap_screen_three_point('视频界面_时长')
@@ -1848,7 +1849,7 @@ class CallPageTest(TestCase):
         """
         call = CallPage()
         try:
-            time.sleep(3)
+            time.sleep(6)
             call.tap_screen_three_point('视频界面_时长')
             self.assertEqual('false' == call.get_one_element('视频界面_静音').get_attribute('selected'), True)
             call.tap_screen_three_point('视频界面_时长')
@@ -1901,7 +1902,7 @@ class CallPageTest(TestCase):
         """
         call = CallPage()
         try:
-            time.sleep(3)
+            time.sleep(6)
             call.tap_screen_three_point('视频界面_时长')
             self.assertEqual('false' == call.get_one_element('视频界面_静音').get_attribute('selected'), True)
             call.tap_screen_three_point('视频界面_时长')
@@ -1972,7 +1973,7 @@ class CallPageTest(TestCase):
         """
         call = CallPage()
         try:
-            time.sleep(3)
+            time.sleep(6)
             call.tap_screen_three_point('视频界面_时长')
             self.assertEqual('false' == call.get_one_element('视频界面_静音').get_attribute('selected'), True)
             call.tap_screen_three_point('视频界面_时长')
@@ -2024,7 +2025,7 @@ class CallPageTest(TestCase):
         """
         call = CallPage()
         try:
-            time.sleep(3)
+            time.sleep(6)
             call.tap_screen_three_point('视频界面_时长')
             self.assertEqual('false' == call.get_one_element('视频界面_静音').get_attribute('selected'), True)
             call.tap_screen_three_point('视频界面_时长')
@@ -2076,7 +2077,7 @@ class CallPageTest(TestCase):
         """
         call = CallPage()
         try:
-            time.sleep(3)
+            time.sleep(6)
             call.tap_screen_three_point('视频界面_时长')
             call.click_locator_key('视频界面_挂断')
             self.assertEqual(call.is_toast_exist('通话结束'), True)
@@ -2790,16 +2791,19 @@ class CallPageTest(TestCase):
         """
         call = CallPage()
         try:
+            time.sleep(6)
             call.tap_screen_three_point_element_c('视频界面_时长')
             self.assertEqual('true' == call.get_select_value_c('视频界面_免提'), True)
-            time.sleep(3)
             return True
         except Exception:
             traceback.print_exc()
             return False
         finally:
-            call.tap_screen_three_point_element_c('视频界面_时长')
-            call.click_locator_key_c('视频界面_挂断')
+            try:
+                call.tap_screen_three_point_element_c('视频界面_时长')
+                call.click_locator_key_c('视频界面_挂断')
+            except Exception:
+                pass
 
     @tags('ALL', 'CMCC_double', 'call')
     def test_call_000104(self):
@@ -3174,7 +3178,7 @@ class CallPageTest(TestCase):
         call.input_text_c('键盘输入框', cards)
         time.sleep(1)
         self.assertEqual(call.is_element_already_exist_c('拨号界面_详情'), True)
-        call.get_some_elements_c('拨号界面_详情')[0].clicl()
+        call.get_some_elements_c('拨号界面_详情')[0].click()
         time.sleep(1)
         self.assertEqual(call.is_text_present_c('删除'), False)
 
@@ -3633,8 +3637,19 @@ class CallPageTest(TestCase):
         call.pick_up_multi_video(cards)
         # 切换到被叫手机
         Preconditions.select_mobile('Android-移动-N')
-        call.click_locator_key_c('视频通话_挂断')
-        time.sleep(3)
+        time.sleep(5)
+        try:
+            if call.is_text_present_c('暂不开启'):
+                call.click_locator_key('暂不开启')
+            # if call.is_element_already_exist('多方视频_挂断'):
+            #     call.click_locator_key('多方视频_挂断')
+                # call.click_locator_key('确定')
+            call.click_locator_key_c('视频通话_挂断')
+            time.sleep(3)
+            # call.click_back()
+            # time.sleep(1)
+        except Exception:
+            pass
         print('--->检查点4<====================')
         self.assertEqual(call.is_text_present_c('多方视频'), False)
         # 切换到主叫手机
@@ -3646,7 +3661,7 @@ class CallPageTest(TestCase):
         # 呼出一个多方电话
         call.clear_all_record()
         call.make_sure_have_multi_voice_record()
-        time.sleep(1)
+        time.sleep(5)
         print('--->检查点5<====================')
         self.assertEqual(call.is_text_present_c('多方电话'), True)
 
@@ -3671,7 +3686,7 @@ class CallPageTest(TestCase):
         Preconditions.select_mobile('Android-移动')
         # 拨打视频电话 # 请先接听来电，随后将自动呼叫对方
         call.click_show_keyboard()
-        call.input_text_c('键盘输入框', cards)
+        call.input_text_c('键盘输入框', '13800138000')
         call.click_locator_key_c('拨号界面_呼叫')
         flag = False
         try:
@@ -3683,8 +3698,14 @@ class CallPageTest(TestCase):
                     break
             self.assertEqual(flag, True)
             time.sleep(5)
-            self.assertEqual(call.is_text_present_c('飞信电话', default_timeout=0.5)
-                             and call.is_text_present_c('12560', default_timeout=0.5), True)
+            flag2 = False
+            for i in range(20):
+                flag2 = call.is_text_present_c('飞信电话', default_timeout=0.1) \
+                             and call.is_text_present_c('12560', default_timeout=0.1)
+                if flag2:
+                    break
+
+            self.assertEqual(flag2, True)
         finally:
             try:
                 call.hang_up_the_call()
