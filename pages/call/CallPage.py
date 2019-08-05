@@ -349,7 +349,7 @@ class CallPage(CommonPage):
 
     @TestLogger.log("点击locators对应的元素")
     def click_locator_key(self, locator):
-        self.click_element(self.__locators[locator])
+        self.click_element(self.__locators[locator], default_timeout=1)
 
     @TestLogger.log("当前页面是否包含此文本")
     def check_text_exist(self, text):
@@ -862,7 +862,7 @@ class CallPage(CommonPage):
     @TestLogger.log('获取指定运营商类型的手机卡（不传类型返回全部配置的手机卡）')
     def get_cards(self, card_type):
         """返回指定类型卡手机号列表"""
-        return current_mobile().get_cards(card_type)
+        return current_mobile().get_cards(card_type)[0]
 
     @TestLogger.log('选择第n个联系人')
     def select_contact_more(self, number, text):
@@ -898,19 +898,22 @@ class CallPage(CommonPage):
 
     @TestLogger.log('拨打一个点对点视频通话，指定号码')
     def pick_up_p2p_video(self, cards):
-        time.sleep(0.5)
-        self.click_locator_key('加号')
-        time.sleep(0.5)
-        self.click_locator_key('视频通话')
-        # self.click_locator_key('视频通话_搜索')
-        self.input_text(self.__locators['视频通话_搜索'], cards)
-        self.get_elements(self.__locators['电话号码'])[0].click()
-        self.click_locator_key('呼叫')
-        time.sleep(0.5)
-        if self.on_this_page_common('流量_继续拨打'):
-            self.click_locator_key('流量_继续拨打')
-        if self.is_text_present('对方还未使用密友圈，喊他一起来免流量视频通话。'):
-            self.click_locator_key('无密友圈_取消')
+        try:
+            time.sleep(0.5)
+            self.click_locator_key('加号')
+            time.sleep(0.5)
+            self.click_locator_key('视频通话')
+            # self.click_locator_key('视频通话_搜索')
+            self.input_text(self.__locators['视频通话_搜索'], cards)
+            self.get_elements(self.__locators['电话号码'])[0].click()
+            self.click_locator_key('呼叫')
+            time.sleep(0.5)
+            if self.on_this_page_common('流量_继续拨打'):
+                self.click_locator_key('流量_继续拨打')
+            if self.is_text_present('对方还未使用密友圈，喊他一起来免流量视频通话。'):
+                self.click_locator_key('无密友圈_取消')
+        except Exception:
+            traceback.print_exc()
 
     @TestLogger.log('拨打多人视频通话，包含一个指定号码')
     def pick_up_multi_video(self, cards):
@@ -971,6 +974,10 @@ class CallPage(CommonPage):
     @TestLogger.log('视频通话_接听')
     def pick_up_video_call(self):
         self.click_locator_key('视频通话_接听')
+
+    @TestLogger.log('视频通话_接听')
+    def hang_up_video_call(self):
+        self.click_locator_key('视频通话_挂断')
 
     @TestLogger.log('判断元素是否存在')
     def is_element_already_exist(self, locator, default_timeout=5, auto_accept_permission_alert=True):

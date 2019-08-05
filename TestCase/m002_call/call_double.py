@@ -1,3 +1,4 @@
+import multiprocessing
 import threading
 import time
 import datetime
@@ -2133,30 +2134,148 @@ class CallPageTest(TestCase):
             traceback.print_exc()
             return False
 
+    # @tags('ALL', 'CMCC_double', 'call')
+    # def test_call_00079(self):
+    #     """
+    #         1、网络正常
+    #         2、已登录客户端
+    #         3、当前页面在视频通话邀请页面
+    #         4、被叫方接到申请后点击“挂断”
+    #         5、对方拒绝接听时，弹出toast提示，“对方拒绝了你的通话邀请” toast弹出的位置在底部“挂断”按钮之上。
+    #     """
+    #     call = CallPage()
+    #     call.wait_for_page_load()
+    #     # 初始化被叫手机
+    #     Preconditions.initialize_class('Android-移动-N')
+    #     # 获取手机号码
+    #     cards = call.get_cards(CardType.CHINA_MOBILE)[0]
+    #     # 切换主叫手机
+    #     Preconditions.select_mobile('Android-移动')
+    #     # 拨打视频电话
+    #     call.pick_up_p2p_video(cards)
+    #     # 切换到被叫手机
+    #     Preconditions.select_mobile('Android-移动-N')
+    #     call.click_locator_key('视频通话_挂断')
+    #     Preconditions.select_mobile('Android-移动')
+    #     self.assertEqual(call.is_toast_exist('对方拒绝了你的通话邀请'), True)
+
+    def setUp_test_call_00079(self):
+        warnings.simplefilter('ignore', ResourceWarning)
+
+    def call_00079_01(self, dic):
+        try:
+            # 主叫手机初始化
+            Preconditions.initialize_class('Android-移动')
+            call = CallPage()
+            call.wait_for_page_load()
+            # 循环检测60次 * 2s
+            n = 1 * 60
+            while n > 0:
+                if 'cards' not in dic.keys() or dic['cards'] == '':
+                    n -= 1
+                    # 2秒检测一次
+                    time.sleep(2)
+                    continue
+                else:
+                    print('已经获取电话号码')
+                    # 拨打电话
+                    call.pick_up_p2p_video(dic['cards'])
+                    print('打电话了')
+                    # 执行成功，写入成功标志
+                    dic['called'] = True
+                    dic['res1'] = 'success'
+                    break
+            else:
+                # 超时抛出异常
+                raise
+            c = 2 * 60
+            while c > 0:
+                print('%d:判断---->对方拒绝了你的通话邀请' % c)
+                if not call.is_toast_exist('对方拒绝了你的通话邀请', timeout=0.1):
+                    c -= 1
+                    # time.sleep(0.1)
+                else:
+                    # 执行成功，写入成功标志
+                    dic['res1'] = 'success'
+                    break
+            else:
+                raise
+        except Exception:
+            # 出错捕获异常
+            traceback.print_exc()
+            # 写入失败标志
+            dic['res1'] = 'fail'
+
+    def call_00079_02(self, dic):
+        try:
+            # 初始化被叫手机
+            Preconditions.initialize_class('Android-移动-N')
+            call = CallPage()
+            call.wait_for_page_load()
+            # 获取手机号码
+            cards = call.get_cards_c(CardType.CHINA_MOBILE)
+            print(cards)
+            # 给共享变量中写入变量参数
+            dic['cards'] = cards
+            # 循环检测60次 * 2s
+            n = 1 * 60
+            while n > 0:
+                # 循环判断元素是否存在
+                if 'called' not in dic.keys() or not dic['called']:
+                    continue
+                    time.sleep(1)
+                else:
+                    time.sleep(3)
+                    # print(call.is_element_already_exist_c('视频通话_挂断'))
+                    try:
+                        call.hang_up_video_call()
+                    except Exception:
+                        # traceback.print_exc()
+                        pass
+                    # 写入测试成功标志
+                    dic['res2'] = 'success'
+                    return
+            else:
+                # 失败后抛出异常
+                raise
+        except Exception:
+            # 捕获异常
+            traceback.print_exc()
+            # 写入成功标志
+            dic['res2'] = 'fail'
+
     @tags('ALL', 'CMCC_double', 'call')
     def test_call_00079(self):
-        """
-            1、网络正常
-            2、已登录客户端
-            3、当前页面在视频通话邀请页面
-            4、被叫方接到申请后点击“挂断”
-            5、对方拒绝接听时，弹出toast提示，“对方拒绝了你的通话邀请” toast弹出的位置在底部“挂断”按钮之上。
-        """
-        call = CallPage()
-        call.wait_for_page_load()
-        # 初始化被叫手机
-        Preconditions.initialize_class('Android-移动-N')
-        # 获取手机号码
-        cards = call.get_cards(CardType.CHINA_MOBILE)
-        # 切换主叫手机
-        Preconditions.select_mobile('Android-移动')
-        # 拨打视频电话
-        call.pick_up_p2p_video(cards)
-        # 切换到被叫手机
-        Preconditions.select_mobile('Android-移动-N')
-        call.click_locator_key('视频通话_挂断')
-        Preconditions.select_mobile('Android-移动')
-        self.assertEqual(call.is_toast_exist('对方拒绝了你的通话邀请'), True)
+        # 实例化ManagerServer进程，这个进程是阻塞的
+        with multiprocessing.Manager() as manager:
+            # 创建一个用于进程间通信的字典
+            dic = manager.dict()
+            # 实例化进程
+            p1 = multiprocessing.Process(target=self.call_00079_01, args=(dic,))
+            # 启动进程
+            p1.start()
+            # 实例化进程
+            p2 = multiprocessing.Process(target=self.call_00079_02, args=(dic,))
+            # 启动进程
+            p2.start()
+            # 进程阻塞
+            p1.join()
+            p2.join()
+            # 等待子进程都执行完毕后，判断是否有执行失败的标志
+            if 'fail' in dic.values():
+                raise RuntimeError('Test Fail')
+            else:
+                # 若没有失败标志，测试执行成功
+                print('Test Success')
+
+    def tearDown_test_call_00079(self):
+        pass
+        # Preconditions.disconnect_mobile('Android-移动')
+        # Preconditions.disconnect_mobile('Android-移动-N')
+
+
+
+
 
     @tags('ALL', 'CMCC_double', 'call')
     def test_call_00080(self):
@@ -2673,6 +2792,7 @@ class CallPageTest(TestCase):
         """
         call = CallPage()
         try:
+            time.sleep(6)
             call.tap_screen_three_point_element_c('视频界面_时长')
             call.click_locator_key_c('视频界面_免提')
             # 切换到主叫手机
