@@ -85,9 +85,7 @@ class CallPage(CommonPage):
                             'dex_bar_container"]/android.widget.TextView[3]'),
         '视频通话_搜索': (MobileBy.ID, 'com.cmic.college:id/editText_keyword'),
         '视频通话_接听': (MobileBy.ID, 'com.cmic.college:id/ivVideoAnswer'),
-        '视频通话_挂断': (MobileBy.XPATH, '//android.widget.ImageView[@resource-id="com.cmic.college:id'
-                                    '/ivVideoAnswer"]/preceding-sibling::android.widget.ImageView[1]'),
-
+        '视频通话_挂断': (MobileBy.ID, 'com.cmic.college:id/ivCancel'),
         # 视频通话接通界面
         '进行视频通话': (MobileBy.XPATH, '//*[contains(@text,"邀请你进行视频通话")]'),
         '视频界面_主元素': (MobileBy.ID, 'com.cmic.college:id/video_main_view'),
