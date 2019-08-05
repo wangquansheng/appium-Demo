@@ -1694,7 +1694,7 @@ class CallPageTest(TestCase):
             count = 150
             while count > 0:
                 # 持续时间太短，不一定能捕捉到
-                if call.is_toast_exist('对方拒绝了你的通话邀请', timeout=0.1):
+                if call.is_toast_exist('对方拒绝了你的通话邀请', timeout=0):
                     print('已检测到提示文本，执行成功', datetime.datetime.now().date().strftime('%Y-%m-%d'),
                           datetime.datetime.now().time().strftime("%H-%M-%S-%f"))
                     return True
@@ -2171,6 +2171,7 @@ class CallPageTest(TestCase):
             # 循环检测60次 * 2s
             n = 1 * 60
             while n > 0:
+                call.click_always_allow_c()
                 if 'cards' not in dic.keys() or dic['cards'] == '':
                     n -= 1
                     # 2秒检测一次
@@ -2190,10 +2191,13 @@ class CallPageTest(TestCase):
                 raise
             c = 2 * 60
             while c > 0:
+                # call.click_always_allow_c()
                 print('%d:判断---->对方拒绝了你的通话邀请' % c)
                 if not call.is_toast_exist('对方拒绝了你的通话邀请', timeout=0.1):
                     c -= 1
                     # time.sleep(0.1)
+                    if call.is_toast_exist('对方未接听', timeout=0.1):
+                        raise
                 else:
                     # 执行成功，写入成功标志
                     dic['res1'] = 'success'
@@ -2220,15 +2224,22 @@ class CallPageTest(TestCase):
             # 循环检测60次 * 2s
             n = 1 * 60
             while n > 0:
+                call.click_always_allow_c()
                 # 循环判断元素是否存在
                 if 'called' not in dic.keys() or not dic['called']:
-                    continue
                     time.sleep(1)
+                    continue
                 else:
                     time.sleep(3)
-                    # print(call.is_element_already_exist_c('视频通话_挂断'))
                     try:
-                        call.hang_up_video_call()
+                        for i in range(10):
+                            try:
+                                print('视频通话_挂断')
+                                call.hang_up_video_call()
+                            except Exception:
+                                pass
+                            if call.is_text_present_c('通话结束', default_timeout=1):
+                                break
                     except Exception:
                         # traceback.print_exc()
                         pass
@@ -2246,6 +2257,10 @@ class CallPageTest(TestCase):
 
     @tags('ALL', 'CMCC_double', 'call')
     def test_call_00079(self):
+        import sys
+        if sys.platform == 'win32':
+            print('此用例不可在windows平台上运行')
+            return
         # 实例化ManagerServer进程，这个进程是阻塞的
         with multiprocessing.Manager() as manager:
             # 创建一个用于进程间通信的字典
