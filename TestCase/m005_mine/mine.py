@@ -1,15 +1,16 @@
 import time
-import unittest
 import warnings
+
+from preconditions.BasePreconditions import LoginPreconditions
 
 from library.core.TestLogger import TestLogger
 from library.core.TestCase import TestCase
 from library.core.utils.applicationcache import current_mobile, current_driver, switch_to_mobile
 from library.core.utils.testcasefilter import tags
+
 from pages.call.CallPage import CallPage
 from pages.mine.MeEditProfile import MeEditProfilePage
 from pages.mine.MinePage import MinePage
-from preconditions.BasePreconditions import LoginPreconditions
 from pages.components.Footer import FooterPage
 
 REQUIRED_MOBILES = {
@@ -126,6 +127,7 @@ class MineTest(TestCase):
         Preconditions.select_mobile('Android-移动')
         current_mobile().hide_keyboard_if_display()
         Preconditions.make_already_in_me_page()
+        time.sleep(1)
 
     @tags('ALL', 'CMCC', 'me')
     def test_me_0001(self):
@@ -210,6 +212,7 @@ class MineTest(TestCase):
         me_edit_page.input_random_name()
         me_edit_page.click_locator_key('性别')
         me_edit_page.click_locator_key('性别_男')
+        time.sleep(0.5)
         me_edit_page.click_locator_key('保存')
         self.assertTrue(me_edit_page.is_toast_exist('保存成功'), True)
 
@@ -222,6 +225,7 @@ class MineTest(TestCase):
         me_edit_page.input_random_name()
         me_edit_page.click_locator_key('年龄')
         me_edit_page.click_locator_key('年龄_90后')
+        time.sleep(0.5)
         me_edit_page.click_locator_key('保存')
         self.assertTrue(me_edit_page.check_text_exist('保存成功'))
 
@@ -232,11 +236,13 @@ class MineTest(TestCase):
         MinePage().click_personal_photo()
         time.sleep(0.5)
         me_edit_page.click_locator_key('我的标签')
-        time.sleep(2)
+        time.sleep(3)
         me_edit_page.click_locator_key('添加个性标签')
+        time.sleep(0.5)
         me_edit_page.click_locator_key('标签取消')
         for i in range(6):
             me_edit_page.click_tag_index('标签', i)
+        time.sleep(0.5)
         self.assertTrue(me_edit_page.check_text_exist('最多选择5个标签来形容自己'))
 
     @tags('ALL', 'CMCC', 'me')
@@ -343,6 +349,7 @@ class MineTest(TestCase):
     def test_me_0017(self):
         """验证邀请有礼正常打开"""
         me_page = MinePage()
+        time.sleep(1)
         me_page.click_locator_key_c('邀请有礼')
         self.assertTrue(me_page.check_wait_text_exits('邀请有奖'))
         me_page.click_locator_key_c('我_二级页面_相同返回')

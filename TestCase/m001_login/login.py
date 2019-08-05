@@ -1,18 +1,14 @@
-import re
 import time
-import unittest
 import warnings
-
-from selenium.common.exceptions import TimeoutException
 
 from library.core.TestCase import TestCase
 from library.core.common.simcardtype import CardType
 from library.core.utils.applicationcache import current_mobile, current_driver, switch_to_mobile
 from library.core.utils.testcasefilter import tags
-from pages.call.CallPage import CallPage
 
-from pages.guide import GuidePage
+from pages.call.CallPage import CallPage
 from pages.login.LoginPage import OneKeyLoginPage
+
 from preconditions.BasePreconditions import LoginPreconditions
 
 REQUIRED_MOBILES = {
@@ -179,7 +175,6 @@ class LoginTest(TestCase):
             3、用户非首次登录"	"1、点击一键登陆
             2、点击确认使用XX号码登录"	成功登陆密友，进入通话页面
         """
-
         login = OneKeyLoginPage()
         if login.is_text_present_c('一键登录'):
             login.wait_for_tell_number_load(20)

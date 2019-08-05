@@ -86,7 +86,6 @@ class CallPage(CommonPage):
         '视频通话_搜索': (MobileBy.ID, 'com.cmic.college:id/editText_keyword'),
         '视频通话_接听': (MobileBy.ID, 'com.cmic.college:id/ivVideoAnswer'),
         '视频通话_挂断': (MobileBy.ID, 'com.cmic.college:id/ivCancel'),
-
         # 视频通话接通界面
         '进行视频通话': (MobileBy.XPATH, '//*[contains(@text,"邀请你进行视频通话")]'),
         '视频界面_主元素': (MobileBy.ID, 'com.cmic.college:id/video_main_view'),
@@ -291,6 +290,9 @@ class CallPage(CommonPage):
         # 版本升级
         '暂不升级': (MobileBy.XPATH, '//*[@text="暂不升级"]'),
 
+        # 发送短消息返回
+        '短信发送返回': (MobileBy.ID, 'com.android.mms:id/bt_cancel'),
+
     }
 
     @TestLogger.log("getLocators")
@@ -346,7 +348,7 @@ class CallPage(CommonPage):
 
     @TestLogger.log("点击locators对应的元素")
     def click_locator_key(self, locator):
-        self.click_element(self.__locators[locator])
+        self.click_element(self.__locators[locator], default_timeout=1)
 
     @TestLogger.log("当前页面是否包含此文本")
     def check_text_exist(self, text):
@@ -380,6 +382,7 @@ class CallPage(CommonPage):
 
     @TestLogger.log("点击包含文本的第一个详细信息(i)元素")
     def click_tag_detail_first_element(self, text):
+        time.sleep(0.5)
         elements_list = self.get_elements(self.__locators['通话类型标签'])
         detail_list = self.get_elements(self.__locators['联系人_详情图标'])
         text_list = [i.text for i in elements_list]
@@ -416,11 +419,14 @@ class CallPage(CommonPage):
     @TestLogger.log('拨打并挂断一个点对点视频通话')
     def point2point_vedio_call(self):
         self.click_locator_key('加号')
+        time.sleep(0.5)
         self.click_locator_key('视频通话')
+        time.sleep(0.5)
         self.click_locator_key('视频通话_第一个联系人')
         time.sleep(0.5)
         if self.is_toast_exist('不能选择本机号码', timeout=8):
             self.click_locator_key('视频通话_第二个联系人')
+            time.sleep(0.5)
         self.click_locator_key('呼叫')
         time.sleep(1)
         if self.on_this_page_common('流量_继续拨打'):
@@ -430,6 +436,7 @@ class CallPage(CommonPage):
         time.sleep(5)
         if self.on_this_page_common('挂断'):
             self.click_locator_key('挂断')
+            time.sleep(0.5)
 
     @TestLogger.log('拨打并挂断一个多方视频通话')
     def multiplayer_vedio_call(self):
@@ -453,6 +460,7 @@ class CallPage(CommonPage):
         time.sleep(2)
         if self.is_element_already_exist('多方电话_返回'):
             self.click_locator_key('多方电话_返回')
+        time.sleep(0.5)
 
     @TestLogger.log('拨打并挂断一个多方电话')
     def multiplayer_voice_call(self):
@@ -517,21 +525,27 @@ class CallPage(CommonPage):
 
     @TestLogger.log('确保页面第一条视频通话记录为对方无密友圈')
     def make_sure_p2p_video_no_college(self):
+        time.sleep(0.5)
         self.click_locator_key('加号')
-        time.sleep(1)
+        time.sleep(1.5)
         self.click_locator_key('视频通话x')
+        time.sleep(0.5)
         self.input_text(self.__locators['视频通话_搜索'], '13800138005')
         self.get_elements(self.__locators['电话号码'])[0].click()
+        time.sleep(0.5)
         self.click_locator_key('呼叫')
         if self.is_element_already_exist_c('流量_提示内容'):
             self.set_checkbox_checked_c('流量_不再提醒')
             self.click_locator_key_c('流量_继续拨打')
+        time.sleep(0.5)
 
     @TestLogger.log('确保页面第一条视频通话记录为对方无密友圈')
     def make_sure_p2p_voice_no_college(self):
+        time.sleep(0.5)
         self.click_show_keyboard()
-        time.sleep(1)
+        time.sleep(1.5)
         self.input_text(self.__locators['键盘输入框'], '13800138005')
+        time.sleep(0.5)
         self.click_locator_key('拨号界面_呼叫')
         time.sleep(0.5)
         if self.is_text_present('请注意接听“飞信电话”来电，随后将自动呼叫对方。'):
@@ -847,7 +861,7 @@ class CallPage(CommonPage):
     @TestLogger.log('获取指定运营商类型的手机卡（不传类型返回全部配置的手机卡）')
     def get_cards(self, card_type):
         """返回指定类型卡手机号列表"""
-        return current_mobile().get_cards(card_type)
+        return current_mobile().get_cards(card_type)[0]
 
     @TestLogger.log('选择第n个联系人')
     def select_contact_more(self, number, text):
@@ -883,19 +897,22 @@ class CallPage(CommonPage):
 
     @TestLogger.log('拨打一个点对点视频通话，指定号码')
     def pick_up_p2p_video(self, cards):
-        time.sleep(0.5)
-        self.click_locator_key('加号')
-        time.sleep(0.5)
-        self.click_locator_key('视频通话')
-        # self.click_locator_key('视频通话_搜索')
-        self.input_text(self.__locators['视频通话_搜索'], cards)
-        self.get_elements(self.__locators['电话号码'])[0].click()
-        self.click_locator_key('呼叫')
-        time.sleep(0.5)
-        if self.on_this_page_common('流量_继续拨打'):
-            self.click_locator_key('流量_继续拨打')
-        if self.is_text_present('对方还未使用密友圈，喊他一起来免流量视频通话。'):
-            self.click_locator_key('无密友圈_取消')
+        try:
+            time.sleep(0.5)
+            self.click_locator_key('加号')
+            time.sleep(0.5)
+            self.click_locator_key('视频通话')
+            # self.click_locator_key('视频通话_搜索')
+            self.input_text(self.__locators['视频通话_搜索'], cards)
+            self.get_elements(self.__locators['电话号码'])[0].click()
+            self.click_locator_key('呼叫')
+            time.sleep(0.5)
+            if self.on_this_page_common('流量_继续拨打'):
+                self.click_locator_key('流量_继续拨打')
+            if self.is_text_present('对方还未使用密友圈，喊他一起来免流量视频通话。'):
+                self.click_locator_key('无密友圈_取消')
+        except Exception:
+            traceback.print_exc()
 
     @TestLogger.log('拨打多人视频通话，包含一个指定号码')
     def pick_up_multi_video(self, cards):
@@ -956,6 +973,14 @@ class CallPage(CommonPage):
     @TestLogger.log('视频通话_接听')
     def pick_up_video_call(self):
         self.click_locator_key('视频通话_接听')
+
+    @TestLogger.log('视频通话_接听')
+    def hang_up_video_call(self):
+        locator = (MobileBy.XPATH, '//android.widget.ImageView[@resource-id="com.cmic.college:id'
+                                   '/ivVideoAnswer"]/preceding-sibling::android.widget.ImageView[1]')
+        # self.click_locator_key('视频通话_挂断')
+        self.get_element(locator).click()
+
 
     @TestLogger.log('判断元素是否存在')
     def is_element_already_exist(self, locator, default_timeout=5, auto_accept_permission_alert=True):

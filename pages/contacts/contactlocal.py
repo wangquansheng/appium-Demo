@@ -102,6 +102,11 @@ class ContactsPage(CommonPage):
         '回呼_不再提醒': (MobileBy.ID, 'com.cmic.college:id/select_checkbox'),
         '回呼_我知道了': (MobileBy.ID, 'com.cmic.college:id/bt_open'),
 
+        # 无密友圈 提示文本
+        '无密友圈_提示文本': (MobileBy.XPATH, '//*[contains(@text,"对方还未使用密友圈")]'),
+        '无密友圈_确定': (MobileBy.ID, 'com.cmic.college:id/btnConfirm'),
+        '无密友圈_取消': (MobileBy.ID, 'com.cmic.college:id/btnCancel'),
+
     }
 
     @TestLogger.log("getLocators")

@@ -164,7 +164,7 @@ class CommonPage(BasePage):
     @TestLogger.log('获取指定运营商类型的手机卡（不传类型返回全部配置的手机卡）')
     def get_cards_c(self, card_type):
         """返回指定类型卡手机号列表"""
-        return current_mobile().get_cards(card_type)
+        return current_mobile().get_cards(card_type)[0]
 
     @TestLogger.log('判断元素是否存在')
     def is_element_already_exist_c(self, locator, default_timeout=5, auto_accept_permission_alert=True):
