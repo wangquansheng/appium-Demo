@@ -247,7 +247,6 @@ class Preconditions(object):
         return times
 
 
-# noinspection PyBroadException
 class CallPageTest(TestCase):
     """Call 模块--全量"""
 
@@ -3358,9 +3357,9 @@ class CallPageTest(TestCase):
         # 切换主叫手机
         Preconditions.select_mobile('Android-移动')
         # 判断如果键盘已拉起，则收起键盘
-        if call.is_exist_call_key():
-            call.click_hide_keyboard()
-            time.sleep(1)
+        # if call.is_exist_call_key():
+        #     call.click_hide_keyboard()
+        #     time.sleep(1)
         # 拨打多人视频 指定一个号码
         call.pick_up_multi_video(cards)
         count = 60
@@ -3778,7 +3777,7 @@ class CallPageTest(TestCase):
                 call.click_locator_key('暂不开启')
             # if call.is_element_already_exist('多方视频_挂断'):
             #     call.click_locator_key('多方视频_挂断')
-                # call.click_locator_key('确定')
+            # call.click_locator_key('确定')
             call.click_locator_key_c('视频通话_挂断')
             time.sleep(3)
             # call.click_back()
@@ -3836,7 +3835,7 @@ class CallPageTest(TestCase):
             flag2 = False
             for i in range(20):
                 flag2 = call.is_text_present_c('飞信电话', default_timeout=0.1) \
-                             and call.is_text_present_c('12560', default_timeout=0.1)
+                        and call.is_text_present_c('12560', default_timeout=0.1)
                 if flag2:
                     break
 
