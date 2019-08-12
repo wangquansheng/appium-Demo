@@ -148,7 +148,8 @@ class LoginTest(TestCase):
         if login.is_text_present_c('用户协议和隐私保护'):
             login.click_locator_key_c('不同意')
             time.sleep(0.5)
-        self.assertEqual(login.is_text_present_c('使用{}一键登录'.format((cards[0]))), True)
+        time.sleep(2)
+        self.assertEqual(login.is_text_present_c('使用{}一键登录'.format(cards)), True)
         login.click_text('一键登录')
         time.sleep(1)
         if login.is_text_present_c('用户协议和隐私保护'):
