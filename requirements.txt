@@ -2,5 +2,5 @@ progressbar2
 pyzbar==0.1.8
 Appium-Python-Client==0.36
 lxml==4.3.1
-Pillow==5.4.1
+Pillow==6.2.0
 requests==2.21.0
